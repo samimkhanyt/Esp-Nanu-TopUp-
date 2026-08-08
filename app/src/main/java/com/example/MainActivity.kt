@@ -763,9 +763,8 @@ class MainActivity : ComponentActivity() {
             webView.isHorizontalScrollBarEnabled = false
 
             WebView.setWebContentsDebuggingEnabled(false)
-            webView.setOnLongClickListener { true }
-            webView.isLongClickable = false
-            webView.isHapticFeedbackEnabled = false
+            webView.isLongClickable = true
+            webView.isHapticFeedbackEnabled = true
 
             val settings: WebSettings = webView.settings
             settings.javaScriptEnabled = true

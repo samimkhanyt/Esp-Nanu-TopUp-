@@ -18,7 +18,11 @@
 
     <script>
         // App Security & Anti-Tampering Protection
-        document.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
+                e.preventDefault();
+            }
+        });
         document.addEventListener('keydown', function(e) {
             if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C' || e.key === 'S')) || (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))) {
                 e.preventDefault();
@@ -27,13 +31,19 @@
         });
         document.addEventListener('dragstart', function(e) { e.preventDefault(); });
         document.addEventListener('selectstart', function(e) {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable && !e.target.classList.contains('select-text')) {
                 e.preventDefault();
             }
         });
     </script>
 
     <style>
+        /* Enable text selection and copy/cut/paste menu on input & textarea */
+        input, textarea, select, [contenteditable], .select-text, .flat-input {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+        }
+
         /* Global Font: Poppins for everywhere except Home */
         body { 
             font-family: 'Poppins', sans-serif; 
@@ -116,6 +126,10 @@
             font-weight: 500;
         }
         .toast-logo-small { width: 22px; height: 22px; object-fit: contain; }
+
+        .swal2-container {
+            z-index: 999999 !important;
+        }
 
         /* --- Order Page Design (As per Screenshot) --- */
         .order-card-hunt {
@@ -1266,7 +1280,7 @@
                     </button>
                 </div>
 
-                <div class="flex-1 flex flex-col justify-between px-4 pt-4 pb-12 max-w-md mx-auto w-full">
+                <div class="flex-1 flex flex-col justify-between px-2 sm:px-4 pt-4 pb-12 w-full">
                     <div class="flex flex-col items-center space-y-4 w-full">
                         <div class="bg-white rounded-full w-28 h-28 flex items-center justify-center shadow-md border-2 border-red-700 p-3">
                             <img src="logo.png" id="step2-center-logo" class="w-full object-contain">
@@ -1274,27 +1288,27 @@
                         
                         <h2 class="text-gray-600 font-medium text-lg">Auto Pay</h2>
 
-                        <div class="w-full">
-                            <div id="mbanking-header" data-en="Mobile Banking" data-bn="মোবাইল ব্যাংকিং" class="w-full bg-[#003399] text-white py-2.5 text-center text-sm font-bold rounded-t-lg mb-0 shadow-md">
+                        <div class="w-full px-1 sm:px-2">
+                            <div id="mbanking-header" data-en="Mobile Banking" data-bn="মোবাইল ব্যাংকিং" class="w-full bg-[#003399] text-white py-3 text-center text-base font-extrabold rounded-t-xl mb-0 shadow-md">
                                 মোবাইল ব্যাংকিং
                             </div>
                             
-                            <div id="payment-methods-grid" class="w-full grid grid-cols-2 gap-4 bg-white p-4 rounded-b-lg shadow-sm border border-gray-200 border-t-0">
+                            <div id="payment-methods-grid" class="w-full grid grid-cols-2 gap-4 bg-white p-5 rounded-b-2xl shadow-lg border border-gray-200 border-t-0">
                                 <button onclick="goToPaymentPage('bKash', 'theme-bkash', 'https://i.ibb.co.com/rGGYx0pq/download.png')" 
-                                        class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-pink-500 hover:shadow-md transition h-16">
-                                    <img src="https://i.ibb.co.com/rGGYx0pq/download.png" class="h-8 object-contain">
+                                        class="bg-white border-2 border-pink-200 rounded-2xl p-3 flex items-center justify-center hover:border-pink-500 hover:shadow-lg transition h-20 sm:h-24 w-full active:scale-95">
+                                    <img src="https://i.ibb.co.com/rGGYx0pq/download.png" class="h-11 sm:h-12 object-contain">
                                 </button>
                                 
                                 <button onclick="goToPaymentPage('Nagad', 'theme-nagad', 'https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg')" 
-                                        class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-orange-500 hover:shadow-md transition h-16">
-                                    <img src="https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg" class="h-8 object-contain">
+                                        class="bg-white border-2 border-orange-200 rounded-2xl p-3 flex items-center justify-center hover:border-orange-500 hover:shadow-lg transition h-20 sm:h-24 w-full active:scale-95">
+                                    <img src="https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg" class="h-11 sm:h-12 object-contain">
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Deposit Warning Rules Box (চূড়ান্ত রুলস - Pushed to the very end/bottom of the page) -->
-                    <div id="deposit-rules-box" class="w-full bg-white border border-gray-200 border-t-4 border-t-red-600 rounded-2xl p-4 shadow-md text-left space-y-3 relative overflow-hidden mt-16 mb-4">
+                    <!-- Deposit Warning Rules Box (চূড়ান্ত রুলস - Pushed further down with clear space) -->
+                    <div id="deposit-rules-box" class="w-full bg-white border border-gray-200 border-t-4 border-t-red-600 rounded-2xl p-5 shadow-lg text-left space-y-4 relative overflow-hidden mt-32 sm:mt-40 mb-8">
                         <div class="flex items-start gap-2.5">
                             <div class="w-8 h-8 rounded-full bg-red-100 border border-red-300 flex items-center justify-center text-red-600 text-sm font-bold flex-shrink-0 mt-0.5 animate-pulse">
                                 <i class="fas fa-exclamation-triangle"></i>
@@ -1666,7 +1680,10 @@
                 <div class="text-left">
                     <label class="block text-xs font-extrabold text-slate-800 mb-1.5 ml-1">প্রাপকের সাপোর্ট পিন (Receiver's Support PIN)</label>
                     <div class="relative">
-                        <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: ESP-123456" class="w-full bg-slate-50 border-2 border-slate-900 focus:border-emerald-500 rounded-2xl py-3 px-4 font-mono font-bold text-slate-800 text-base uppercase outline-none transition shadow-sm">
+                        <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: ESP-123456" class="w-full bg-slate-50 border-2 border-slate-900 focus:border-emerald-500 rounded-2xl py-3 pl-4 pr-24 font-mono font-bold text-slate-800 text-base uppercase outline-none transition shadow-sm">
+                        <button onclick="pasteReceiverPin()" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-extrabold px-3 py-2 rounded-xl transition shadow-sm flex items-center gap-1">
+                            <i class="far fa-clipboard"></i> পেস্ট
+                        </button>
                     </div>
                     <p class="text-[11px] text-slate-500 mt-1 ml-1 font-semibold">প্রাপকের অ্যাকাউন্ট বা প্রোফাইলে থাকা সাপোর্ট পিনটি লিখুন।</p>
                 </div>
@@ -2133,6 +2150,8 @@ function loadGlobalSettings() {
             const siteName = data.siteName || "Nenox Shop";
             
             isAutoPayEnabled = data.autoPayEnabled === true;
+            window.transferLimitHours = (data.transferLimitHours !== undefined && !isNaN(parseInt(data.transferLimitHours))) ? parseInt(data.transferLimitHours) : 24;
+            window.transferDisabled = (data.transferDisabled === true);
             
             const headerLogo = document.getElementById('header-logo-img');
             const aboutLogo = document.getElementById('about-logo-img');
@@ -2967,15 +2986,25 @@ function listenToLivePushNotifications() {
                     lastSeenTime = notif.clientTimestamp;
                     
                     let iconType = 'info';
-                    if (notif.title && notif.title.includes('সফল')) iconType = 'success';
-                    else if (notif.title && (notif.title.includes('বাতিল') || notif.title.includes('ভুল'))) iconType = 'error';
+                    if (notif.title && (notif.title.includes('সফল') || notif.title.includes('✅'))) iconType = 'success';
+                    else if (notif.title && (notif.title.includes('বাতিল') || notif.title.includes('ভুল') || notif.title.includes('❌'))) iconType = 'error';
 
+                    const notifLogo = notif.logoUrl || window.cachedNotifLogo || "https://i.ibb.co/Gz46D8S/1000015293.jpg";
+
+                    // Isolated push notification popup - does not touch notice box or launch popup
                     Swal.fire({
                         title: notif.title || 'নোটিফিকেশন',
                         text: notif.message || '',
-                        icon: iconType,
+                        imageUrl: notifLogo,
+                        imageWidth: 70,
+                        imageHeight: 70,
+                        imageAlt: 'Notification Icon',
                         confirmButtonText: 'ঠিক আছে',
-                        confirmButtonColor: '#0284c7'
+                        confirmButtonColor: '#0284c7',
+                        customClass: {
+                            popup: 'rounded-3xl border border-sky-100 shadow-2xl',
+                            confirmButton: 'rounded-xl px-6 py-2.5 font-bold'
+                        }
                     });
                 }
             }
@@ -3349,10 +3378,33 @@ function loadAppContent() {
                 }
             }
 
+            if (data.logoUrl) {
+                try {
+                    localStorage.setItem('cached_header_logo', data.logoUrl);
+                    if (data.headerLogoSize || data.logoSize) {
+                        localStorage.setItem('cached_header_logo_size', data.headerLogoSize || data.logoSize);
+                    }
+                    new Image().src = data.logoUrl;
+                } catch(e) {}
+            }
+
             // Splash Loader Logo
             if (data.loaderLogoUrl) {
                 const loaderImg = document.getElementById('loader-logo-img');
                 if (loaderImg) loaderImg.src = data.loaderLogoUrl;
+                try {
+                    localStorage.setItem('cached_loader_logo', data.loaderLogoUrl);
+                    new Image().src = data.loaderLogoUrl;
+                } catch(e) {}
+            }
+
+            // Push Notification Logo
+            if (data.notificationLogoUrl) {
+                window.cachedNotifLogo = data.notificationLogoUrl;
+                try {
+                    localStorage.setItem('cached_notif_logo', data.notificationLogoUrl);
+                    new Image().src = data.notificationLogoUrl;
+                } catch(e) {}
             }
 
             // Login Page Logo
@@ -4317,8 +4369,21 @@ function loadHistory() {
 
             const orders = [];
             snapshot.forEach(doc => {
-                orders.push({id: doc.id, ...doc.data()});
+                const data = doc.data();
+                const statusRaw = (data.status || 'pending').toLowerCase();
+                const isComplete = (statusRaw === 'success' || statusRaw === 'complete' || statusRaw === 'completed');
+                const isProcessing = (statusRaw === 'processing' || statusRaw === 'process');
+                
+                // Show in history only when approved / completed / processing by admin
+                if (isComplete || isProcessing) {
+                    orders.push({id: doc.id, ...data});
+                }
             });
+
+            if (orders.length === 0) {
+                list.innerHTML = `<div class="text-center py-12 text-gray-400 font-bold">No orders found</div>`;
+                return;
+            }
 
             orders.sort((a, b) => {
                 const dateA = a.date ? a.date.toDate() : new Date(0);
@@ -4702,25 +4767,47 @@ function renderPaymentMethodsGrid() {
     const grid = document.getElementById('payment-methods-grid');
     if (!grid) return;
     
+    const bkashLogo = (adminPaymentConfig && (adminPaymentConfig.bkash_grid_logo || adminPaymentConfig.bkash_modal_logo)) 
+        ? (adminPaymentConfig.bkash_grid_logo || adminPaymentConfig.bkash_modal_logo) 
+        : 'https://i.ibb.co.com/rGGYx0pq/download.png';
+    const bkashSize = (adminPaymentConfig && (adminPaymentConfig.bkash_grid_logo_size || adminPaymentConfig.bkash_logo_size)) 
+        ? parseInt(adminPaymentConfig.bkash_grid_logo_size || adminPaymentConfig.bkash_logo_size) 
+        : 48;
+
+    const nagadLogo = (adminPaymentConfig && (adminPaymentConfig.nagad_grid_logo || adminPaymentConfig.nagad_modal_logo)) 
+        ? (adminPaymentConfig.nagad_grid_logo || adminPaymentConfig.nagad_modal_logo) 
+        : 'https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg';
+    const nagadSize = (adminPaymentConfig && (adminPaymentConfig.nagad_grid_logo_size || adminPaymentConfig.nagad_logo_size)) 
+        ? parseInt(adminPaymentConfig.nagad_grid_logo_size || adminPaymentConfig.nagad_logo_size) 
+        : 48;
+
+    try {
+        localStorage.setItem('cached_bkash_logo', bkashLogo);
+        localStorage.setItem('cached_bkash_size', bkashSize);
+        localStorage.setItem('cached_nagad_logo', nagadLogo);
+        localStorage.setItem('cached_nagad_size', nagadSize);
+    } catch(e) {}
+
     let html = `
-        <button onclick="goToPaymentPage('bKash', 'theme-bkash', 'https://i.ibb.co.com/rGGYx0pq/download.png')" 
-                class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-pink-500 hover:shadow-md transition h-16">
-            <img src="https://i.ibb.co.com/rGGYx0pq/download.png" class="h-8 object-contain">
+        <button onclick="goToPaymentPage('bKash', 'theme-bkash', '${bkashLogo}')" 
+                class="bg-white border-2 border-pink-200 rounded-2xl p-3 flex items-center justify-center hover:border-pink-500 hover:shadow-lg transition min-h-[5.5rem] w-full active:scale-95">
+            <img src="${bkashLogo}" style="height: ${bkashSize}px;" class="max-h-32 object-contain" loading="eager">
         </button>
         
-        <button onclick="goToPaymentPage('Nagad', 'theme-nagad', 'https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg')" 
-                class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-orange-500 hover:shadow-md transition h-16">
-            <img src="https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg" class="h-8 object-contain">
+        <button onclick="goToPaymentPage('Nagad', 'theme-nagad', '${nagadLogo}')" 
+                class="bg-white border-2 border-orange-200 rounded-2xl p-3 flex items-center justify-center hover:border-orange-500 hover:shadow-lg transition min-h-[5.5rem] w-full active:scale-95">
+            <img src="${nagadLogo}" style="height: ${nagadSize}px;" class="max-h-32 object-contain" loading="eager">
         </button>
     `;
 
     if (adminPaymentConfig && adminPaymentConfig.custom_method_logo) {
         const customName = adminPaymentConfig.custom_method_name || 'Rocket';
         const customLogo = adminPaymentConfig.custom_method_logo;
+        const customSize = adminPaymentConfig.custom_method_logo_size || 48;
         html += `
             <button onclick="goToPaymentPage('${customName}', 'theme-custom', '${customLogo}')" 
-                    class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-purple-500 hover:shadow-md transition h-16 col-span-2 sm:col-span-1">
-                <img src="${customLogo}" class="h-10 object-contain">
+                    class="bg-white border-2 border-purple-200 rounded-2xl p-3 flex items-center justify-center hover:border-purple-500 hover:shadow-lg transition min-h-[5.5rem] col-span-2 sm:col-span-1 w-full active:scale-95">
+                <img src="${customLogo}" style="height: ${customSize}px;" class="max-h-32 object-contain" loading="eager">
             </button>
         `;
     }
@@ -4807,6 +4894,68 @@ function fallbackPastePrompt() {
     }).then(res => {
         if (res.isConfirmed && res.value) {
             const input = document.getElementById('pay-trx-input');
+            if (input) {
+                input.value = res.value.trim().toUpperCase();
+                showCustomToast("পেস্ট করা হয়েছে");
+            }
+        }
+    });
+}
+
+function pasteReceiverPin() {
+    let nativeText = "";
+    try {
+        if (window.AndroidApp && typeof window.AndroidApp.getClipboardText === 'function') {
+            nativeText = window.AndroidApp.getClipboardText();
+        }
+    } catch(e) {}
+
+    const applyPin = (text) => {
+        if (!text) return;
+        let pin = text.trim().toUpperCase();
+        const input = document.getElementById('transfer-receiver-pin-input');
+        if (input) {
+            input.value = pin;
+            showCustomToast("পেস্ট করা হয়েছে");
+        }
+    };
+
+    if (nativeText && nativeText.trim().length > 0) {
+        applyPin(nativeText);
+        return;
+    }
+
+    try {
+        if (navigator.clipboard && navigator.clipboard.readText) {
+            navigator.clipboard.readText().then(text => {
+                if (text && text.trim().length > 0) {
+                    applyPin(text);
+                } else {
+                    fallbackPastePromptForPin();
+                }
+            }).catch(() => {
+                fallbackPastePromptForPin();
+            });
+        } else {
+            fallbackPastePromptForPin();
+        }
+    } catch (e) {
+        fallbackPastePromptForPin();
+    }
+}
+
+function fallbackPastePromptForPin() {
+    Swal.fire({
+        title: 'কপি করা পিন এখানে বসান',
+        input: 'text',
+        inputPlaceholder: 'ESP-123456',
+        showCancelButton: true,
+        confirmButtonText: 'পেস্ট করুন',
+        cancelButtonText: 'বাতিল',
+        confirmButtonColor: '#10b981'
+    }).then((res) => {
+        if (res.isConfirmed && res.value) {
+            const input = document.getElementById('transfer-receiver-pin-input');
             if (input) {
                 input.value = res.value.trim().toUpperCase();
                 showCustomToast("পেস্ট করা হয়েছে");
@@ -5929,6 +6078,11 @@ function executeBalanceTransfer() {
         return;
     }
 
+    if (window.transferDisabled) {
+        showCustomToast("এডমিন থেকে ব্যালেন্স ট্রান্সফার সাময়িকভাবে বন্ধ রাখা হয়েছে!");
+        return;
+    }
+
     const receiverPinInput = document.getElementById('transfer-receiver-pin-input');
     const amountInput = document.getElementById('transfer-amount-input');
 
@@ -6001,10 +6155,11 @@ function executeBalanceTransfer() {
         const lastTransferTime = senderData.lastTransferTime || 0;
         const now = Date.now();
         const diff = now - lastTransferTime;
-        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+        const limitHours = window.transferLimitHours !== undefined ? window.transferLimitHours : 24;
+        const LIMIT_MS = limitHours * 60 * 60 * 1000;
 
-        if (lastTransferTime > 0 && diff < TWENTY_FOUR_HOURS) {
-            const remainingMs = TWENTY_FOUR_HOURS - diff;
+        if (limitHours > 0 && lastTransferTime > 0 && diff < LIMIT_MS) {
+            const remainingMs = LIMIT_MS - diff;
             const remainingHours = Math.floor(remainingMs / (1000 * 60 * 60));
             const remainingMins = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
 
@@ -6012,7 +6167,7 @@ function executeBalanceTransfer() {
             Swal.fire({
                 icon: 'warning',
                 title: 'ট্রান্সফার লিমিট শেষ!',
-                html: `আপনি ২৪ ঘণ্টায় মাত্র <b>১ বার</b> ব্যালেন্স ট্রান্সফার করতে পারবেন।<br><br>আবার ব্যালেন্স পাঠাতে পারবেন: <b class="text-orange-600">${remainingHours} ঘণ্টা ${remainingMins} মিনিট</b> পর।`,
+                html: `আপনি ${limitHours} ঘণ্টায় মাত্র <b>১ বার</b> ব্যালেন্স ট্রান্সফার করতে পারবেন।<br><br>আবার ব্যালেন্স পাঠাতে পারবেন: <b class="text-orange-600">${remainingHours > 0 ? remainingHours + ' ঘণ্টা ' : ''}${remainingMins} মিনিট</b> পর।`,
                 confirmButtonColor: '#f39c12'
             });
             return;

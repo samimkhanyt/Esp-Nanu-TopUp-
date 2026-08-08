@@ -101,6 +101,25 @@ class FirebaseBroadcastListener(private val context: Context) {
         }
     }
 
+    private fun getStringVal(snapshot: DataSnapshot, field: String): String? {
+        val child = snapshot.child(field)
+        if (!child.exists()) return null
+        return child.value?.toString()
+    }
+
+    private fun getLongVal(snapshot: DataSnapshot, field: String): Long? {
+        val child = snapshot.child(field)
+        if (!child.exists()) return null
+        val v = child.value
+        return when (v) {
+            is Long -> v
+            is Int -> v.toLong()
+            is Double -> v.toLong()
+            is String -> v.toLongOrNull()
+            else -> null
+        }
+    }
+
     private fun processLiveNotification(snapshot: DataSnapshot) {
         try {
             val key = snapshot.key ?: ""
@@ -111,25 +130,25 @@ class FirebaseBroadcastListener(private val context: Context) {
                 return
             }
 
-            val title = snapshot.child("title").getValue(String::class.java)
-                ?: snapshot.child("name").getValue(String::class.java)
+            val title = getStringVal(snapshot, "title")
+                ?: getStringVal(snapshot, "name")
                 ?: "Esp TopUp"
-            val message = snapshot.child("message").getValue(String::class.java)
-                ?: snapshot.child("body").getValue(String::class.java)
-                ?: snapshot.child("text").getValue(String::class.java)
+            val message = getStringVal(snapshot, "message")
+                ?: getStringVal(snapshot, "body")
+                ?: getStringVal(snapshot, "text")
                 ?: ""
 
             if (message.isEmpty()) return
 
-            val logoUrl = snapshot.child("logoUrl").getValue(String::class.java)
-                ?: snapshot.child("image").getValue(String::class.java)
-                ?: snapshot.child("imageUrl").getValue(String::class.java)
+            val logoUrl = getStringVal(snapshot, "logoUrl")
+                ?: getStringVal(snapshot, "image")
+                ?: getStringVal(snapshot, "imageUrl")
                 ?: NotificationHelper.DEFAULT_LOGO_URL
-            val target = snapshot.child("target").getValue(String::class.java) ?: "all"
-            val targetEmail = snapshot.child("targetEmail").getValue(String::class.java)?.lowercase()?.trim() ?: ""
-            val rawTime = snapshot.child("clientTimestamp").getValue(Long::class.java)
-                ?: snapshot.child("timestamp").getValue(Long::class.java)
-                ?: snapshot.child("time").getValue(Long::class.java)
+            val target = getStringVal(snapshot, "target") ?: "all"
+            val targetEmail = getStringVal(snapshot, "targetEmail")?.lowercase()?.trim() ?: ""
+            val rawTime = getLongVal(snapshot, "clientTimestamp")
+                ?: getLongVal(snapshot, "timestamp")
+                ?: getLongVal(snapshot, "time")
                 ?: 0L
 
             val timestampMs = if (rawTime in 1..9999999999L) rawTime * 1000L else rawTime
@@ -193,21 +212,21 @@ class FirebaseBroadcastListener(private val context: Context) {
                 return
             }
 
-            val title = snapshot.child("title").getValue(String::class.java)
-                ?: snapshot.child("name").getValue(String::class.java)
+            val title = getStringVal(snapshot, "title")
+                ?: getStringVal(snapshot, "name")
                 ?: "Esp TopUp"
 
-            val body = snapshot.child("body").getValue(String::class.java)
-                ?: snapshot.child("message").getValue(String::class.java)
-                ?: snapshot.child("text").getValue(String::class.java)
-                ?: snapshot.getValue(String::class.java)
+            val body = getStringVal(snapshot, "body")
+                ?: getStringVal(snapshot, "message")
+                ?: getStringVal(snapshot, "text")
+                ?: snapshot.value?.toString()
                 ?: ""
 
             if (body.isEmpty()) return
 
-            val imageUrl = snapshot.child("image").getValue(String::class.java)
-                ?: snapshot.child("imageUrl").getValue(String::class.java)
-                ?: snapshot.child("logoUrl").getValue(String::class.java)
+            val imageUrl = getStringVal(snapshot, "image")
+                ?: getStringVal(snapshot, "imageUrl")
+                ?: getStringVal(snapshot, "logoUrl")
                 ?: NotificationHelper.DEFAULT_LOGO_URL
 
             markNotificationAsProcessed(uniqueKey)

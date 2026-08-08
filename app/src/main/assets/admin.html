@@ -60,10 +60,25 @@
         @keyframes modalFadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+        /* Enable text selection and copy/cut/paste menu on input & textarea */
+        input, textarea, select, [contenteditable], .flat-input {
+            -webkit-user-select: text !important;
+            user-select: text !important;
+        }
     </style>
 </head>
-<body oncontextmenu="return false" style="touch-action: none; -webkit-user-select: none; user-select: none; overscroll-behavior: none;">
+<body style="-webkit-user-select: none; user-select: none; overscroll-behavior: none;">
     <script>
+        document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
+                e.preventDefault();
+            }
+        });
+        document.addEventListener('selectstart', function(e) {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
+                e.preventDefault();
+            }
+        });
         document.addEventListener('touchstart', (e) => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
         document.addEventListener('gesturestart', (e) => e.preventDefault());
     </script>
@@ -311,42 +326,96 @@
                         </div>
                     </div>
 
-                    <!-- 6. bKash Modal Logo -->
+                    <!-- 6. bKash Payment Logo & Size -->
                     <div class="card">
-                        <h4 class="text-sm font-bold text-pink-400 uppercase mb-2">৬. বিকাশ মোডাল ও পেমেন্ট লোগো (bKash Payment Logo)</h4>
+                        <h4 class="text-sm font-bold text-pink-400 uppercase mb-2">৬. বিকাশ পেমেন্ট লোগো ও সাইজ (bKash Logo & Size)</h4>
                         <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
-                            <i class="fas fa-info-circle text-pink-400 mr-1"></i> অ্যাড মানি পেজে বিকাশ পেমেন্ট মোডাল বা অটো পেমেন্টে যে বিকাশ লোগো দেখায়।
+                            <i class="fas fa-info-circle text-pink-400 mr-1"></i> অ্যাপে বিকাশ পেমেন্টের লোগো ইউআরএল এবং ছবিটির সাইজ (px) পরিবর্তন করুন।
                         </p>
                         <div class="space-y-3">
-                            <div class="flex items-center gap-2">
-                                <input type="text" id="set-img-bkash-logo" class="flat-input flex-1" placeholder="https://...">
-                                <label class="cursor-pointer bg-dark-bg hover:bg-orange-500/20 text-orange-400 border border-dark-border hover:border-orange-500 px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
-                                    <i class="fas fa-image"></i> Gallery
-                                    <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-img-bkash-logo')">
-                                </label>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">বিকাশ লোগো ইউআরএল (bKash Logo URL)</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" id="set-img-bkash-logo" class="flat-input flex-1" placeholder="https://...">
+                                    <label class="cursor-pointer bg-dark-bg hover:bg-orange-500/20 text-orange-400 border border-dark-border hover:border-orange-500 px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
+                                        <i class="fas fa-image"></i> Gallery
+                                        <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-img-bkash-logo')">
+                                    </label>
+                                </div>
                             </div>
-                            <button onclick="saveIndividualPaymentSetting('bkash_modal_logo', 'set-img-bkash-logo')" class="flat-btn w-full">
-                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save bKash Logo)
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">বিকাশ লোগো ফটো সাইজ (Height in px)</label>
+                                <input type="number" id="set-img-bkash-size" placeholder="48" class="flat-input" min="20" max="200">
+                            </div>
+                            <button onclick="saveBkashLogoAndSize()" class="flat-btn w-full">
+                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save bKash Logo & Size)
                             </button>
                         </div>
                     </div>
 
-                    <!-- 7. Nagad Modal Logo -->
+                    <!-- 7. Nagad Payment Logo & Size -->
                     <div class="card">
-                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৭. নগদ মোডাল ও পেমেন্ট লোগো (Nagad Payment Logo)</h4>
+                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৭. নগদ হোম পেজ লোগো ও সাইজ (Nagad Logo & Size)</h4>
                         <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
-                            <i class="fas fa-info-circle text-orange-400 mr-1"></i> অ্যাড মানি পেজে নগদ পেমেন্ট মোডাল বা অটো পেমেন্টে যে নগদ লোগো দেখায়।
+                            <i class="fas fa-info-circle text-orange-400 mr-1"></i> অ্যাপে হোম পেজে নগদ বাটনটির লোগো ইউআরএল এবং ছবিটির সাইজ (px) পরিবর্তন করুন।
+                        </p>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">নগদ লোগো ইউআরএল (Nagad Logo URL)</label>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" id="set-img-nagad-logo" class="flat-input flex-1" placeholder="https://...">
+                                    <label class="cursor-pointer bg-dark-bg hover:bg-orange-500/20 text-orange-400 border border-dark-border hover:border-orange-500 px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
+                                        <i class="fas fa-image"></i> Gallery
+                                        <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-img-nagad-logo')">
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">নগদ লোগো ফটো সাইজ (Height in px)</label>
+                                <input type="number" id="set-img-nagad-size" placeholder="48" class="flat-input" min="20" max="200">
+                            </div>
+                            <button onclick="saveNagadLogoAndSize()" class="flat-btn w-full">
+                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save Nagad Logo & Size)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 8. bKash Verification Loading Modal Logo -->
+                    <div class="card">
+                        <h4 class="text-sm font-bold text-pink-400 uppercase mb-2">৮. বিকাশ লোডিং / ভেরিফিকেশন পপ-আপ লোগো (bKash Verification Logo)</h4>
+                        <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
+                            <i class="fas fa-info-circle text-pink-400 mr-1"></i> বিকাশ ট্রানজেকশন আইডি দিয়ে ভেরিফাই বাটনে ক্লিক করার পর লোডিং এনিমেশন পপ-আপে বিকাশ লোগো পরিবর্তন করুন।
                         </p>
                         <div class="space-y-3">
                             <div class="flex items-center gap-2">
-                                <input type="text" id="set-img-nagad-logo" class="flat-input flex-1" placeholder="https://...">
+                                <input type="text" id="set-img-bkash-modal-logo" class="flat-input flex-1" placeholder="https://...">
                                 <label class="cursor-pointer bg-dark-bg hover:bg-orange-500/20 text-orange-400 border border-dark-border hover:border-orange-500 px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
                                     <i class="fas fa-image"></i> Gallery
-                                    <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-img-nagad-logo')">
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-img-bkash-modal-logo')">
                                 </label>
                             </div>
-                            <button onclick="saveIndividualPaymentSetting('nagad_modal_logo', 'set-img-nagad-logo')" class="flat-btn w-full">
-                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save Nagad Logo)
+                            <button onclick="saveBkashModalLogo()" class="flat-btn w-full">
+                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save bKash Modal Logo)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 9. Nagad Verification Loading Modal Logo -->
+                    <div class="card">
+                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৯. নগদ লোডিং / ভেরিফিকেশন পপ-আপ লোগো (Nagad Verification Logo)</h4>
+                        <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
+                            <i class="fas fa-info-circle text-orange-400 mr-1"></i> নগদ ট্রানজেকশন আইডি দিয়ে ভেরিফাই বাটনে ক্লিক করার পর লোডিং এনিমেশন পপ-আপে নগদ লোগো পরিবর্তন করুন।
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-2">
+                                <input type="text" id="set-img-nagad-modal-logo" class="flat-input flex-1" placeholder="https://...">
+                                <label class="cursor-pointer bg-dark-bg hover:bg-orange-500/20 text-orange-400 border border-dark-border hover:border-orange-500 px-3 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
+                                    <i class="fas fa-image"></i> Gallery
+                                    <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-img-nagad-modal-logo')">
+                                </label>
+                            </div>
+                            <button onclick="saveNagadModalLogo()" class="flat-btn w-full">
+                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save Nagad Modal Logo)
                             </button>
                         </div>
                     </div>
@@ -449,9 +518,21 @@
 
                     <!-- 7. Nav History Label -->
                     <div class="card">
-                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৭. বটম নেভিগেশন                     </div>
-                 </div>
-             </div>েশন ৫ - একাউন্ট বাটন টেক্সট</h4>
+                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৭. বটম নেভিগেশন ৪ - হিস্ট্রি / মাই অর্ডার টেক্সট</h4>
+                        <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
+                            <i class="fas fa-info-circle text-orange-400 mr-1"></i> ইউজার অ্যাপের একদম নিচে চতুর্থ বাটনটির নাম (যেমন: History / মাই অর্ডার)।
+                        </p>
+                        <div class="space-y-3">
+                            <input type="text" id="set-txt-nav-orders" class="flat-input" placeholder="History">
+                            <button onclick="saveIndividualSetting('navOrdersText', 'set-txt-nav-orders')" class="flat-btn w-full">
+                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save Orders Button Text)
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 8. Nav Account Label -->
+                    <div class="card">
+                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৮. বটম নেভিগেশন ৫ - একাউন্ট বাটন টেক্সট</h4>
                         <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
                             <i class="fas fa-info-circle text-orange-400 mr-1"></i> ইউজার অ্যাপের একদম নিচে পঞ্চম বাটনটির নাম (যেমন: Account / একাউন্ট)।
                         </p>
@@ -1303,12 +1384,77 @@
             db.collection('admin').doc('payment').get().then(doc => {
                 if(doc.exists) {
                     const d = doc.data();
-                    setVal('set-bkash-logo', d.bkash_modal_logo);
-                    setVal('set-nagad-logo', d.nagad_modal_logo);
-                    setVal('set-img-bkash-logo', d.bkash_modal_logo);
-                    setVal('set-img-nagad-logo', d.nagad_modal_logo);
-                    setVal('set-img-rocket-logo', d.rocket_modal_logo);
+                    const bkashGridLogo = d.bkash_grid_logo || d.bkash_modal_logo || '';
+                    const bkashGridSize = d.bkash_grid_logo_size || d.bkash_logo_size || 48;
+                    const nagadGridLogo = d.nagad_grid_logo || d.nagad_modal_logo || '';
+                    const nagadGridSize = d.nagad_grid_logo_size || d.nagad_logo_size || 48;
+
+                    setVal('set-bkash-logo', d.bkash_modal_logo || '');
+                    setVal('set-nagad-logo', d.nagad_modal_logo || '');
+                    setVal('set-img-bkash-logo', bkashGridLogo);
+                    setVal('set-img-bkash-size', bkashGridSize);
+                    setVal('set-img-nagad-logo', nagadGridLogo);
+                    setVal('set-img-nagad-size', nagadGridSize);
+                    setVal('set-img-bkash-modal-logo', d.bkash_modal_logo || '');
+                    setVal('set-img-nagad-modal-logo', d.nagad_modal_logo || '');
+                    setVal('set-img-rocket-logo', d.rocket_modal_logo || d.custom_method_logo || '');
                 }
+            }).catch(dbError);
+        }
+
+        function saveBkashLogoAndSize() {
+            if (!db) return;
+            const url = getVal('set-img-bkash-logo');
+            const sz = parseInt(getVal('set-img-bkash-size')) || 48;
+            showLoading();
+            db.collection('admin').doc('payment').set({
+                bkash_grid_logo: url,
+                bkash_grid_logo_size: sz,
+                bkash_logo_size: sz
+            }, { merge: true }).then(() => {
+                hideLoading();
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'বিকাশ হোম পেজ লোগো সেভ হয়েছে!', timer: 1500, showConfirmButton: false });
+            }).catch(dbError);
+        }
+
+        function saveNagadLogoAndSize() {
+            if (!db) return;
+            const url = getVal('set-img-nagad-logo');
+            const sz = parseInt(getVal('set-img-nagad-size')) || 48;
+            showLoading();
+            db.collection('admin').doc('payment').set({
+                nagad_grid_logo: url,
+                nagad_grid_logo_size: sz,
+                nagad_logo_size: sz
+            }, { merge: true }).then(() => {
+                hideLoading();
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'নগদ হোম পেজ লোগো সেভ হয়েছে!', timer: 1500, showConfirmButton: false });
+            }).catch(dbError);
+        }
+
+        function saveBkashModalLogo() {
+            if (!db) return;
+            const url = getVal('set-img-bkash-modal-logo');
+            showLoading();
+            db.collection('admin').doc('payment').set({
+                bkash_modal_logo: url
+            }, { merge: true }).then(() => {
+                setVal('set-bkash-logo', url);
+                hideLoading();
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'বিকাশ ভেরিফিকেশন পপ-আপ লোগো সেভ হয়েছে!', timer: 1500, showConfirmButton: false });
+            }).catch(dbError);
+        }
+
+        function saveNagadModalLogo() {
+            if (!db) return;
+            const url = getVal('set-img-nagad-modal-logo');
+            showLoading();
+            db.collection('admin').doc('payment').set({
+                nagad_modal_logo: url
+            }, { merge: true }).then(() => {
+                setVal('set-nagad-logo', url);
+                hideLoading();
+                Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'নগদ ভেরিফিকেশন পপ-আপ লোগো সেভ হয়েছে!', timer: 1500, showConfirmButton: false });
             }).catch(dbError);
         }
 
@@ -1368,9 +1514,13 @@
                     ruleTelegramUrl: getVal('set-rule-telegram-url')
                 }, {merge: true});
             } else if (type === 'payment') {
+                const bkLogo = getVal('set-bkash-logo');
+                const ngLogo = getVal('set-nagad-logo');
+                setVal('set-img-bkash-modal-logo', bkLogo);
+                setVal('set-img-nagad-modal-logo', ngLogo);
                 p1 = db.collection('admin').doc('payment').set({
-                    bkash_modal_logo: getVal('set-bkash-logo'),
-                    nagad_modal_logo: getVal('set-nagad-logo')
+                    bkash_modal_logo: bkLogo,
+                    nagad_modal_logo: ngLogo
                 }, {merge: true});
             } else if (type === 'advanced') {
                 const ap = document.getElementById('set-autopay');
@@ -1503,7 +1653,16 @@
             if(!name) { Swal.fire('Error', 'ক্যাটাগরি নাম লিখুন', 'error'); return; }
             showLoading();
             db.collection('categories').add({ name, slot, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-                .then(() => { setVal('cat-name', ''); setVal('cat-slot', ''); hideLoading(); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Category Added', timer:1500, showConfirmButton:false}); })
+                .then(() => { 
+                    setVal('cat-name', ''); setVal('cat-slot', ''); 
+                    hideLoading(); 
+                    
+                    const notifTitle = `🔥 ধামাকা ক্যাটাগরি যুক্ত করা হয়েছে!`;
+                    const notifMsg = `🔥 ${name} ক্যাটাগরি যুক্ত করা হয়েছে! দুর্দান্ত অফারে এখনই টপ আপ করুন।`;
+                    sendInstantStatusNotification(notifTitle, notifMsg, "all", "home", "logo.png");
+
+                    Swal.fire({toast:true, position:'top-end', icon:'success', title:'Category Added & Notification Sent', timer:2000, showConfirmButton:false}); 
+                })
                 .catch(dbError);
         }
 
@@ -1614,7 +1773,17 @@
             if(!name) { Swal.fire('Error', 'সার্ভিস নাম দিন', 'error'); return; }
             showLoading();
             db.collection('services').add({ name, image, categoryId: category, type: type || 'uid', rules, createdAt: firebase.firestore.FieldValue.serverTimestamp() })
-                .then(() => { setVal('srv-name', ''); setVal('srv-image', ''); setVal('srv-rules', ''); hideLoading(); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Service Added', timer:1500, showConfirmButton:false}); })
+                .then(() => { 
+                    setVal('srv-name', ''); setVal('srv-image', ''); setVal('srv-rules', ''); 
+                    hideLoading(); 
+
+                    const notifTitle = `🔥 ধামাকা ক্যাটাগরি যুক্ত করা হয়েছে!`;
+                    const notifMsg = `🔥 ${name} ক্যাটাগরি যুক্ত করা হয়েছে! দুর্দান্ত অফারে তাড়াতাড়ি টপ আপ করুন।`;
+                    const notifLogo = image || "logo.png";
+                    sendInstantStatusNotification(notifTitle, notifMsg, "all", "home", notifLogo);
+
+                    Swal.fire({toast:true, position:'top-end', icon:'success', title:'Service/Category Added & Notification Sent!', timer:2000, showConfirmButton:false}); 
+                })
                 .catch(dbError);
         }
 
