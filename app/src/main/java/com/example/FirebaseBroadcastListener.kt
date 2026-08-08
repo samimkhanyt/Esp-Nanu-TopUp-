@@ -6,20 +6,13 @@ import com.google.firebase.database.ChildEventListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 
 class FirebaseBroadcastListener(private val context: Context) {
 
     companion object {
         @Volatile
         private var isAlreadyListening = false
-        private val existingLiveKeys = mutableSetOf<String>()
-        private val existingBroadcastKeys = mutableSetOf<String>()
-        private var listenerStartTime = 0L
     }
-
-    private var isLiveFirstLoad = true
-    private var isBroadcastFirstLoad = true
 
     fun startListening() {
         if (isAlreadyListening) {
@@ -27,7 +20,6 @@ class FirebaseBroadcastListener(private val context: Context) {
             return
         }
         isAlreadyListening = true
-        listenerStartTime = System.currentTimeMillis()
 
         try {
             FirebaseInitHelper.ensureInitialized(context)
@@ -46,46 +38,8 @@ class FirebaseBroadcastListener(private val context: Context) {
             // 1. Listen to live_notifications path (Main Notification Channel from Admin)
             val liveRef = database.getReference("live_notifications")
 
-            // First load snapshot to pre-mark all existing notifications as processed
-            liveRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    try {
-                        for (child in snapshot.children) {
-                            val key = child.key ?: continue
-                            val uniqueKey = "live_$key"
-                            existingLiveKeys.add(key)
-                            existingLiveKeys.add(uniqueKey)
-                            val title = child.child("title").getValue(String::class.java) ?: ""
-                            val message = child.child("message").getValue(String::class.java)
-                                ?: child.child("body").getValue(String::class.java)
-                                ?: ""
-                            markNotificationAsProcessed(uniqueKey, title, message)
-                        }
-                    } catch (e: Exception) {
-                        Log.e("BroadcastListener", "Error pre-marking live notifications: ${e.message}")
-                    } finally {
-                        isLiveFirstLoad = false
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    isLiveFirstLoad = false
-                }
-            })
-
             liveRef.addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    val key = snapshot.key ?: ""
-                    if (isLiveFirstLoad || existingLiveKeys.contains(key) || existingLiveKeys.contains("live_$key")) {
-                        if (key.isNotEmpty()) {
-                            val title = snapshot.child("title").getValue(String::class.java) ?: ""
-                            val message = snapshot.child("message").getValue(String::class.java)
-                                ?: snapshot.child("body").getValue(String::class.java)
-                                ?: ""
-                            markNotificationAsProcessed("live_$key", title, message)
-                        }
-                        return
-                    }
                     processLiveNotification(snapshot)
                 }
 
@@ -103,47 +57,8 @@ class FirebaseBroadcastListener(private val context: Context) {
             // 2. Listen to notifications/broadcast path
             val broadcastRef = database.getReference("notifications/broadcast")
 
-            broadcastRef.addListenerForSingleValueEvent(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    try {
-                        for (child in snapshot.children) {
-                            val key = child.key ?: continue
-                            val uniqueKey = "bcast_$key"
-                            existingBroadcastKeys.add(key)
-                            existingBroadcastKeys.add(uniqueKey)
-                            val title = child.child("title").getValue(String::class.java)
-                                ?: child.child("name").getValue(String::class.java) ?: ""
-                            val body = child.child("body").getValue(String::class.java)
-                                ?: child.child("message").getValue(String::class.java)
-                                ?: child.child("text").getValue(String::class.java) ?: ""
-                            markNotificationAsProcessed(uniqueKey, title, body)
-                        }
-                    } catch (e: Exception) {
-                        Log.e("BroadcastListener", "Error pre-marking broadcast notifications: ${e.message}")
-                    } finally {
-                        isBroadcastFirstLoad = false
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {
-                    isBroadcastFirstLoad = false
-                }
-            })
-
             broadcastRef.addChildEventListener(object : ChildEventListener {
                 override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                    val key = snapshot.key ?: ""
-                    if (isBroadcastFirstLoad || existingBroadcastKeys.contains(key) || existingBroadcastKeys.contains("bcast_$key")) {
-                        if (key.isNotEmpty()) {
-                            val title = snapshot.child("title").getValue(String::class.java)
-                                ?: snapshot.child("name").getValue(String::class.java) ?: ""
-                            val body = snapshot.child("body").getValue(String::class.java)
-                                ?: snapshot.child("message").getValue(String::class.java)
-                                ?: snapshot.child("text").getValue(String::class.java) ?: ""
-                            markNotificationAsProcessed("bcast_$key", title, body)
-                        }
-                        return
-                    }
                     processDataSnapshot(snapshot)
                 }
 
@@ -163,19 +78,15 @@ class FirebaseBroadcastListener(private val context: Context) {
         }
     }
 
-    private fun isNotificationAlreadyProcessed(uniqueKey: String, title: String = "", body: String = ""): Boolean {
+    private fun isNotificationAlreadyProcessed(uniqueKey: String): Boolean {
         if (uniqueKey.isEmpty()) return false
         val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val rawList = prefs.getString("processed_notif_keys_str", "") ?: ""
         val keys = rawList.split(",").toSet()
-
-        if (keys.contains(uniqueKey)) return true
-        if (existingLiveKeys.contains(uniqueKey) || existingBroadcastKeys.contains(uniqueKey)) return true
-
-        return false
+        return keys.contains(uniqueKey)
     }
 
-    private fun markNotificationAsProcessed(uniqueKey: String, title: String = "", body: String = "") {
+    private fun markNotificationAsProcessed(uniqueKey: String) {
         if (uniqueKey.isEmpty()) return
         val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
         val rawList = prefs.getString("processed_notif_keys_str", "") ?: ""
@@ -195,6 +106,11 @@ class FirebaseBroadcastListener(private val context: Context) {
             val key = snapshot.key ?: ""
             if (key.isEmpty()) return
 
+            val uniqueKey = "live_$key"
+            if (isNotificationAlreadyProcessed(uniqueKey)) {
+                return
+            }
+
             val title = snapshot.child("title").getValue(String::class.java)
                 ?: snapshot.child("name").getValue(String::class.java)
                 ?: "Esp TopUp"
@@ -203,11 +119,7 @@ class FirebaseBroadcastListener(private val context: Context) {
                 ?: snapshot.child("text").getValue(String::class.java)
                 ?: ""
 
-            val uniqueKey = "live_$key"
-            if (isNotificationAlreadyProcessed(uniqueKey, title, message)) {
-                Log.d("BroadcastListener", "Live notification $uniqueKey already processed, skipping.")
-                return
-            }
+            if (message.isEmpty()) return
 
             val logoUrl = snapshot.child("logoUrl").getValue(String::class.java)
                 ?: snapshot.child("image").getValue(String::class.java)
@@ -220,17 +132,17 @@ class FirebaseBroadcastListener(private val context: Context) {
                 ?: snapshot.child("time").getValue(Long::class.java)
                 ?: 0L
 
-            if (message.isEmpty()) return
-
             val timestampMs = if (rawTime in 1..9999999999L) rawTime * 1000L else rawTime
             val currentTime = System.currentTimeMillis()
-            val isRecent = (timestampMs == 0L) || (Math.abs(currentTime - timestampMs) < 24 * 60 * 60 * 1000L)
+            // Accept notifications created within the last 6 hours or with 0 timestamp
+            val isRecent = (timestampMs == 0L) || (Math.abs(currentTime - timestampMs) < 6 * 60 * 60 * 1000L)
             val isTargetUser = (target == "all" || targetEmail.isEmpty() || targetEmail == "all" || isEmailForThisUser(targetEmail))
 
-            // Mark processed immediately so it's never processed again
-            markNotificationAsProcessed(uniqueKey, title, message)
+            // Mark processed immediately
+            markNotificationAsProcessed(uniqueKey)
 
             if (isRecent && isTargetUser) {
+                Log.d("BroadcastListener", "Showing notification for $uniqueKey: $title")
                 NotificationHelper.showNotification(
                     context = context,
                     title = title,
@@ -252,7 +164,6 @@ class FirebaseBroadcastListener(private val context: Context) {
             val savedEmail = prefs.getString("user_email", "")?.lowercase()?.trim() ?: ""
             val savedUid = prefs.getString("user_uid", "")?.lowercase()?.trim() ?: ""
 
-            // If user is NOT logged in in the app, specific targeted notifications MUST NOT match!
             if (savedEmail.isEmpty() && savedUid.isEmpty()) {
                 return false
             }
@@ -277,6 +188,11 @@ class FirebaseBroadcastListener(private val context: Context) {
             val key = snapshot.key ?: ""
             if (key.isEmpty()) return
 
+            val uniqueKey = "bcast_$key"
+            if (isNotificationAlreadyProcessed(uniqueKey)) {
+                return
+            }
+
             val title = snapshot.child("title").getValue(String::class.java)
                 ?: snapshot.child("name").getValue(String::class.java)
                 ?: "Esp TopUp"
@@ -287,20 +203,14 @@ class FirebaseBroadcastListener(private val context: Context) {
                 ?: snapshot.getValue(String::class.java)
                 ?: ""
 
-            val uniqueKey = "bcast_$key"
-            if (isNotificationAlreadyProcessed(uniqueKey, title, body)) {
-                Log.d("BroadcastListener", "Broadcast notification $uniqueKey already processed, skipping.")
-                return
-            }
+            if (body.isEmpty()) return
 
             val imageUrl = snapshot.child("image").getValue(String::class.java)
                 ?: snapshot.child("imageUrl").getValue(String::class.java)
                 ?: snapshot.child("logoUrl").getValue(String::class.java)
                 ?: NotificationHelper.DEFAULT_LOGO_URL
 
-            if (body.isEmpty()) return
-
-            markNotificationAsProcessed(uniqueKey, title, body)
+            markNotificationAsProcessed(uniqueKey)
 
             NotificationHelper.showNotification(
                 context = context,

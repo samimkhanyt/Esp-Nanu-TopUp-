@@ -72,6 +72,31 @@
             font-weight: 800;
         }
 
+        @keyframes colorCycleWa {
+            0% { background-color: #059669; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); transform: scale(1); }
+            50% { background-color: #10b981; box-shadow: 0 0 18px rgba(52, 211, 153, 0.95); transform: scale(1.02); }
+            100% { background-color: #047857; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); transform: scale(1); }
+        }
+        @keyframes colorCycleTg {
+            0% { background-color: #0284c7; box-shadow: 0 0 8px rgba(14, 165, 233, 0.6); transform: scale(1); }
+            50% { background-color: #38bdf8; box-shadow: 0 0 18px rgba(56, 189, 248, 0.95); transform: scale(1.02); }
+            100% { background-color: #0369a1; box-shadow: 0 0 8px rgba(14, 165, 233, 0.6); transform: scale(1); }
+        }
+        .animate-glow-emerald, .animate-glow-wa {
+            animation: colorCycleWa 2s infinite ease-in-out;
+        }
+        .animate-glow-sky, .animate-glow-tg {
+            animation: colorCycleTg 2s infinite ease-in-out;
+        }
+        @keyframes textShimmer {
+            0%, 100% { opacity: 0.9; transform: scale(0.99); }
+            50% { opacity: 1; transform: scale(1.03); }
+        }
+        .animate-text-shimmer {
+            display: inline-block;
+            animation: textShimmer 1.8s infinite ease-in-out;
+        }
+
         /* --- Fade Toast Notification --- */
         #custom-toast {
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
@@ -715,7 +740,7 @@
                 </button>
 
                 <div id="popup-img-container" class="w-full bg-slate-900 overflow-hidden hidden rounded-t-3xl">
-                    <img id="popup-img" src="" class="w-full h-auto object-cover max-h-[70vh] block mx-auto">
+                    <img id="popup-img" src="logo.png" class="w-full h-auto object-cover max-h-[70vh] block mx-auto">
                 </div>
 
                 <div id="popup-text-wrapper" class="w-full p-4 sm:p-6 flex flex-col items-start text-left space-y-2 hidden">
@@ -826,7 +851,7 @@
         </div>
 
         <!-- Referral & Earn Full-Screen Modal -->
-        <div id="refer-modal" class="fixed inset-0 bg-slate-50 z-[10010] hidden flex-col w-full h-full overflow-y-auto animate-fade-in">
+        <div id="refer-modal" class="fixed inset-0 bg-slate-50 z-[10020] hidden flex-col w-full h-full overflow-y-auto animate-fade-in">
             <!-- Header with Back Button -->
             <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-3.5 flex items-center justify-between sticky top-0 z-10 shadow-md">
                 <button onclick="closeReferralModal()" class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition active:scale-90">
@@ -1038,7 +1063,7 @@
 
         <section id="topup-sec" class="hidden animate-fade-in pb-10 bg-slate-50">
             <div class="bg-white p-3 rounded-xl shadow-sm flex items-center gap-4 mb-4 border border-gray-100 mx-2 mt-2">
-                <img id="topup-game-img" src="" class="w-16 h-16 rounded-xl object-cover shadow-sm">
+                <img id="topup-game-img" src="logo.png" class="w-16 h-16 rounded-xl object-cover shadow-sm">
                 <div>
                     <h3 class="font-bold text-gray-800 text-base" id="topup-game-title">Game Name</h3>
                     <p class="text-xs text-gray-700 font-medium" id="topup-sub-title">Game / Topup</p>
@@ -1228,40 +1253,75 @@
                 </div>
             </div>
 
-            <div id="am-step-2" class="hidden step-transition h-screen flex flex-col bg-[#f0f4f7]">
+            <div id="am-step-2" class="hidden step-transition min-h-screen flex flex-col bg-[#f0f4f7] overflow-y-auto pb-20">
                 <div class="bg-white p-3 flex items-center justify-between shadow-sm sticky top-0 z-10">
                     <button onclick="backToAmountStep()" class="text-gray-500 w-8 h-8 flex items-center justify-center">
                          <i class="fas fa-arrow-left text-lg"></i>
                     </button>
                     <div class="text-right">
-                        <img src="" id="step2-logo" class="h-8 object-contain inline-block">
+                        <img src="logo.png" id="step2-logo" class="h-8 object-contain inline-block">
                     </div>
                     <button onclick="showSec('home')" class="text-gray-400">
                         <i class="fas fa-times"></i>
                     </button>
                 </div>
 
-                <div class="flex-1 flex flex-col justify-center items-center px-6">
-                    <div class="bg-white rounded-full w-32 h-32 flex items-center justify-center shadow-sm border border-gray-100 mb-6 p-4">
-                        <img src="" id="step2-center-logo" class="w-full object-contain">
-                    </div>
-                    
-                    <h2 class="text-gray-600 font-medium mb-8 text-lg">Auto Pay</h2>
-
-                    <div id="mbanking-header" data-en="Mobile Banking" data-bn="মোবাইল ব্যাংকিং" class="w-full bg-[#003399] text-white py-2.5 text-center text-sm font-bold rounded-t-lg mb-0 shadow-md">
-                        মোবাইল ব্যাংকিং
-                    </div>
-                    
-                    <div id="payment-methods-grid" class="w-full grid grid-cols-2 gap-4 bg-white p-4 rounded-b-lg shadow-sm border border-gray-200 border-t-0">
-                        <button onclick="goToPaymentPage('bKash', 'theme-bkash', 'https://i.ibb.co.com/rGGYx0pq/download.png')" 
-                                class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-pink-500 hover:shadow-md transition h-16">
-                            <img src="https://i.ibb.co.com/rGGYx0pq/download.png" class="h-8 object-contain">
-                        </button>
+                <div class="flex-1 flex flex-col justify-between px-4 pt-4 pb-12 max-w-md mx-auto w-full">
+                    <div class="flex flex-col items-center space-y-4 w-full">
+                        <div class="bg-white rounded-full w-28 h-28 flex items-center justify-center shadow-md border-2 border-red-700 p-3">
+                            <img src="logo.png" id="step2-center-logo" class="w-full object-contain">
+                        </div>
                         
-                        <button onclick="goToPaymentPage('Nagad', 'theme-nagad', 'https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg')" 
-                                class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-orange-500 hover:shadow-md transition h-16">
-                            <img src="https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg" class="h-8 object-contain">
-                        </button>
+                        <h2 class="text-gray-600 font-medium text-lg">Auto Pay</h2>
+
+                        <div class="w-full">
+                            <div id="mbanking-header" data-en="Mobile Banking" data-bn="মোবাইল ব্যাংকিং" class="w-full bg-[#003399] text-white py-2.5 text-center text-sm font-bold rounded-t-lg mb-0 shadow-md">
+                                মোবাইল ব্যাংকিং
+                            </div>
+                            
+                            <div id="payment-methods-grid" class="w-full grid grid-cols-2 gap-4 bg-white p-4 rounded-b-lg shadow-sm border border-gray-200 border-t-0">
+                                <button onclick="goToPaymentPage('bKash', 'theme-bkash', 'https://i.ibb.co.com/rGGYx0pq/download.png')" 
+                                        class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-pink-500 hover:shadow-md transition h-16">
+                                    <img src="https://i.ibb.co.com/rGGYx0pq/download.png" class="h-8 object-contain">
+                                </button>
+                                
+                                <button onclick="goToPaymentPage('Nagad', 'theme-nagad', 'https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg')" 
+                                        class="bg-white border border-gray-200 rounded-lg p-2 flex items-center justify-center hover:border-orange-500 hover:shadow-md transition h-16">
+                                    <img src="https://i.ibb.co.com/fdvN0pYh/Nagad-Logo-full-498x700-copy.jpg" class="h-8 object-contain">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deposit Warning Rules Box (চূড়ান্ত রুলস - Pushed to the very end/bottom of the page) -->
+                    <div id="deposit-rules-box" class="w-full bg-white border border-gray-200 border-t-4 border-t-red-600 rounded-2xl p-4 shadow-md text-left space-y-3 relative overflow-hidden mt-16 mb-4">
+                        <div class="flex items-start gap-2.5">
+                            <div class="w-8 h-8 rounded-full bg-red-100 border border-red-300 flex items-center justify-center text-red-600 text-sm font-bold flex-shrink-0 mt-0.5 animate-pulse">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 id="deposit-rule-title" class="deposit-rule-title-el text-red-600 font-extrabold text-sm sm:text-base tracking-wide leading-snug">
+                                    চূড়ান্ত রুলস (এটা না মানলে আপনার আইডির সমস্যা হতে পারে)
+                                </h4>
+                                <p id="deposit-rule-msg" class="deposit-rule-msg-el text-xs sm:text-sm text-slate-800 font-semibold leading-relaxed mt-1.5 whitespace-pre-line">
+                                    বারবার যদি ট্রানজেকশন আইডি ভুল দিয়ে চেষ্টা করেন, তাহলে আপনার আইডি ব্যান হতে পারে বা আপনার আইডির সমস্যা হতে পারে।
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Animated Social Help Buttons -->
+                        <div class="pt-3 border-t border-gray-200 flex items-center gap-2.5">
+                            <a id="deposit-rule-wa-btn" href="#" target="_blank" onclick="openDepositRuleHelp('wa', event)" 
+                               class="flex-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:brightness-110 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition active:scale-95 animate-glow-wa">
+                                <i class="fab fa-whatsapp text-sm animate-bounce"></i>
+                                <span class="animate-text-shimmer">WhatsApp সাহায্য</span>
+                            </a>
+                            <a id="deposit-rule-tg-btn" href="#" target="_blank" onclick="openDepositRuleHelp('tg', event)" 
+                               class="flex-1 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 hover:brightness-110 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition active:scale-95 animate-glow-tg">
+                                <i class="fab fa-telegram-plane text-sm animate-bounce"></i>
+                                <span class="animate-text-shimmer">Telegram সাহায্য</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1281,13 +1341,13 @@
                 </div>
 
                 <div class="text-center py-6">
-                    <img id="pay-method-logo" src="" class="h-12 mx-auto object-contain drop-shadow-sm">
+                    <img id="pay-method-logo" src="logo.png" class="h-12 mx-auto object-contain drop-shadow-sm">
                 </div>
 
                 <div class="px-4">
                     <div class="bg-white rounded-xl p-4 flex items-center gap-4 mb-4 shadow-sm">
                         <div class="w-12 h-12 rounded-full border border-gray-100 p-1">
-                            <img id="pay-site-logo-small" src="" class="w-full h-full rounded-full object-cover">
+                            <img id="pay-site-logo-small" src="logo.png" class="w-full h-full rounded-full object-cover">
                         </div>
                         <div>
                             <p class="text-sm text-gray-800 font-bold">Auto Pay</p>
@@ -1419,15 +1479,14 @@
             </div>
 
             <div class="grid grid-cols-2 gap-3 px-4 mb-6">
-                <div class="bg-white py-3 px-2 rounded-2xl border-2 border-slate-900 text-center shadow-md flex flex-col items-center justify-center">
-                    <div class="flex items-center justify-center gap-1.5 w-full">
-                        <h3 class="text-sky-600 font-mono font-extrabold text-sm sm:text-base mb-0 select-all" id="acc-support-pin">...</h3>
-                        <button onclick="copySupportPin()" class="bg-sky-100 hover:bg-sky-200 text-sky-700 px-2 py-1 rounded-lg text-[10px] font-extrabold transition active:scale-95 flex items-center gap-1 shadow-sm flex-shrink-0" title="কপি করুন">
+                <div class="bg-white py-3 px-2 rounded-2xl border-2 border-slate-900 text-center shadow-md flex flex-col items-center justify-center relative">
+                    <div class="flex items-center gap-1.5 justify-center">
+                        <h3 class="text-sky-600 font-extrabold text-sm tracking-wide font-mono" id="acc-support-pin">ESP-000000</h3>
+                        <button onclick="copySupportPin()" title="Copy Support PIN" class="text-slate-500 hover:text-sky-600 p-1 active:scale-95 transition">
                             <i class="far fa-copy text-xs"></i>
-                            <span>কপি</span>
                         </button>
                     </div>
-                    <p class="text-slate-800 font-extrabold text-[11px] mt-1">Support Pin</p>
+                    <p class="text-slate-800 font-bold text-[11px] mt-0.5">Support Pin</p>
                 </div>
                 
                 <div class="bg-white py-3.5 px-2 rounded-2xl border-2 border-slate-900 text-center shadow-md">
@@ -1568,85 +1627,62 @@
     </div>
 
     <!-- Full-Screen Balance Transfer Page -->
-    <div id="balance-transfer-modal" class="fixed inset-0 bg-slate-100 z-[10010] hidden flex-col overflow-y-auto animate-fade-in">
-        <div class="bg-gradient-to-r from-emerald-800 to-teal-900 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-between">
-            <button onclick="closeBalanceTransferModal()" class="w-10 h-10 rounded-full bg-emerald-900/80 border border-emerald-700 flex items-center justify-center text-white hover:bg-emerald-800 active:scale-95 transition">
+    <div id="balance-transfer-modal" class="fixed inset-0 bg-slate-100 z-[10020] hidden flex-col w-full h-full overflow-y-auto animate-fade-in">
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-between">
+            <button onclick="closeBalanceTransferModal()" class="w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white hover:bg-white/30 active:scale-95 transition">
                 <i class="fas fa-arrow-left text-base"></i>
             </button>
-            <h2 class="text-lg font-extrabold tracking-wide text-amber-300 flex items-center gap-2">
-                <i class="fas fa-exchange-alt text-emerald-300"></i> ব্যালেন্স ট্রান্সফার (Transfer)
+            <h2 class="text-base font-extrabold tracking-wide text-white flex items-center gap-2">
+                <i class="fas fa-exchange-alt"></i> ব্যালেন্স ট্রান্সফার (Transfer)
             </h2>
             <div class="w-10"></div>
         </div>
 
-        <div class="p-4 max-w-md mx-auto w-full space-y-4 my-2">
-            <!-- Rules Card -->
-            <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-4 text-xs text-amber-900 shadow-sm space-y-1.5">
-                <p class="flex items-center gap-2 font-extrabold text-amber-900 text-sm">
-                    <i class="fas fa-exclamation-triangle text-amber-600 text-base"></i> সতর্কতা ও নিয়মাবলী:
-                </p>
-                <p class="text-xs leading-relaxed text-slate-700 font-medium">
-                    • সাপোর্ট পিন দিয়ে ২৪ ঘণ্টায় <span class="font-extrabold text-red-600">১ বার</span> ব্যালেন্স ট্রান্সফার করা যাবে।
-                </p>
-                <p class="text-xs leading-relaxed text-slate-700 font-medium">
-                    • সঠিক সাপোর্ট পিন বসিয়ে ট্রান্সফার নিশ্চিত করলে সাথে সাথে প্রাপকের একাউন্টে টাকা জমা হয়ে যাবে।
-                </p>
-            </div>
+        <div class="p-4 max-w-md mx-auto w-full space-y-4 my-2 flex-1 pb-12">
+            <div class="bg-white rounded-3xl p-5 border-2 border-slate-900 shadow-lg space-y-4">
+                <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3.5 text-xs text-amber-900 font-semibold space-y-1">
+                    <p class="flex items-center gap-1.5 font-bold text-amber-900 text-sm">
+                        <i class="fas fa-exclamation-triangle text-amber-600"></i> সতর্কতা ও নিয়মাবলী:
+                    </p>
+                    <p class="text-xs leading-relaxed text-slate-700 font-bold">
+                        • সাপোর্ট পিন দিয়ে ২৪ ঘণ্টায় <span class="font-bold text-red-600">১ বার</span> ব্যালেন্স ট্রান্সফার করা যাবে।
+                    </p>
+                </div>
 
-            <!-- Current Balance & My Pin Card -->
-            <div class="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-md flex items-center justify-between text-xs">
-                <div>
-                    <p class="text-slate-500 font-extrabold text-xs mb-1">আপনার বর্তমান ব্যালেন্স:</p>
-                    <p class="text-emerald-600 font-black text-xl">৳<span id="transfer-current-balance">0</span></p>
+                <div class="bg-slate-50 border-2 border-slate-900 rounded-2xl p-4 flex items-center justify-between text-xs shadow-sm">
+                    <div>
+                        <p class="text-slate-500 font-bold text-[11px]">আপনার বর্তমান ব্যালেন্স:</p>
+                        <p class="text-emerald-600 font-extrabold text-lg">৳<span id="transfer-current-balance">0</span></p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-slate-500 font-bold text-[11px]">আপনার সাপোর্ট পিন:</p>
+                        <p class="text-sky-600 font-mono font-extrabold text-sm flex items-center justify-end gap-1.5 cursor-pointer hover:text-sky-800 transition" onclick="copySupportPin()" title="কপি করুন">
+                            <span id="transfer-my-pin">...</span>
+                            <i class="far fa-copy text-xs"></i>
+                        </p>
+                    </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-slate-500 font-extrabold text-xs mb-1">আপনার সাপোর্ট পিন:</p>
-                    <button onclick="copySupportPin()" class="bg-sky-50 border border-sky-300 text-sky-700 px-3 py-1.5 rounded-xl font-mono font-black text-sm flex items-center gap-1.5 hover:bg-sky-100 transition active:scale-95 shadow-sm">
-                        <span id="transfer-my-pin">...</span>
-                        <i class="far fa-copy text-xs"></i>
-                    </button>
-                </div>
-            </div>
 
-            <!-- Receiver Pin Input -->
-            <div class="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-md text-left space-y-1">
-                <label class="block text-xs font-black text-slate-800 mb-1">প্রাপকের সাপোর্ট পিন (Receiver's Support PIN)</label>
-                <div class="relative">
-                    <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: ESP-123456" class="w-full bg-slate-50 border-2 border-slate-300 focus:border-emerald-500 rounded-2xl py-3 px-4 font-mono font-bold text-slate-800 text-sm uppercase outline-none transition">
+                <div class="text-left">
+                    <label class="block text-xs font-extrabold text-slate-800 mb-1.5 ml-1">প্রাপকের সাপোর্ট পিন (Receiver's Support PIN)</label>
+                    <div class="relative">
+                        <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: ESP-123456" class="w-full bg-slate-50 border-2 border-slate-900 focus:border-emerald-500 rounded-2xl py-3 px-4 font-mono font-bold text-slate-800 text-base uppercase outline-none transition shadow-sm">
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1 ml-1 font-semibold">প্রাপকের অ্যাকাউন্ট বা প্রোফাইলে থাকা সাপোর্ট পিনটি লিখুন।</p>
                 </div>
-                <p class="text-[11px] text-slate-500 font-semibold mt-1">প্রাপকের অ্যাকাউন্ট বা প্রোফাইলে থাকা সাপোর্ট পিনটি লিখুন বা পেস্ট করুন।</p>
-            </div>
 
-            <!-- Amount Input -->
-            <div class="bg-white border-2 border-slate-900 rounded-2xl p-4 shadow-md text-left space-y-1">
-                <label class="block text-xs font-black text-slate-800 mb-1">ট্রান্সফারের পরিমাণ (Amount ৳)</label>
-                <div class="relative">
-                    <span class="absolute left-4 top-3 text-slate-400 font-bold text-base">৳</span>
-                    <input id="transfer-amount-input" type="number" min="1" placeholder="যেমন: 50" class="w-full bg-slate-50 border-2 border-slate-300 focus:border-emerald-500 rounded-2xl py-3 pl-8 pr-4 font-bold text-slate-800 text-base outline-none transition">
+                <div class="text-left">
+                    <label class="block text-xs font-extrabold text-slate-800 mb-1.5 ml-1">ট্রান্সফারের পরিমাণ (Amount ৳)</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-3 text-slate-500 font-bold text-base">৳</span>
+                        <input id="transfer-amount-input" type="number" min="1" placeholder="যেমন: 50" class="w-full bg-slate-50 border-2 border-slate-900 focus:border-emerald-500 rounded-2xl py-3 pl-9 pr-4 font-bold text-slate-800 text-base outline-none transition shadow-sm">
+                    </div>
+                    <p class="text-[11px] text-slate-500 mt-1 ml-1 font-semibold">সর্বনিম্ন ১ টাকা সেন্ড করা যাবে।</p>
                 </div>
-                <p class="text-[11px] text-slate-500 font-semibold mt-1">সর্বনিম্ন ১ টাকা সেন্ড করা যাবে।</p>
-            </div>
 
-            <!-- Send Button -->
-            <button onclick="executeBalanceTransfer()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-black text-base py-3.5 rounded-2xl shadow-lg border-2 border-slate-900 flex items-center justify-center gap-2 active:scale-95 transition">
-                <i class="fas fa-paper-plane"></i>
-                <span>ব্যালেন্স ট্রান্সফার করুন</span>
-            </button>
-
-            <!-- Transfer History Section -->
-            <div class="mt-6 pt-4 border-t-2 border-slate-200 text-left">
-                <div class="flex items-center justify-between mb-3">
-                    <h3 class="font-extrabold text-slate-800 text-sm flex items-center gap-2">
-                        <i class="fas fa-history text-emerald-600"></i>
-                        <span>ট্রান্সফার হিস্ট্রি (Transfer History)</span>
-                    </h3>
-                    <button onclick="loadUserTransferHistory()" class="text-xs font-bold text-sky-600 hover:text-sky-700 flex items-center gap-1">
-                        <i class="fas fa-sync-alt"></i> রিফ্রেশ
-                    </button>
-                </div>
-                <div id="transfer-history-list" class="space-y-3">
-                    <div class="p-4 text-center text-slate-400 text-xs font-semibold">হিস্ট্রি লোড হচ্ছে...</div>
-                </div>
+                <button onclick="executeBalanceTransfer()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-base shadow-lg shadow-emerald-600/30 active:scale-95 transition flex items-center justify-center gap-2 border-2 border-slate-900">
+                    <i class="fas fa-paper-plane"></i> ব্যালেন্স ট্রান্সফার করুন
+                </button>
             </div>
         </div>
     </div>
@@ -1704,34 +1740,6 @@
     </nav>
 </div>
 
-<!-- TRANSFER RECEIPT MODAL -->
-<div id="transfer-receipt-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[10002] hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl border-2 border-slate-900 overflow-hidden relative animate-fade-in my-auto">
-        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-5 text-center relative">
-            <button onclick="closeTransferReceiptModal()" class="absolute top-3 right-3 w-8 h-8 bg-black/20 hover:bg-black/40 text-white rounded-full flex items-center justify-center transition">
-                <i class="fas fa-times text-sm"></i>
-            </button>
-            <div class="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-2 text-2xl text-white shadow-inner">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h3 class="font-extrabold text-lg tracking-wide">ট্রান্সফার মানি রসিদ</h3>
-            <p class="text-xs text-emerald-100 font-semibold mt-0.5">Esp TopUp Balance Transfer Receipt</p>
-        </div>
-        <div class="p-5 space-y-3 bg-slate-50 text-left" id="receipt-card-content">
-            <!-- Dynamic Receipt Data -->
-        </div>
-        <div class="p-4 bg-white border-t border-slate-200 flex flex-col gap-2">
-            <button onclick="shareCurrentReceipt()" class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-3 rounded-2xl shadow-md border border-emerald-800 flex items-center justify-center gap-2 active:scale-95 transition text-sm">
-                <i class="fas fa-share-alt"></i>
-                <span>শেয়ার রসিদ (WhatsApp / Imo / Share)</span>
-            </button>
-            <button onclick="closeTransferReceiptModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 rounded-2xl border border-slate-300 text-xs transition">
-                বন্ধ করুন
-            </button>
-        </div>
-    </div>
-</div>
-
 <div id="verify-status-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden transition-opacity duration-300">
     <div onclick="event.stopPropagation()" class="bg-white rounded-3xl p-6 shadow-2xl max-w-xs w-full text-center relative border border-gray-100 flex flex-col items-center justify-center animate-fade-in">
         <div class="w-24 h-24 bg-white border-2 border-slate-900 rounded-2xl shadow-xl flex items-center justify-center p-2.5 overflow-hidden mb-4 aspect-square">
@@ -1743,7 +1751,7 @@
     </div>
 </div>
 
-<div id="user-deposit-history-modal" class="fixed inset-0 bg-white z-[10010] flex flex-col hidden transition-all duration-300">
+<div id="user-deposit-history-modal" class="fixed inset-0 bg-white z-[10020] flex flex-col hidden transition-all duration-300">
     <div class="bg-white w-full h-full overflow-hidden flex flex-col animate-fade-in">
         <div class="p-4 bg-gradient-to-r from-sky-500 to-blue-600 text-white flex items-center justify-between shadow-md">
             <div class="flex items-center gap-3">
@@ -2008,16 +2016,13 @@ let activeHistoryListener = null;
 let activeStatsListener = null;
 let activePaymentMethodListener = null;
 
-// Loader visibility is controlled by checkAndHideLoader() and updateNetworkStatus()
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        if (navigator.onLine) {
-            isSliderLoaded = true;
-            isCategoriesLoaded = true;
-            checkAndHideLoader();
-        }
-    }, 5000);
-});
+// Loader visibility is controlled by checkAndHideLoader() and forceHideGlobalLoader()
+// Safeguard timer in case data or network is slow/empty
+setTimeout(() => {
+    isSliderLoaded = true;
+    isCategoriesLoaded = true;
+    checkAndHideLoader();
+}, 7000);
 
 function trackImagesLoading(containerElement, callback) {
     const images = containerElement.querySelectorAll('img');
@@ -2164,6 +2169,19 @@ function loadGlobalSettings() {
                     : "কোন সমস্যায় পড়লে Telegram এ যোগাযোগ করবেন। তাহলে দ্রুত সমাধান পেয়ে যাবেন।";
             }
 
+            // Deposit Warning Rules Box Updates
+            document.querySelectorAll('.deposit-rule-title-el, #deposit-rule-title').forEach(el => {
+                if (data.ruleBoxTitle) el.innerText = data.ruleBoxTitle;
+            });
+            document.querySelectorAll('.deposit-rule-msg-el, #deposit-rule-msg').forEach(el => {
+                if (data.ruleBoxMsg) el.innerText = data.ruleBoxMsg;
+            });
+            if (data.ruleWhatsappUrl) currentRuleWaUrl = data.ruleWhatsappUrl;
+            else if (data.whatsapp) currentRuleWaUrl = data.whatsapp;
+
+            if (data.ruleTelegramUrl) currentRuleTgUrl = data.ruleTelegramUrl;
+            else if (data.telegram) currentRuleTgUrl = data.telegram;
+
             document.title = siteName;
 
             const noticeEl = document.getElementById('notice-text');
@@ -2246,26 +2264,7 @@ function showLaunchPopup(data) {
         imgContainer.classList.add('hidden');
     }
 
-    if (modal) {
-        modal.classList.remove('hidden');
-        const cardEl = modal.querySelector('div');
-        if (cardEl) {
-            if (data.launchPopupWidth) {
-                const w = data.launchPopupWidth.toString().trim();
-                cardEl.style.maxWidth = (w.endsWith('px') || w.endsWith('%') || w.endsWith('rem') || w.endsWith('vw')) ? w : (w + 'px');
-            } else {
-                cardEl.style.maxWidth = '';
-            }
-        }
-        if (imgEl) {
-            if (data.launchPopupHeight) {
-                const h = data.launchPopupHeight.toString().trim();
-                imgEl.style.maxHeight = (h.endsWith('px') || h.endsWith('%') || h.endsWith('rem') || h.endsWith('vh')) ? h : (h + 'px');
-            } else {
-                imgEl.style.maxHeight = '70vh';
-            }
-        }
-    }
+    if (modal) modal.classList.remove('hidden');
 }
 
 function closeLaunchPopup() {
@@ -3223,16 +3222,13 @@ function loadUserData(uid) {
             if(accUserNameInfoEl) accUserNameInfoEl.innerText = userName;
             if(accBalEl) accBalEl.innerText = userBalance;
             if(accBalCardEl) accBalCardEl.innerText = userBalance.toFixed(2);
-            
-            let supportPin = data.supportPin;
-            if (!supportPin) {
-                supportPin = "ESP-" + uid.substring(0, 6).toUpperCase();
-                db.collection('users').doc(uid).update({ supportPin: supportPin }).catch(()=>{});
-            } else if (!supportPin.startsWith('ESP-')) {
-                supportPin = 'ESP-' + supportPin;
-                db.collection('users').doc(uid).update({ supportPin: supportPin }).catch(()=>{});
+            const permanentSupportPin = (data && data.supportPin) ? data.supportPin : ("ESP-" + uid.substring(0, 6).toUpperCase());
+            if(accPinEl) accPinEl.innerText = permanentSupportPin;
+            const transferMyPinEl = document.getElementById('transfer-my-pin');
+            if(transferMyPinEl) transferMyPinEl.innerText = permanentSupportPin;
+            if (data && !data.supportPin) {
+                db.collection('users').doc(uid).update({ supportPin: permanentSupportPin }).catch(() => {});
             }
-            if(accPinEl) accPinEl.innerText = supportPin;
         }
     });
 }
@@ -3683,7 +3679,7 @@ function loadTutorials() {
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-all duration-300 group">
                     <div class="relative cursor-pointer" onclick="openExternalLink('${data.link}')">
                         <div class="aspect-video bg-gray-100 overflow-hidden">
-                            <img src="${data.thumbnail}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <img src="${data.thumbnail || 'logo.png'}" onerror="this.onerror=null;this.src='logo.png'" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
                         </div>
                         <div class="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                             <div class="bg-white/90 backdrop-blur-sm rounded-full w-14 h-14 flex items-center justify-center shadow-lg">
@@ -4533,7 +4529,8 @@ function renderCustomSlider(banners) {
         const slide = document.createElement('div');
         slide.className = "custom-slide";
         slide.onclick = () => { if (b.link && b.link !== '#') openExternalLink(b.link); };
-        slide.innerHTML = `<img src="${b.image}">`;
+        const bannerImg = (b && b.image && b.image !== 'undefined') ? b.image : 'logo.png';
+        slide.innerHTML = `<img src="${bannerImg}" onerror="this.onerror=null;this.src='logo.png'">`;
         wrapper.appendChild(slide);
 
         if (progressContainer) {
@@ -4551,10 +4548,20 @@ function initSliderWithReset(totalSlides) {
     const wrapper = document.getElementById('custom-slider-wrapper');
     if (!wrapper || totalSlides <= 1) return;
 
+    let slideDirection = 1; // 1 = forward, -1 = reverse
+
     function slideTo(index) {
-        if (index >= totalSlides) currentSlideIndex = 0;
-        else if (index < 0) currentSlideIndex = totalSlides - 1;
-        else currentSlideIndex = index;
+        if (index >= totalSlides) {
+            slideDirection = -1;
+            currentSlideIndex = totalSlides - 2;
+            if (currentSlideIndex < 0) currentSlideIndex = 0;
+        } else if (index < 0) {
+            slideDirection = 1;
+            currentSlideIndex = 1;
+            if (currentSlideIndex >= totalSlides) currentSlideIndex = 0;
+        } else {
+            currentSlideIndex = index;
+        }
 
         wrapper.style.transition = "transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)";
         wrapper.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
@@ -4568,39 +4575,82 @@ function initSliderWithReset(totalSlides) {
     function startAutoPlay() {
         stopAutoPlay();
         sliderTimer = setInterval(() => {
-            slideTo(currentSlideIndex + 1);
+            slideTo(currentSlideIndex + slideDirection);
         }, 4000);
     }
 
     function stopAutoPlay() {
-        if (sliderTimer) clearInterval(sliderTimer);
+        if (sliderTimer) {
+            clearInterval(sliderTimer);
+            sliderTimer = null;
+        }
+    }
+
+    function handleDragEnd() {
+        if (!isDragging) return;
+        isDragging = false;
+        if (startX && moveX) {
+            const diff = startX - moveX;
+            if (Math.abs(diff) > 40) {
+                if (diff > 0) {
+                    slideDirection = 1;
+                    slideTo(currentSlideIndex + 1);
+                } else {
+                    slideDirection = -1;
+                    slideTo(currentSlideIndex - 1);
+                }
+            } else {
+                slideTo(currentSlideIndex);
+            }
+        } else {
+            slideTo(currentSlideIndex);
+        }
+        startX = null; moveX = null;
+        startAutoPlay();
     }
 
     wrapper.addEventListener('touchstart', (e) => {
         stopAutoPlay();
         isDragging = true;
         startX = e.touches[0].clientX;
+        moveX = startX;
         wrapper.style.transition = "none";
-    });
+    }, { passive: true });
 
     wrapper.addEventListener('touchmove', (e) => {
         if (!isDragging) return;
         moveX = e.touches[0].clientX;
+        const diff = startX - moveX;
+        if (wrapper.clientWidth > 0) {
+            const currentOffset = -currentSlideIndex * wrapper.clientWidth - diff;
+            wrapper.style.transform = `translateX(${currentOffset}px)`;
+        }
+    }, { passive: true });
+
+    wrapper.addEventListener('touchend', handleDragEnd);
+    wrapper.addEventListener('touchcancel', handleDragEnd);
+
+    wrapper.addEventListener('mousedown', (e) => {
+        stopAutoPlay();
+        isDragging = true;
+        startX = e.clientX;
+        moveX = startX;
+        wrapper.style.transition = "none";
     });
 
-    wrapper.addEventListener('touchend', () => {
-        isDragging = false;
-        if (startX && moveX) {
-            const diff = startX - moveX;
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) slideTo(currentSlideIndex + 1);
-                else slideTo(currentSlideIndex - 1);
-            } else {
-                slideTo(currentSlideIndex);
-            }
+    wrapper.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        moveX = e.clientX;
+        const diff = startX - moveX;
+        if (wrapper.clientWidth > 0) {
+            const currentOffset = -currentSlideIndex * wrapper.clientWidth - diff;
+            wrapper.style.transform = `translateX(${currentOffset}px)`;
         }
-        startX = null; moveX = null;
-        startAutoPlay();
+    });
+
+    wrapper.addEventListener('mouseup', handleDragEnd);
+    wrapper.addEventListener('mouseleave', () => {
+        if (isDragging) handleDragEnd();
     });
 
     startAutoPlay();
@@ -4677,28 +4727,92 @@ function renderPaymentMethodsGrid() {
     grid.innerHTML = html;
 }
 
+let currentRuleWaUrl = "";
+let currentRuleTgUrl = "";
+
+function openDepositRuleHelp(type, e) {
+    if (e) e.preventDefault();
+    let url = type === 'wa' ? currentRuleWaUrl : currentRuleTgUrl;
+    if (!url || url.trim().length === 0) {
+        url = type === 'wa' ? (window.globalWhatsappUrl || "") : (window.globalTelegramUrl || "");
+    }
+    if (url && url.trim().length > 0) {
+        let cleanUrl = url.trim();
+        if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://') && !cleanUrl.startsWith('whatsapp://') && !cleanUrl.startsWith('https://wa.me/')) {
+            if (type === 'wa' && !cleanUrl.includes('/')) {
+                cleanUrl = 'https://wa.me/' + cleanUrl.replace(/[^0-9]/g, '');
+            } else {
+                cleanUrl = 'https://' + cleanUrl;
+            }
+        }
+        if (window.AndroidApp && typeof window.AndroidApp.openSocialLink === 'function') {
+            window.AndroidApp.openSocialLink(cleanUrl);
+        } else {
+            window.open(cleanUrl, '_blank');
+        }
+    } else {
+        showCustomToast("লিংক সেট করা হয়নি!");
+    }
+}
+
 function pasteTrxCode() {
+    let nativeText = "";
+    try {
+        if (window.AndroidApp && typeof window.AndroidApp.getClipboardText === 'function') {
+            nativeText = window.AndroidApp.getClipboardText();
+        }
+    } catch(e) {}
+
+    if (nativeText && nativeText.trim().length > 0) {
+        const input = document.getElementById('pay-trx-input');
+        if (input) {
+            input.value = nativeText.trim().toUpperCase();
+            showCustomToast("পেস্ট করা হয়েছে");
+        }
+        return;
+    }
+
     try {
         if (navigator.clipboard && navigator.clipboard.readText) {
             navigator.clipboard.readText().then(text => {
-                if (text) {
+                if (text && text.trim().length > 0) {
                     const input = document.getElementById('pay-trx-input');
                     if (input) {
                         input.value = text.trim().toUpperCase();
                         showCustomToast("পেস্ট করা হয়েছে");
                     }
                 } else {
-                    showCustomToast("ক্লিপবোর্ডে কিছু নেই");
+                    fallbackPastePrompt();
                 }
             }).catch(() => {
-                showCustomToast("পেস্ট করার অনুমতি দিন");
+                fallbackPastePrompt();
             });
         } else {
-            showCustomToast("পেস্ট করার সুবিধা উপলব্ধ নয়");
+            fallbackPastePrompt();
         }
     } catch (e) {
-        showCustomToast("পেস্ট করতে সমস্যা হয়েছে");
+        fallbackPastePrompt();
     }
+}
+
+function fallbackPastePrompt() {
+    Swal.fire({
+        title: 'ট্রানজেকশন আইডি পেস্ট করুন',
+        input: 'text',
+        inputPlaceholder: 'ট্রানজেকশন আইডি লিখুন বা পেস্ট করুন...',
+        showCancelButton: true,
+        confirmButtonText: 'পেস্ট করুন',
+        cancelButtonText: 'বাতিল',
+        confirmButtonColor: '#3085d6'
+    }).then(res => {
+        if (res.isConfirmed && res.value) {
+            const input = document.getElementById('pay-trx-input');
+            if (input) {
+                input.value = res.value.trim().toUpperCase();
+                showCustomToast("পেস্ট করা হয়েছে");
+            }
+        }
+    });
 }
 
 function goToPaymentPage(method, themeClass, logoUrl) {
@@ -5054,8 +5168,8 @@ function showUserDepositHistoryModal() {
         modal.classList.remove('hidden');
         modal.style.display = 'flex';
         try {
-            if (!history.state || history.state.modal !== 'user_deposit_history') {
-                history.pushState({ modal: 'user_deposit_history' }, '', '#deposit_history');
+            if (!history.state || history.state.modal !== 'deposit_history') {
+                history.pushState({ modal: 'deposit_history' }, '', '#dep_history');
             }
         } catch(e) {}
     }
@@ -5067,7 +5181,7 @@ function hideUserDepositHistoryModal(fromBackButton = false) {
     if (modal) {
         modal.classList.add('hidden');
         modal.style.display = 'none';
-        if (!fromBackButton && history.state && history.state.modal === 'user_deposit_history') {
+        if (!fromBackButton && history.state && history.state.modal === 'deposit_history') {
             try { history.back(); } catch(e) {}
         }
     }
@@ -5076,7 +5190,7 @@ function hideUserDepositHistoryModal(fromBackButton = false) {
 function loadUserDepositHistory() {
     const container = document.getElementById('user-deposit-history-list');
     if (!container) return;
-    container.innerHTML = '<div class="text-center py-8 text-slate-500 font-bold text-xs"><i class="fas fa-spinner animate-spin text-lg mr-1 text-sky-600"></i> লোড হচ্ছে...</div>';
+    container.innerHTML = '<div class="text-center py-8 text-slate-500 font-bold text-xs"><i class="fas fa-spinner animate-spin text-lg text-sky-600"></i></div>';
 
     if (!currentUser || !currentUser.uid) {
         container.innerHTML = '<div class="text-center py-8 text-slate-500 font-bold text-xs">কোনো ডিপোজিট তথ্য পাওয়া যায়নি</div>';
@@ -5280,50 +5394,54 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 let isOnline = navigator.onLine;
-let offlineExitTimer = null;
 
-function updateNetworkStatus(online) {
-    isOnline = online;
+function showOfflineLoader() {
+    const loader = document.getElementById('global-page-loader');
     const statusBox = document.getElementById('net-status-box');
     const statusText = document.getElementById('net-status-text');
     const statusIcon = document.getElementById('net-status-icon');
-    const loader = document.getElementById('global-page-loader');
 
-    if (!statusBox) return;
+    if (loader) {
+        loader.classList.remove('fade-out', 'hidden');
+        loader.style.display = 'flex';
+        loader.style.opacity = '1';
+        loader.style.pointerEvents = 'auto';
+    }
 
-    if (!isOnline) {
-        if (loader) {
-            loader.classList.remove('hidden', 'fade-out');
-            loader.style.display = 'flex';
-            loader.style.opacity = '1';
-        }
+    if (statusBox) {
         statusBox.classList.remove('hidden', 'online');
         statusBox.classList.add('offline');
-        statusIcon.innerHTML = `<i class="fas fa-wifi-slash"></i>`;
-        statusText.innerText = "Internet Connect";
+        if (statusIcon) statusIcon.innerHTML = `<i class="fas fa-wifi-slash"></i>`;
+        if (statusText) statusText.innerText = "No Internet Connection. Please check your network connection.";
+    }
+}
 
-        if (!offlineExitTimer) {
-            offlineExitTimer = setTimeout(() => {
-                if (!navigator.onLine) {
-                    if (window.Android && typeof window.Android.exitApp === 'function') {
-                        window.Android.exitApp();
-                    }
-                }
-            }, 4000);
-        }
-    } else {
-        if (offlineExitTimer) {
-            clearTimeout(offlineExitTimer);
-            offlineExitTimer = null;
-        }
+function showOnlineLoader() {
+    const statusBox = document.getElementById('net-status-box');
+    const statusText = document.getElementById('net-status-text');
+    const statusIcon = document.getElementById('net-status-icon');
+
+    if (statusBox) {
         statusBox.classList.remove('hidden', 'offline');
         statusBox.classList.add('online');
-        statusIcon.innerHTML = `<i class="fas fa-check-circle"></i>`;
-        statusText.innerText = "Internet Success";
+        if (statusIcon) statusIcon.innerHTML = `<i class="fas fa-check-circle"></i>`;
+        if (statusText) statusText.innerText = "Internet Connected";
 
         setTimeout(() => {
+            statusBox.classList.add('hidden');
             checkAndHideLoader();
         }, 1200);
+    } else {
+        checkAndHideLoader();
+    }
+}
+
+function updateNetworkStatus(online) {
+    isOnline = online;
+    if (!isOnline) {
+        showOfflineLoader();
+    } else {
+        showOnlineLoader();
     }
 }
 
@@ -5332,29 +5450,40 @@ window.addEventListener('offline', () => updateNetworkStatus(false));
 
 document.addEventListener("DOMContentLoaded", () => {
     if (!navigator.onLine) {
-        updateNetworkStatus(false);
+        showOfflineLoader();
+    } else {
+        checkAndHideLoader();
     }
 });
 
-function checkAndHideLoader() {
+function forceHideGlobalLoader() {
     if (!navigator.onLine) {
-        updateNetworkStatus(false);
+        showOfflineLoader();
         return;
     }
+    const loader = document.getElementById('global-page-loader');
+    if (loader) {
+        loader.classList.add('fade-out');
+        loader.style.opacity = '0';
+        loader.style.pointerEvents = 'none';
+        setTimeout(() => { 
+            loader.style.display = 'none'; 
+            loader.classList.add('hidden');
+        }, 300);
+    }
+    if (window.pendingPopupData) {
+        showLaunchPopup(window.pendingPopupData);
+        window.pendingPopupData = null;
+    }
+}
 
+function checkAndHideLoader() {
+    if (!navigator.onLine) {
+        showOfflineLoader();
+        return;
+    }
     if (isSliderLoaded && isCategoriesLoaded) {
-        const loader = document.getElementById('global-page-loader');
-        if (loader && !loader.classList.contains('fade-out')) {
-            loader.classList.add('fade-out');
-            setTimeout(() => { 
-                loader.style.display = 'none'; 
-                loader.classList.add('hidden');
-            }, 400);
-        }
-        if (window.pendingPopupData) {
-            showLaunchPopup(window.pendingPopupData);
-            window.pendingPopupData = null;
-        }
+        forceHideGlobalLoader();
     }
 }
 
@@ -5398,6 +5527,12 @@ function handleNativeBack() {
         return 'true';
     }
 
+    const settingsPage = document.getElementById('user-settings-page');
+    if (settingsPage && !settingsPage.classList.contains('hidden')) {
+        closeUserSettingsPage(true);
+        return 'true';
+    }
+
     const googleReferralInputModal = document.getElementById('google-referral-input-modal');
     if (googleReferralInputModal && !googleReferralInputModal.classList.contains('hidden')) {
         googleReferralInputModal.classList.add('hidden');
@@ -5437,12 +5572,6 @@ function handleNativeBack() {
 
     if (Swal.isVisible()) {
         Swal.close();
-        return 'true';
-    }
-
-    const settingsPage = document.getElementById('user-settings-page');
-    if (settingsPage && !settingsPage.classList.contains('hidden')) {
-        closeUserSettingsPage(true);
         return 'true';
     }
 
@@ -5696,7 +5825,6 @@ window.addEventListener('popstate', function(event) {
     if (regModal && !regModal.classList.contains('hidden')) {
         regModal.classList.add('hidden');
         regModal.style.display = 'none';
-        return;
     }
 });
 
@@ -5708,35 +5836,18 @@ function copySupportPin() {
     }
     if (!pin) return;
 
-    if (!pin.startsWith('ESP-')) {
-        pin = 'ESP-' + pin;
-    }
-
-    if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(pin).then(() => {
-            showCustomToast("সাপোর্ট পিন কপি হয়েছে!");
-        }).catch(() => {
-            fallbackCopyText(pin);
-        });
-    } else {
-        fallbackCopyText(pin);
-    }
-}
-
-function fallbackCopyText(text) {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.position = 'fixed';
-    ta.style.left = '-9999px';
-    document.body.appendChild(ta);
-    ta.select();
-    try {
-        document.execCommand('copy');
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(pin);
         showCustomToast("সাপোর্ট পিন কপি হয়েছে!");
-    } catch(e) {
-        showCustomToast("কপি করা সম্ভব হয়নি!");
+    } else {
+        const ta = document.createElement('textarea');
+        ta.value = pin;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showCustomToast("সাপোর্ট পিন কপি হয়েছে!");
     }
-    document.body.removeChild(ta);
 }
 
 function openUserSettingsPage() {
@@ -5775,15 +5886,14 @@ function openBalanceTransferModal() {
     
     const balEl = document.getElementById('transfer-current-balance');
     const myPinEl = document.getElementById('transfer-my-pin');
+    const receiverPinInput = document.getElementById('transfer-receiver-pin-input');
+    const amountInput = document.getElementById('transfer-amount-input');
+
+    if (receiverPinInput) receiverPinInput.value = '';
+    if (amountInput) amountInput.value = '';
     
     if (balEl) balEl.innerText = (userBalance || 0).toFixed(2);
     if (myPinEl) myPinEl.innerText = "ESP-" + currentUser.uid.substring(0, 6).toUpperCase();
-
-    // Clear inputs on open
-    const receiverPinInput = document.getElementById('transfer-receiver-pin-input');
-    const amountInput = document.getElementById('transfer-amount-input');
-    if (receiverPinInput) receiverPinInput.value = '';
-    if (amountInput) amountInput.value = '';
 
     const modal = document.getElementById('balance-transfer-modal');
     if (modal) {
@@ -5795,12 +5905,9 @@ function openBalanceTransferModal() {
             }
         } catch(e) {}
     }
-
-    loadUserTransferHistory();
 }
 
 function closeBalanceTransferModal(fromBackButton = false) {
-    // Clear inputs when exiting or closing modal
     const receiverPinInput = document.getElementById('transfer-receiver-pin-input');
     const amountInput = document.getElementById('transfer-amount-input');
     if (receiverPinInput) receiverPinInput.value = '';
@@ -5816,185 +5923,6 @@ function closeBalanceTransferModal(fromBackButton = false) {
     }
 }
 
-let currentReceiptData = null;
-
-function loadUserTransferHistory() {
-    const listEl = document.getElementById('transfer-history-list');
-    if (!listEl || !currentUser) return;
-
-    listEl.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs font-semibold"><i class="fas fa-spinner fa-spin mr-1"></i> হিস্ট্রি লোড হচ্ছে...</div>`;
-
-    db.collection('transfers')
-      .where('senderUid', '==', currentUser.uid)
-      .get()
-      .then(snapSent => {
-          let items = [];
-          snapSent.forEach(doc => { items.push({ id: doc.id, ...doc.data(), type: 'sent' }); });
-
-          db.collection('transfers')
-            .where('receiverUid', '==', currentUser.uid)
-            .get()
-            .then(snapRecv => {
-                snapRecv.forEach(doc => { items.push({ id: doc.id, ...doc.data(), type: 'received' }); });
-
-                items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-                if (items.length === 0) {
-                    listEl.innerHTML = `<div class="p-4 text-center text-slate-400 text-xs font-semibold">কোনো ট্রান্সফার হিস্ট্রি নেই</div>`;
-                    return;
-                }
-
-                let html = '';
-                items.slice(0, 25).forEach(item => {
-                    const isSent = item.type === 'sent';
-                    const title = isSent ? `প্রাপক: ${item.receiverName || 'User'} (${item.receiverPin || ''})` : `প্রেরক: ${item.senderName || 'User'} (${item.senderPin || ''})`;
-                    const amountSign = isSent ? '-' : '+';
-                    const dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString('bn-BD', { dateStyle: 'medium', timeStyle: 'short' }) : 'আজ';
-
-                    const itemDataAttr = encodeURIComponent(JSON.stringify(item));
-
-                    html += `
-                        <div class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm flex items-center justify-between text-xs">
-                            <div class="flex items-center gap-2.5">
-                                <div class="w-9 h-9 rounded-full ${isSent ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'} flex items-center justify-center text-sm font-bold shadow-inner">
-                                    <i class="fas ${isSent ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
-                                </div>
-                                <div>
-                                    <div class="font-extrabold text-slate-800">${title}</div>
-                                    <div class="text-[10px] text-slate-400 font-mono">TrxID: ${item.trxId || ''} • ${dateStr}</div>
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="font-extrabold text-sm ${isSent ? 'text-red-600' : 'text-emerald-600'}">${amountSign}৳${item.amount || 0}</div>
-                                <button onclick="openReceiptFromAttr('${itemDataAttr}')" class="text-[11px] font-bold text-sky-600 hover:text-sky-700 mt-0.5 inline-flex items-center gap-1">
-                                    <i class="fas fa-receipt"></i> রসিদ
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                });
-                listEl.innerHTML = html;
-            }).catch(e => {
-                if (listEl) listEl.innerHTML = `<div class="p-3 text-center text-red-400 text-xs font-semibold">হিস্ট্রি লোড করা যায়নি</div>`;
-            });
-      }).catch(e => {
-          if (listEl) listEl.innerHTML = `<div class="p-3 text-center text-red-400 text-xs font-semibold">হিস্ট্রি লোড করা যায়নি</div>`;
-      });
-}
-
-function openReceiptFromAttr(encodedStr) {
-    try {
-        const data = JSON.parse(decodeURIComponent(encodedStr));
-        showTransferReceiptModal(data);
-    } catch(e) {
-        console.error("Receipt parse error:", e);
-    }
-}
-
-function showTransferReceiptModal(data) {
-    if (!data) return;
-    currentReceiptData = data;
-    const card = document.getElementById('receipt-card-content');
-    const modal = document.getElementById('transfer-receipt-modal');
-
-    const dateStr = data.timestamp ? new Date(data.timestamp).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : new Date().toLocaleString();
-
-    if (card) {
-        card.innerHTML = `
-            <div class="text-center py-2 border-b border-slate-200">
-                <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">টাকার পরিমাণ (Amount)</p>
-                <p class="text-3xl font-black text-emerald-600 mt-1">৳${parseFloat(data.amount || 0).toFixed(2)}</p>
-            </div>
-            <div class="space-y-2 text-xs">
-                <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                    <span class="text-slate-500 font-bold">প্রাপকের নাম:</span>
-                    <span class="font-extrabold text-slate-800">${data.receiverName || 'User'}</span>
-                </div>
-                <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                    <span class="text-slate-500 font-bold">প্রাপকের সাপোর্ট পিন:</span>
-                    <span class="font-mono font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">${data.receiverPin || ''}</span>
-                </div>
-                <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                    <span class="text-slate-500 font-bold">প্রেরকের নাম:</span>
-                    <span class="font-extrabold text-slate-800">${data.senderName || 'User'}</span>
-                </div>
-                <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                    <span class="text-slate-500 font-bold">প্রেরকের সাপোর্ট পিন:</span>
-                    <span class="font-mono font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded">${data.senderPin || ''}</span>
-                </div>
-                <div class="flex justify-between items-center py-1 border-b border-slate-100">
-                    <span class="text-slate-500 font-bold">Transaction ID:</span>
-                    <span class="font-mono font-bold text-slate-700">${data.trxId || ''}</span>
-                </div>
-                <div class="flex justify-between items-center py-1">
-                    <span class="text-slate-500 font-bold">তারিখ ও সময়:</span>
-                    <span class="text-slate-600 font-semibold">${dateStr}</span>
-                </div>
-            </div>
-        `;
-    }
-
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.style.display = 'flex';
-    }
-}
-
-function closeTransferReceiptModal() {
-    const modal = document.getElementById('transfer-receipt-modal');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.style.display = 'none';
-    }
-}
-
-function shareCurrentReceipt() {
-    if (!currentReceiptData) return;
-    const d = currentReceiptData;
-    const dateStr = d.timestamp ? new Date(d.timestamp).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' }) : new Date().toLocaleString();
-
-    const shareText = `🧾 Esp TopUp - Balance Transfer Receipt\n` +
-        `----------------------------------------\n` +
-        `✅ Status: Successful (সফল)\n` +
-        `💸 Amount: ৳${parseFloat(d.amount || 0).toFixed(2)}\n` +
-        `👤 Receiver: ${d.receiverName || 'User'} (${d.receiverPin || ''})\n` +
-        `📤 Sender: ${d.senderName || 'User'} (${d.senderPin || ''})\n` +
-        `🆔 TrxID: ${d.trxId || ''}\n` +
-        `📅 Date: ${dateStr}\n` +
-        `----------------------------------------\n` +
-        `Esp TopUp - Fast & Secure App`;
-
-    if (navigator.share) {
-        navigator.share({
-            title: 'Esp TopUp - Transfer Receipt',
-            text: shareText
-        }).catch(() => {
-            fallbackShareText(shareText);
-        });
-    } else {
-        fallbackShareText(shareText);
-    }
-}
-
-function fallbackShareText(text) {
-    if (window.AndroidApp && typeof window.AndroidApp.openSocialLink === 'function') {
-        const encoded = encodeURIComponent(text);
-        window.AndroidApp.openSocialLink(`whatsapp://send?text=${encoded}`);
-    } else {
-        const ta = document.createElement('textarea');
-        ta.value = text;
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-            document.execCommand('copy');
-            showCustomToast("রসিদ অনুলিপি কপি হয়েছে! সোশ্যাল মিডিয়ায় শেয়ার করতে পারবেন");
-        } catch(e) {
-            showCustomToast("কপি করা সম্ভব হয়নি!");
-        }
-        document.body.removeChild(ta);
-    }
-}
-
 function executeBalanceTransfer() {
     if (!currentUser) {
         showCustomToast("আগে লগইন করুন!");
@@ -6004,20 +5932,34 @@ function executeBalanceTransfer() {
     const receiverPinInput = document.getElementById('transfer-receiver-pin-input');
     const amountInput = document.getElementById('transfer-amount-input');
 
-    let targetPin = (receiverPinInput?.value || '').trim().toUpperCase();
+    let rawPin = (receiverPinInput?.value || '').trim();
+    let targetPin = rawPin.toUpperCase();
     if (targetPin && !targetPin.startsWith('ESP-')) {
         targetPin = 'ESP-' + targetPin;
     }
 
-    const amount = parseFloat(amountInput?.value || 0);
+    const rawAmountStr = (amountInput?.value || '').trim();
+    const amount = parseFloat(rawAmountStr);
+    const isAmountValid = !isNaN(amount) && amount >= 1;
 
-    if (!targetPin || targetPin.length < 5) {
-        showCustomToast("সঠিক সাপোর্ট পিন লিখুন!");
+    // Check empty validation as requested
+    if (!rawPin && (!rawAmountStr || isNaN(amount) || amount <= 0)) {
+        showCustomToast("আপনার সাপোর্ট পিন এবং অ্যামাউন্টটা দিন");
         return;
     }
 
-    if (isNaN(amount) || amount < 1) {
-        showCustomToast("সর্বনিম্ন ১ টাকা ট্রান্সফার করতে পারবেন!");
+    if (rawPin && (!rawAmountStr || isNaN(amount) || amount <= 0)) {
+        showCustomToast("আপনার অ্যামাউন্টটা দিন");
+        return;
+    }
+
+    if (!rawPin) {
+        showCustomToast("আপনার সাপোর্ট পিন দিন");
+        return;
+    }
+
+    if (!targetPin || targetPin.length < 5) {
+        showCustomToast("সঠিক সাপোর্ট পিন লিখুন!");
         return;
     }
 
@@ -6106,23 +6048,29 @@ function executeBalanceTransfer() {
             }
 
             const receiverUid = receiverDoc.id;
-            const receiverName = receiverDoc.data.name || 'User';
-            const senderName = senderData.name || 'User';
-            const senderPin = "ESP-" + senderUid.substring(0, 6).toUpperCase();
-            const trxId = `TRX-${Date.now().toString().slice(-6)}`;
+            const receiverData = receiverDoc.data() || {};
+            const receiverName = receiverData.name || 'User';
+            const receiverPhoto = receiverData.photoURL || receiverData.profilePic || receiverData.avatar || 'logo.png';
 
             Swal.fire({
                 title: 'ট্রান্সফার নিশ্চিত করুন',
                 html: `
-                    <div class="text-left bg-slate-50 p-4 rounded-2xl border border-slate-200 text-xs space-y-2">
-                        <p><b>প্রাপকের নাম:</b> ${receiverName}</p>
-                        <p><b>প্রাপকের সাপোর্ট পিন:</b> <span class="font-mono font-bold text-sky-600">${targetPin}</span></p>
-                        <p><b>টাকার পরিমাণ:</b> <b class="text-emerald-600 text-sm">৳${amount}</b></p>
+                    <div class="flex flex-col items-center justify-center text-center space-y-3 p-2">
+                        <div class="w-20 h-20 rounded-full p-1 bg-gradient-to-tr from-emerald-500 to-teal-600 shadow-md overflow-hidden relative">
+                            <img src="${receiverPhoto}" onerror="this.onerror=null;this.src='logo.png'" class="w-full h-full object-cover rounded-full">
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-slate-800 text-base mb-0.5">${receiverName}</h4>
+                            <p class="font-mono font-bold text-sky-600 text-xs bg-sky-50 px-2 py-0.5 rounded border border-sky-200 inline-block">${targetPin}</p>
+                        </div>
+                        <div class="w-full bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center mt-1">
+                            <p class="text-xs text-emerald-800 font-bold uppercase">ট্রান্সফারের পরিমাণ</p>
+                            <p class="text-2xl font-black text-emerald-600">৳${amount}</p>
+                        </div>
                     </div>
                 `,
-                icon: 'question',
                 showCancelButton: true,
-                confirmButtonText: 'হ্যাঁ, সেন্ড করুন',
+                confirmButtonText: 'কনফার্ম করুন',
                 cancelButtonText: 'বাতিল',
                 confirmButtonColor: '#10b981'
             }).then(confirmRes => {
@@ -6146,24 +6094,7 @@ function executeBalanceTransfer() {
                         balance: firebase.firestore.FieldValue.increment(amount)
                     });
 
-                    // Save dedicated Transfer record for history & Admin View
-                    const transferDocRef = db.collection('transfers').doc();
-                    const transferData = {
-                        id: transferDocRef.id,
-                        senderUid: senderUid,
-                        senderName: senderName,
-                        senderPin: senderPin,
-                        senderEmail: senderData.email || '',
-                        receiverUid: receiverUid,
-                        receiverName: receiverName,
-                        receiverPin: targetPin,
-                        receiverEmail: receiverDoc.data.email || '',
-                        amount: amount,
-                        trxId: trxId,
-                        timestamp: Date.now(),
-                        date: firebase.firestore.FieldValue.serverTimestamp()
-                    };
-                    batch.set(transferDocRef, transferData);
+                    const senderName = senderData.name || 'User';
 
                     const senderHistoryRef = db.collection('deposits').doc();
                     batch.set(senderHistoryRef, {
@@ -6171,7 +6102,7 @@ function executeBalanceTransfer() {
                         userEmail: senderData.email || '',
                         amount: amount,
                         method: 'Balance Transfer (Sent)',
-                        trxId: trxId,
+                        trxId: `TRX-${Date.now().toString().slice(-6)}`,
                         status: 'approved',
                         note: `প্রাপক: ${receiverName} (${targetPin})`,
                         date: firebase.firestore.FieldValue.serverTimestamp()
@@ -6180,12 +6111,12 @@ function executeBalanceTransfer() {
                     const receiverHistoryRef = db.collection('deposits').doc();
                     batch.set(receiverHistoryRef, {
                         userId: receiverUid,
-                        userEmail: receiverDoc.data.email || '',
+                        userEmail: receiverData.email || '',
                         amount: amount,
                         method: 'Balance Transfer (Received)',
-                        trxId: trxId,
+                        trxId: `TRX-${Date.now().toString().slice(-6)}`,
                         status: 'approved',
-                        note: `প্রেরক: ${senderName} (${senderPin})`,
+                        note: `প্রেরক: ${senderName} (ESP-${senderUid.substring(0,6).toUpperCase()})`,
                         date: firebase.firestore.FieldValue.serverTimestamp()
                     });
 
@@ -6196,8 +6127,12 @@ function executeBalanceTransfer() {
 
                         closeBalanceTransferModal();
 
-                        // Show Transfer Receipt Modal immediately!
-                        showTransferReceiptModal(transferData);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'ট্রান্সফার সফল হয়েছে!',
+                            text: `৳${amount} সফলভাবে ${receiverName} (${targetPin}) এর অ্যাকাউন্টে পাঠানো হয়েছে।`,
+                            confirmButtonColor: '#10b981'
+                        });
 
                         loadUserData(senderUid);
                     }).catch(err => {

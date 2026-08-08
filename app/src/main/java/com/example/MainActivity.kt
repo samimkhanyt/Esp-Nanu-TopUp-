@@ -21,9 +21,11 @@ import android.webkit.JavascriptInterface
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import java.io.ByteArrayInputStream
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -75,6 +77,19 @@ class MainActivity : ComponentActivity() {
         @JavascriptInterface
         fun setUserEmail(email: String) {
             activity.saveUserEmail(email)
+        }
+
+        @JavascriptInterface
+        fun getClipboardText(): String {
+            return try {
+                val clipboard = activity.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                if (clipboard != null && clipboard.hasPrimaryClip()) {
+                    val item = clipboard.primaryClip?.getItemAt(0)
+                    item?.text?.toString() ?: ""
+                } else ""
+            } catch (e: Exception) {
+                ""
+            }
         }
 
         @JavascriptInterface
@@ -138,6 +153,11 @@ class MainActivity : ComponentActivity() {
     ) { isGranted: Boolean ->
         if (isGranted) {
             Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show()
+            try {
+                NotificationBackgroundService.startService(this)
+            } catch (e: Throwable) {
+                Log.e("MainActivity", "Error starting NotificationBackgroundService: ${e.message}")
+            }
         }
     }
 
@@ -175,12 +195,15 @@ class MainActivity : ComponentActivity() {
         // 1. Initialize Firebase safely
         initFirebaseSafely()
 
-        // 2. Initialize Notification Channel safely
+        // 2. Initialize Notification Channel & start Background Service safely
         try {
             NotificationHelper.createNotificationChannel(this)
-            NotificationBackgroundService.startService(this) // Stops any existing foreground service
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                NotificationBackgroundService.startService(this)
+            }
         } catch (e: Throwable) {
-            Log.e("MainActivity", "Error creating notification channel: ${e.message}")
+            Log.e("MainActivity", "Error starting notification service: ${e.message}")
         }
 
         // 3. Prompt for Push Notification Permission
@@ -795,6 +818,31 @@ class MainActivity : ComponentActivity() {
                 override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                     if (url == null) return false
                     return handleUrlScheme(url)
+                }
+
+                override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                    val urlStr = request?.url?.toString() ?: ""
+                    if (urlStr.contains("undefined") || urlStr.contains("null") || urlStr.endsWith("/undefined")) {
+                        return try {
+                            WebResourceResponse("image/png", "UTF-8", assets.open("logo.png"))
+                        } catch (e: Exception) {
+                            WebResourceResponse("image/png", "UTF-8", ByteArrayInputStream(ByteArray(0)))
+                        }
+                    }
+                    return super.shouldInterceptRequest(view, request)
+                }
+
+                @Deprecated("Deprecated in Java")
+                override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
+                    val urlStr = url ?: ""
+                    if (urlStr.contains("undefined") || urlStr.contains("null") || urlStr.endsWith("/undefined")) {
+                        return try {
+                            WebResourceResponse("image/png", "UTF-8", assets.open("logo.png"))
+                        } catch (e: Exception) {
+                            WebResourceResponse("image/png", "UTF-8", ByteArrayInputStream(ByteArray(0)))
+                        }
+                    }
+                    return super.shouldInterceptRequest(view, url)
                 }
             }
 

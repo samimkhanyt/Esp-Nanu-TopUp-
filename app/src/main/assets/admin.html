@@ -93,7 +93,6 @@
             <div onclick="switchView('services')" id="nav-services" class="nav-link"><i class="fas fa-gamepad w-8 text-center"></i> Services & Games</div>
             <div onclick="switchView('orders')" id="nav-orders" class="nav-link"><i class="fas fa-shopping-cart w-8 text-center"></i> Orders</div>
             <div onclick="switchView('deposits')" id="nav-deposits" class="nav-link"><i class="fas fa-wallet w-8 text-center"></i> Deposits</div>
-            <div onclick="switchView('transfers')" id="nav-transfers" class="nav-link"><i class="fas fa-exchange-alt w-8 text-center text-emerald-400"></i> Balance Transfers</div>
             <div onclick="switchView('users')" id="nav-users" class="nav-link"><i class="fas fa-users w-8 text-center"></i> Users & Devices</div>
             <div onclick="switchView('push-notif')" id="nav-push-notif" class="nav-link"><i class="fas fa-bell w-8 text-center"></i> Push Notifications</div>
             <div onclick="switchView('unpin')" id="nav-unpin" class="nav-link"><i class="fas fa-key w-8 text-center"></i> Unpin Code</div>
@@ -450,21 +449,9 @@
 
                     <!-- 7. Nav History Label -->
                     <div class="card">
-                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৭. বটম নেভিগেশন ৪ - হিস্ট্রি / মাই অর্ডার টেক্সট</h4>
-                        <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
-                            <i class="fas fa-info-circle text-orange-400 mr-1"></i> ইউজার অ্যাপের একদম নিচে চতুর্থ বাটনটির নাম (যেমন: History / মাই অর্ডার)।
-                        </p>
-                        <div class="space-y-3">
-                            <input type="text" id="set-txt-nav-orders" class="flat-input" placeholder="History">
-                            <button onclick="saveIndividualSetting('navOrdersText', 'set-txt-nav-orders')" class="flat-btn w-full">
-                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save Orders Button Text)
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 8. Nav Account Label -->
-                    <div class="card">
-                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৮. বটম নেভিগেশন ৫ - একাউন্ট বাটন টেক্সট</h4>
+                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">৭. বটম নেভিগেশন                     </div>
+                 </div>
+             </div>েশন ৫ - একাউন্ট বাটন টেক্সট</h4>
                         <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
                             <i class="fas fa-info-circle text-orange-400 mr-1"></i> ইউজার অ্যাপের একদম নিচে পঞ্চম বাটনটির নাম (যেমন: Account / একাউন্ট)।
                         </p>
@@ -490,19 +477,6 @@
                         </div>
                     </div>
 
-                    <!-- 10. Package Rules Notice Box -->
-                    <div class="card">
-                        <h4 class="text-sm font-bold text-orange-400 uppercase mb-2">১০. প্যাকেজের একদম নিচের নোটিশ টেক্সট (Rules Notice)</h4>
-                        <p class="text-xs text-gray-300 mb-3 bg-dark-bg p-2.5 rounded-lg border border-dark-border">
-                            <i class="fas fa-info-circle text-orange-400 mr-1"></i> প্যাকেজের একদম নিচে 'নোটিশ:' এর পাশে ৩ডি কার্ডে স্পষ্ট কালো রঙের যে নোটিশ লেখাটি দেখাবে।
-                        </p>
-                        <div class="space-y-3">
-                            <textarea id="set-txt-rules-notice" class="flat-input h-20 resize-none" placeholder="কোন সমস্যায় পড়লে Telegram এ যোগাযোগ করবেন। তাহলে দ্রুত সমাধান পেয়ে যাবেন।"></textarea>
-                            <button onclick="saveIndividualSetting('rulesNotice', 'set-txt-rules-notice')" class="flat-btn w-full">
-                                <i class="fas fa-save mr-1"></i> সেভ করুন (Save Rules Notice)
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -543,6 +517,34 @@
                             <div><label class="block text-xs text-gray-400 mb-1 font-semibold uppercase">Facebook Link</label><input type="text" id="set-facebook" class="flat-input"></div>
                             <div><label class="block text-xs text-gray-400 mb-1 font-semibold uppercase">YouTube Link</label><input type="text" id="set-youtube" class="flat-input"></div>
                             <button onclick="saveSettings('social')" class="flat-btn w-full mt-2"><i class="fas fa-save"></i> Save Social Links</button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="text-lg font-bold text-red-500 mb-5 border-b border-dark-border pb-3 flex items-center gap-2">
+                            <i class="fas fa-exclamation-triangle text-red-500"></i>
+                            <span>Deposit Page Warning Rules (চূড়ান্ত রুলস কনফিগ)</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs text-red-400 mb-1 font-semibold uppercase">Rules Box Title (টাইটেল)</label>
+                                <input type="text" id="set-rule-box-title" class="flat-input" placeholder="চূড়ান্ত রুলস (এটা না মানলে আপনার আইডির সমস্যা হতে পারে)">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-300 mb-1 font-semibold uppercase">Rules Warning Message (মেসেজ)</label>
+                                <textarea id="set-rule-box-msg" class="flat-input h-24 resize-none" placeholder="বারবার যদি ট্রানজেকশন আইডি ভুল দিয়ে চেষ্টা করেন, তাহলে আপনার আইডি ব্যান হতে পারে বা আপনার আইডির সমস্যা হতে পারে।"></textarea>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-emerald-400 mb-1 font-semibold uppercase">WhatsApp Link</label>
+                                    <input type="text" id="set-rule-whatsapp-url" class="flat-input" placeholder="https://wa.me/8801...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-sky-400 mb-1 font-semibold uppercase">Telegram Link</label>
+                                    <input type="text" id="set-rule-telegram-url" class="flat-input" placeholder="https://t.me/...">
+                                </div>
+                            </div>
+                            <button onclick="saveSettings('deposit_rules')" class="flat-btn w-full mt-2"><i class="fas fa-save"></i> Save Deposit Warning Rules</button>
                         </div>
                     </div>
 
@@ -968,16 +970,6 @@
                                 <label class="block text-xs text-gray-400 mb-1 font-semibold uppercase">Popup Message / Details</label>
                                 <textarea id="set-launch-popup-msg" class="flat-input h-32 resize-none" placeholder="বিজ্ঞপ্তিটি এখানে লিখুন..."></textarea>
                             </div>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1 font-semibold uppercase">Popup Width (প্রস্থ)</label>
-                                    <input type="text" id="set-launch-popup-width" class="flat-input" placeholder="যেমন: 96% বা 500px">
-                                </div>
-                                <div>
-                                    <label class="block text-xs text-gray-400 mb-1 font-semibold uppercase">Popup Image Max-Height (উচ্চতা)</label>
-                                    <input type="text" id="set-launch-popup-height" class="flat-input" placeholder="যেমন: 70vh বা 400px">
-                                </div>
-                            </div>
                             <div class="flex flex-col sm:flex-row gap-4 mt-2 pt-2">
                                 <button onclick="previewPopup()" class="flat-btn-outline w-full sm:w-1/2 flex items-center justify-center"><i class="fas fa-eye"></i> Preview Popup</button>
                                 <button onclick="saveSettings('popup')" class="flat-btn w-full sm:w-1/2 flex items-center justify-center"><i class="fas fa-save"></i> Save Config</button>
@@ -990,44 +982,8 @@
                         </div>
                         <h4 class="text-white font-bold text-xl mb-3 tracking-wide">কিভাবে কাজ করবে?</h4>
                         <p class="text-sm text-gray-400 leading-relaxed max-w-sm mb-6">
-                            "Show Popup" বাটনটি চালু রাখলে ইউজাররা অ্যাপে ঢুকলেই একটি পপআপ মেসেজ দেখতে পাবে। ইমেজ এবং লিংঙ্ক সেট করা থাকলে ইমেজে ক্লিক করলেই ইউজার সেই লিংকে চলে যাবে (ভিডিও বা অফার)। পপআপের সাইজ (ডান-বাম, উপর-নিচে) এখান থেকেই পরিবর্তন করতে পারবেন।
+                            "Show Popup" বাটনটি চালু রাখলে ইউজাররা অ্যাপে ঢুকলেই একটি পপআপ মেসেজ দেখতে পাবে। ইমেজ এবং লিংঙ্ক সেট করা থাকলে ইমেজে ক্লিক করলেই ইউজার সেই লিংকে চলে যাবে (ভিডিও বা অফার)।
                         </p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Balance Transfers History View -->
-            <div id="view-transfers" class="view-section hidden">
-                <div class="card mb-6">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b border-dark-border pb-4">
-                        <div>
-                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                                <i class="fas fa-exchange-alt text-emerald-400"></i>
-                                <span>ব্যালেন্স ট্রান্সফার লগ (User Balance Transfers)</span>
-                            </h3>
-                            <p class="text-xs text-gray-400">ইউজারদের মধ্যে আদান-প্রদান করা সমস্ত ব্যালেন্স ট্রান্সফারের তালিকা</p>
-                        </div>
-                        <div class="w-full md:w-72">
-                            <input type="text" onkeyup="filterAdminTransfers(this.value)" placeholder="Search by Name / Support PIN / TrxID..." class="flat-input text-xs">
-                        </div>
-                    </div>
-                    <div class="flat-table-container">
-                        <table class="flat-table">
-                            <thead>
-                                <tr>
-                                    <th class="w-12">#</th>
-                                    <th>প্রেরক (Sender)</th>
-                                    <th>প্রাপক (Receiver)</th>
-                                    <th>টাকার পরিমাণ</th>
-                                    <th>Transaction ID</th>
-                                    <th>তারিখ ও সময়</th>
-                                    <th class="text-center">অ্যাকশন</th>
-                                </tr>
-                            </thead>
-                            <tbody id="admin-transfers-table-body">
-                                <tr><td colspan="7" class="text-center py-6 text-gray-400 font-bold">লোড হচ্ছে...</td></tr>
-                            </tbody>
-                        </table>
                     </div>
                 </div>
             </div>
@@ -1255,7 +1211,6 @@
             }
             if(viewId === 'orders') loadOrders();
             if(viewId === 'deposits') loadDeposits();
-            if(viewId === 'transfers') loadTransfersAdmin();
             if(viewId === 'users') loadUsers();
             if(viewId === 'push-notif') loadNotificationsHistory();
             if(viewId === 'unpin') loadUnpinCodes();
@@ -1304,6 +1259,10 @@
                     setVal('set-telegram', d.telegram);
                     setVal('set-facebook', d.facebook);
                     setVal('set-youtube', d.youtube);
+                    setVal('set-rule-box-title', d.ruleBoxTitle || "চূড়ান্ত রুলস (এটা না মানলে আপনার আইডির সমস্যা হতে পারে)");
+                    setVal('set-rule-box-msg', d.ruleBoxMsg || "বারবার যদি ট্রানজেকশন আইডি ভুল দিয়ে চেষ্টা করেন, তাহলে আপনার আইডি ব্যান হতে পারে বা আপনার আইডির সমস্যা হতে পারে।");
+                    setVal('set-rule-whatsapp-url', d.ruleWhatsappUrl || d.whatsapp || "");
+                    setVal('set-rule-telegram-url', d.ruleTelegramUrl || d.telegram || "");
                     const ap = document.getElementById('set-autopay');
                     if(ap) ap.checked = !!d.autoPayEnabled;
                     setVal('set-api-key', d.autoTopUpApiKey);
@@ -1315,8 +1274,6 @@
                     setVal('set-launch-popup-img', d.launchPopupImg);
                     setVal('set-launch-popup-video', d.launchPopupVideo);
                     setVal('set-launch-popup-msg', d.launchPopupMsg);
-                    setVal('set-launch-popup-width', d.launchPopupWidth || '96%');
-                    setVal('set-launch-popup-height', d.launchPopupHeight || '70vh');
 
                     // Image settings page
                     setVal('set-img-header-logo', d.logoUrl);
@@ -1403,6 +1360,13 @@
                     facebook: getVal('set-facebook'),
                     youtube: getVal('set-youtube')
                 }, {merge: true});
+            } else if (type === 'deposit_rules') {
+                p1 = db.collection('settings').doc('general').set({
+                    ruleBoxTitle: getVal('set-rule-box-title'),
+                    ruleBoxMsg: getVal('set-rule-box-msg'),
+                    ruleWhatsappUrl: getVal('set-rule-whatsapp-url'),
+                    ruleTelegramUrl: getVal('set-rule-telegram-url')
+                }, {merge: true});
             } else if (type === 'payment') {
                 p1 = db.collection('admin').doc('payment').set({
                     bkash_modal_logo: getVal('set-bkash-logo'),
@@ -1424,9 +1388,7 @@
                     launchPopupTitle: getVal('set-launch-popup-title'),
                     launchPopupImg: getVal('set-launch-popup-img'),
                     launchPopupVideo: getVal('set-launch-popup-video'),
-                    launchPopupMsg: getVal('set-launch-popup-msg'),
-                    launchPopupWidth: getVal('set-launch-popup-width') || '96%',
-                    launchPopupHeight: getVal('set-launch-popup-height') || '70vh'
+                    launchPopupMsg: getVal('set-launch-popup-msg')
                 }, {merge: true});
             }
             if(p1) {
@@ -2463,15 +2425,10 @@
             if(modal) { modal.classList.add('hidden'); modal.style.display = 'none'; }
         }
 
-        let isModifyingBalance = false;
         function modifyUserBalance(type) {
-            if (isModifyingBalance) return;
-            const amtInput = document.getElementById('modal-bal-input');
             const amt = parseFloat(getVal('modal-bal-input'));
             if(isNaN(amt) || amt <= 0) { Swal.fire('Error', 'সঠিক টাকার পরিমাণ দিন', 'error'); return; }
             if(!selectedUserId) return;
-
-            isModifyingBalance = true;
             showLoading();
             const uRef = db.collection('users').doc(selectedUserId);
             db.runTransaction(async t => {
@@ -2481,15 +2438,9 @@
                 t.update(uRef, { balance: newBal });
             }).then(() => {
                 hideLoading();
-                isModifyingBalance = false;
-                if (amtInput) amtInput.value = '';
                 closeUserModal();
                 Swal.fire({toast:true, position:'top-end', icon:'success', title:'Balance updated successfully!', timer:1500, showConfirmButton:false});
-                loadUsers();
-            }).catch(err => {
-                isModifyingBalance = false;
-                dbError(err);
-            });
+            }).catch(dbError);
         }
 
         // PUSH NOTIFICATIONS
@@ -3013,170 +2964,10 @@
             const title = getVal('set-launch-popup-title') || 'নতুন আপডেট!';
             const img = getVal('set-launch-popup-img');
             const msg = getVal('set-launch-popup-msg') || 'পপআপ প্রিভিউ মেসেজ।';
-            const width = getVal('set-launch-popup-width') || '96%';
-            const height = getVal('set-launch-popup-height') || '70vh';
-
-            const modal = document.getElementById('admin-launch-popup-modal');
-            const card = document.getElementById('admin-popup-card');
-            const titleEl = document.getElementById('admin-popup-title');
-            const msgEl = document.getElementById('admin-popup-msg');
-            const imgContainer = document.getElementById('admin-popup-img-container');
-            const imgEl = document.getElementById('admin-popup-img');
-            const textWrapper = document.getElementById('admin-popup-text-wrapper');
-
-            if (card) {
-                const w = width.toString().trim();
-                card.style.maxWidth = (w.endsWith('px') || w.endsWith('%') || w.endsWith('rem') || w.endsWith('vw')) ? w : (w + 'px');
-            }
-
-            if (titleEl) {
-                if (title) {
-                    titleEl.innerText = title;
-                    titleEl.classList.remove('hidden');
-                } else {
-                    titleEl.classList.add('hidden');
-                }
-            }
-
-            if (msgEl) {
-                if (msg) {
-                    msgEl.innerText = msg;
-                    msgEl.classList.remove('hidden');
-                } else {
-                    msgEl.classList.add('hidden');
-                }
-            }
-
-            if (textWrapper) {
-                if (title || msg) {
-                    textWrapper.classList.remove('hidden');
-                } else {
-                    textWrapper.classList.add('hidden');
-                }
-            }
-
-            if (img && imgEl && imgContainer) {
-                imgEl.src = img;
-                const h = height.toString().trim();
-                imgEl.style.maxHeight = (h.endsWith('px') || h.endsWith('%') || h.endsWith('rem') || h.endsWith('vh')) ? h : (h + 'px');
-                imgContainer.classList.remove('hidden');
-            } else if (imgContainer) {
-                imgContainer.classList.add('hidden');
-            }
-
-            if (modal) {
-                modal.classList.remove('hidden');
-                modal.style.display = 'flex';
-            }
-        }
-
-        function closeAdminLaunchPopupPreview() {
-            const modal = document.getElementById('admin-launch-popup-modal');
-            if (modal) {
-                modal.classList.add('hidden');
-                modal.style.display = 'none';
-            }
-        }
-
-        // ADMIN TRANSFERS LOG MANAGEMENT
-        function loadTransfersAdmin() {
-            const listEl = document.getElementById('admin-transfers-table-body');
-            if (!listEl || !db) return;
-
-            listEl.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400 font-bold"><i class="fas fa-spinner fa-spin mr-2"></i> ট্রান্সফার লগ লোড হচ্ছে...</td></tr>`;
-
-            db.collection('transfers').get().then(snap => {
-                let items = [];
-                snap.forEach(doc => { items.push({ id: doc.id, ...doc.data() }); });
-
-                items.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-
-                window.allAdminTransfers = items;
-                renderAdminTransfers(items);
-            }).catch(err => {
-                if (listEl) listEl.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-red-400 font-bold">ট্রান্সফার ডাটা পাওয়া যায়নি</td></tr>`;
-            });
-        }
-
-        function renderAdminTransfers(items) {
-            const listEl = document.getElementById('admin-transfers-table-body');
-            if (!listEl) return;
-
-            if (!items || items.length === 0) {
-                listEl.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-400 font-bold">কোনো ট্রান্সফার রেকর্ড পাওয়া যায়নি</td></tr>`;
-                return;
-            }
-
-            let html = '';
-            items.forEach((item, idx) => {
-                const dateStr = item.timestamp ? new Date(item.timestamp).toLocaleString('bn-BD', { dateStyle: 'medium', timeStyle: 'short' }) : 'আজ';
-                const itemJson = encodeURIComponent(JSON.stringify(item));
-
-                html += `
-                    <tr class="border-b border-dark-border hover:bg-dark-bg/40 transition">
-                        <td class="px-4 py-3 text-xs text-gray-400 font-mono">${idx + 1}</td>
-                        <td class="px-4 py-3 text-xs text-gray-300">
-                            <div class="font-bold text-white">${item.senderName || 'N/A'}</div>
-                            <div class="text-[11px] text-orange-400 font-mono">${item.senderPin || ''}</div>
-                        </td>
-                        <td class="px-4 py-3 text-xs text-gray-300">
-                            <div class="font-bold text-emerald-400">${item.receiverName || 'N/A'}</div>
-                            <div class="text-[11px] text-sky-400 font-mono">${item.receiverPin || ''}</div>
-                        </td>
-                        <td class="px-4 py-3 text-xs font-black text-green-400">৳${parseFloat(item.amount || 0).toFixed(2)}</td>
-                        <td class="px-4 py-3 text-xs font-mono text-gray-300">${item.trxId || ''}</td>
-                        <td class="px-4 py-3 text-[11px] text-gray-400">${dateStr}</td>
-                        <td class="px-4 py-3 text-center">
-                            <button onclick="viewAdminTransferDetail('${itemJson}')" class="bg-orange-500/10 border border-orange-500/30 hover:bg-orange-500 text-orange-400 hover:text-white px-2.5 py-1 rounded-lg text-xs font-bold transition">
-                                <i class="fas fa-eye mr-1"></i> ডিটেইলস
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            });
-            listEl.innerHTML = html;
-        }
-
-        function filterAdminTransfers(query) {
-            if (!window.allAdminTransfers) return;
-            const q = (query || '').toLowerCase().trim();
-            if (!q) {
-                renderAdminTransfers(window.allAdminTransfers);
-                return;
-            }
-            const filtered = window.allAdminTransfers.filter(item => {
-                const sName = (item.senderName || '').toLowerCase();
-                const sPin = (item.senderPin || '').toLowerCase();
-                const rName = (item.receiverName || '').toLowerCase();
-                const rPin = (item.receiverPin || '').toLowerCase();
-                const trx = (item.trxId || '').toLowerCase();
-                return sName.includes(q) || sPin.includes(q) || rName.includes(q) || rPin.includes(q) || trx.includes(q);
-            });
-            renderAdminTransfers(filtered);
-        }
-
-        function viewAdminTransferDetail(encodedStr) {
-            try {
-                const d = JSON.parse(decodeURIComponent(encodedStr));
-                const dateStr = d.timestamp ? new Date(d.timestamp).toLocaleString() : new Date().toLocaleString();
-
-                Swal.fire({
-                    title: 'ব্যালেন্স ট্রান্সফার ডিটেইলস',
-                    html: `
-                        <div class="text-left bg-dark-bg p-4 rounded-xl border border-dark-border text-xs space-y-2 text-gray-200">
-                            <p class="flex justify-between border-b border-dark-border pb-1"><span>পরিমাণ:</span> <b class="text-emerald-400 text-sm">৳${parseFloat(d.amount || 0).toFixed(2)}</b></p>
-                            <p class="flex justify-between border-b border-dark-border pb-1"><span>প্রেরক (Sender):</span> <b>${d.senderName || ''} (${d.senderPin || ''})</b></p>
-                            <p class="flex justify-between border-b border-dark-border pb-1"><span>Sender Email:</span> <span class="font-mono text-gray-400">${d.senderEmail || 'N/A'}</span></p>
-                            <p class="flex justify-between border-b border-dark-border pb-1"><span>প্রাপক (Receiver):</span> <b>${d.receiverName || ''} (${d.receiverPin || ''})</b></p>
-                            <p class="flex justify-between border-b border-dark-border pb-1"><span>Receiver Email:</span> <span class="font-mono text-gray-400">${d.receiverEmail || 'N/A'}</span></p>
-                            <p class="flex justify-between border-b border-dark-border pb-1"><span>Transaction ID:</span> <b class="font-mono text-orange-400">${d.trxId || ''}</b></p>
-                            <p class="flex justify-between"><span>তারিখ ও সময়:</span> <span>${dateStr}</span></p>
-                        </div>
-                    `,
-                    confirmButtonText: 'ঠিক আছে',
-                    confirmButtonColor: '#F49E0B'
-                });
-            } catch(e) {}
+            let html = `<div class="text-left space-y-2">`;
+            if(img) html += `<img src="${img}" class="w-full h-32 object-cover rounded-xl mb-2">`;
+            html += `<p class="text-xs text-gray-300">${msg}</p></div>`;
+            Swal.fire({ title: title, html: html, confirmButtonText: 'ঠিক আছে', confirmButtonColor: '#F49E0B' });
         }
 
         // FIREBASE CONFIG EDITOR
@@ -3232,22 +3023,5 @@
             }
         });
     </script>
-    <!-- ADMIN LIVE LAUNCH POPUP PREVIEW MODAL -->
-    <div id="admin-launch-popup-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-[100000] hidden flex items-center justify-center p-2 sm:p-4">
-        <div id="admin-popup-card" class="bg-white rounded-3xl w-[96%] sm:w-full max-w-lg shadow-2xl border border-slate-100 flex flex-col items-center text-center relative animate-fade-in max-h-[92vh] overflow-y-auto mx-auto text-slate-800">
-            <button onclick="closeAdminLaunchPopupPreview()" class="absolute top-2.5 right-2.5 w-9 h-9 bg-red-600 hover:bg-red-700 text-white rounded-full flex items-center justify-center shadow-lg z-30 transition active:scale-90" aria-label="Close">
-                <i class="fas fa-times text-base"></i>
-            </button>
-
-            <div id="admin-popup-img-container" class="w-full bg-slate-900 overflow-hidden hidden rounded-t-3xl">
-                <img id="admin-popup-img" src="" class="w-full h-auto object-cover block mx-auto">
-            </div>
-
-            <div id="admin-popup-text-wrapper" class="w-full p-4 sm:p-6 flex flex-col items-start text-left space-y-2 hidden">
-                <div id="admin-popup-title" class="text-base sm:text-lg font-extrabold text-slate-800 leading-snug whitespace-pre-line w-full hidden"></div>
-                <div id="admin-popup-msg" class="text-sm sm:text-base text-slate-700 font-medium leading-relaxed whitespace-pre-line w-full hidden"></div>
-            </div>
-        </div>
-    </div>
 </body>
 </html>

@@ -19,11 +19,12 @@ import java.net.URL
 
 object NotificationHelper {
 
+    const val SERVICE_NOTIFICATION_ID = 1001
     const val CHANNEL_ID = "esp_admin_channel_v2"
     const val CHANNEL_NAME = "Esp TopUp Notifications"
-    const val SERVICE_CHANNEL_ID = "esp_ongoing_service_channel"
-    const val SERVICE_CHANNEL_NAME = "Esp TopUp Notice Service"
-    const val DEFAULT_LOGO_URL = "https://i.ibb.co.com/FLNKG5Hn/1000022763.jpg"
+    const val SERVICE_CHANNEL_ID = "persistent_service_channel_v4"
+    const val SERVICE_CHANNEL_NAME = "Persistent Service"
+    const val DEFAULT_LOGO_URL = "https://i.ibb.co.com/m5Wqb5QV/1000022763.jpg"
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -37,10 +38,15 @@ object NotificationHelper {
             }
             notificationManager.createNotificationChannel(channel)
 
-            val serviceChannel = NotificationChannel(SERVICE_CHANNEL_ID, SERVICE_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW).apply {
-                description = "Esp TopUp Background Service"
+            val serviceChannel = NotificationChannel(
+                SERVICE_CHANNEL_ID,
+                SERVICE_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_LOW
+            ).apply {
+                description = "Esp TopUp Ongoing Persistent Service"
                 enableLights(false)
                 enableVibration(false)
+                setSound(null, null)
                 setShowBadge(false)
                 lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
             }
@@ -59,16 +65,20 @@ object NotificationHelper {
         }
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, pendingIntentFlags)
 
-        return NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_small)
+            .setColor(0xFFE53935.toInt())
             .setContentTitle("Esp TopUp")
-            .setContentText("")
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setOngoing(true)
+            .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setSound(null)
             .build()
+
+        notification.flags = notification.flags or android.app.Notification.FLAG_NO_CLEAR or android.app.Notification.FLAG_ONGOING_EVENT
+        return notification
     }
 
     fun showNotification(
@@ -96,9 +106,11 @@ object NotificationHelper {
                     PendingIntent.FLAG_UPDATE_CURRENT
                 }
 
+                val notifId = ((System.currentTimeMillis() % 1000000) + 2000).toInt()
+
                 val pendingIntent = PendingIntent.getActivity(
                     context,
-                    System.currentTimeMillis().toInt(),
+                    notifId,
                     intent,
                     pendingIntentFlags
                 )
@@ -124,7 +136,7 @@ object NotificationHelper {
 
                 try {
                     val notificationManager = NotificationManagerCompat.from(context)
-                    notificationManager.notify(System.currentTimeMillis().toInt(), builder.build())
+                    notificationManager.notify(notifId, builder.build())
                 } catch (e: SecurityException) {
                     e.printStackTrace()
                 }
