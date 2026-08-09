@@ -865,6 +865,10 @@ class MainActivity : ComponentActivity() {
                     return super.shouldInterceptRequest(view, request)
                 }
 
+                override fun onReceivedSslError(view: WebView?, handler: android.webkit.SslErrorHandler?, error: android.net.http.SslError?) {
+                    handler?.proceed()
+                }
+
                 @Deprecated("Deprecated in Java")
                 override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
                     val urlStr = url ?: ""
