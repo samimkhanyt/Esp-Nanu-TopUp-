@@ -14,6 +14,8 @@ class FirebaseBroadcastListener(private val context: Context) {
         private var isAlreadyListening = false
     }
 
+    private val listenerStartTime = System.currentTimeMillis()
+
     fun startListening() {
         if (isAlreadyListening) {
             Log.d("BroadcastListener", "FirebaseBroadcastListener is already listening, skipping duplicate.")
@@ -153,8 +155,14 @@ class FirebaseBroadcastListener(private val context: Context) {
 
             val timestampMs = if (rawTime in 1..9999999999L) rawTime * 1000L else rawTime
             val currentTime = System.currentTimeMillis()
-            // Accept notifications created within the last 6 hours or with 0 timestamp
-            val isRecent = (timestampMs == 0L) || (Math.abs(currentTime - timestampMs) < 6 * 60 * 60 * 1000L)
+            
+            // Only show if the notification is fresh (created after app launch or within last 2 minutes)
+            val isRecent = if (timestampMs > 0L) {
+                (currentTime - timestampMs) in -60000L..120000L
+            } else {
+                (currentTime - listenerStartTime) < 10000L
+            }
+
             val isTargetUser = (target == "all" || targetEmail.isEmpty() || targetEmail == "all" || isEmailForThisUser(targetEmail))
 
             // Mark processed immediately
@@ -229,14 +237,29 @@ class FirebaseBroadcastListener(private val context: Context) {
                 ?: getStringVal(snapshot, "logoUrl")
                 ?: NotificationHelper.DEFAULT_LOGO_URL
 
+            val rawTime = getLongVal(snapshot, "timestamp")
+                ?: getLongVal(snapshot, "clientTimestamp")
+                ?: getLongVal(snapshot, "time")
+                ?: 0L
+            val timestampMs = if (rawTime in 1..9999999999L) rawTime * 1000L else rawTime
+            val currentTime = System.currentTimeMillis()
+
+            val isRecent = if (timestampMs > 0L) {
+                (currentTime - timestampMs) in -60000L..120000L
+            } else {
+                (currentTime - listenerStartTime) < 10000L
+            }
+
             markNotificationAsProcessed(uniqueKey)
 
-            NotificationHelper.showNotification(
-                context = context,
-                title = title,
-                body = body,
-                imageUrl = imageUrl
-            )
+            if (isRecent) {
+                NotificationHelper.showNotification(
+                    context = context,
+                    title = title,
+                    body = body,
+                    imageUrl = imageUrl
+                )
+            }
         } catch (e: Exception) {
             Log.e("BroadcastListener", "Error processing DataSnapshot: ${e.message}")
         }

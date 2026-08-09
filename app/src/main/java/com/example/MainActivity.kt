@@ -269,16 +269,6 @@ class MainActivity : ComponentActivity() {
         try {
             FirebaseInitHelper.ensureInitialized(this)
 
-            try {
-                FirebaseMessaging.getInstance().subscribeToTopic("broadcast")
-                FirebaseMessaging.getInstance().subscribeToTopic("notifications_broadcast")
-                FirebaseMessaging.getInstance().subscribeToTopic("live_notifications")
-                FirebaseMessaging.getInstance().subscribeToTopic("all")
-                FirebaseMessaging.getInstance().subscribeToTopic("esp_topup")
-            } catch (e: Throwable) {
-                Log.e("MainActivity", "FirebaseMessaging subscribe error: ${e.message}")
-            }
-
             FirebaseBroadcastListener(applicationContext).startListening()
             syncFcmTokenWithFirebase()
         } catch (t: Throwable) {
@@ -291,7 +281,7 @@ class MainActivity : ComponentActivity() {
             FirebaseInitHelper.ensureInitialized(this)
             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                 if (!task.isSuccessful) {
-                    Log.w("MainActivity", "Fetching FCM registration token failed", task.exception)
+                    Log.w("MainActivity", "Fetching FCM registration token failed (FCM unavailable)", task.exception)
                     return@addOnCompleteListener
                 }
                 val token = task.result
@@ -302,14 +292,23 @@ class MainActivity : ComponentActivity() {
                     val savedEmail = (email ?: prefs.getString("user_email", ""))?.lowercase()?.trim() ?: ""
                     val savedUid = prefs.getString("user_uid", "")?.lowercase()?.trim() ?: ""
 
+                    val topics = listOf("broadcast", "notifications_broadcast", "live_notifications", "all", "esp_topup")
+                    for (topic in topics) {
+                        FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnCompleteListener { subTask ->
+                            if (!subTask.isSuccessful) {
+                                Log.w("MainActivity", "Topic $topic subscribe result: ${subTask.exception?.message}")
+                            }
+                        }
+                    }
+
                     if (savedUid.isNotEmpty()) {
                         val sanitizedUid = savedUid.replace(Regex("[.#$\\[\\]]"), "_")
-                        FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedUid")
+                        FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedUid").addOnCompleteListener {}
                     }
 
                     if (savedEmail.isNotEmpty()) {
                         val sanitizedEmail = savedEmail.replace(Regex("[.#$\\[\\]]"), "_")
-                        FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedEmail")
+                        FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedEmail").addOnCompleteListener {}
                     }
 
                     try {

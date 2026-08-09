@@ -104,13 +104,11 @@
             <div onclick="switchView('app-logos')" id="nav-app-logos" class="nav-link"><i class="fas fa-images w-8 text-center text-orange-400"></i> App Logo & Images</div>
             <div onclick="switchView('app-texts')" id="nav-app-texts" class="nav-link"><i class="fas fa-edit w-8 text-center text-orange-400"></i> App Text & Buttons</div>
             <div onclick="switchView('settings')" id="nav-settings" class="nav-link"><i class="fas fa-cog w-8 text-center"></i> Settings</div>
+            <div onclick="switchView('api-cfg')" id="nav-api-cfg" class="nav-link"><i class="fas fa-plug w-8 text-center text-amber-400"></i> API Settings</div>
             <div onclick="switchView('categories')" id="nav-categories" class="nav-link"><i class="fas fa-tags w-8 text-center"></i> Categories</div>
             <div onclick="switchView('services')" id="nav-services" class="nav-link"><i class="fas fa-gamepad w-8 text-center"></i> Services & Games</div>
-            <div onclick="switchView('orders')" id="nav-orders" class="nav-link"><i class="fas fa-shopping-cart w-8 text-center"></i> Orders</div>
-            <div onclick="switchView('deposits')" id="nav-deposits" class="nav-link"><i class="fas fa-wallet w-8 text-center"></i> Deposits</div>
             <div onclick="switchView('users')" id="nav-users" class="nav-link"><i class="fas fa-users w-8 text-center"></i> Users & Devices</div>
             <div onclick="switchView('push-notif')" id="nav-push-notif" class="nav-link"><i class="fas fa-bell w-8 text-center"></i> Push Notifications</div>
-            <div onclick="switchView('unpin')" id="nav-unpin" class="nav-link"><i class="fas fa-key w-8 text-center"></i> Unpin Code</div>
             <div onclick="switchView('tutorials')" id="nav-tutorials" class="nav-link"><i class="fas fa-video w-8 text-center"></i> Tutorials</div>
             <div onclick="switchView('banners')" id="nav-banners" class="nav-link"><i class="fas fa-image w-8 text-center"></i> Banners</div>
             <div onclick="switchView('popup')" id="nav-popup" class="nav-link"><i class="fas fa-bullhorn w-8 text-center"></i> Launch Popup</div>
@@ -180,6 +178,10 @@
                             <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mb-3 group-hover:bg-orange-500/10 transition-all"><i class="fas fa-cog text-xl text-gray-400 group-hover:text-orange-500"></i></div>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">Settings</span>
                         </div>
+                        <div onclick="switchView('api-cfg')" class="p-5 bg-dark-panel border border-amber-500/40 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 hover:border-amber-500 hover:bg-dark-bg group shadow-md shadow-amber-500/10">
+                            <div class="w-12 h-12 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center mb-3 group-hover:bg-amber-500/20 transition-all"><i class="fas fa-plug text-xl text-amber-400"></i></div>
+                            <span class="text-sm font-bold text-white group-hover:text-amber-400">API Settings</span>
+                        </div>
                         <div onclick="switchView('categories')" class="p-5 bg-dark-panel border border-dark-border rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 hover:border-orange-500 hover:bg-dark-bg group">
                             <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mb-3 group-hover:bg-orange-500/10 transition-all"><i class="fas fa-tags text-xl text-gray-400 group-hover:text-orange-500"></i></div>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">Categories</span>
@@ -187,14 +189,6 @@
                         <div onclick="switchView('services')" class="p-5 bg-dark-panel border border-dark-border rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 hover:border-orange-500 hover:bg-dark-bg group">
                             <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mb-3 group-hover:bg-orange-500/10 transition-all"><i class="fas fa-gamepad text-xl text-gray-400 group-hover:text-orange-500"></i></div>
                             <span class="text-sm font-medium text-gray-300 group-hover:text-white">Services</span>
-                        </div>
-                        <div onclick="switchView('orders')" class="p-5 bg-dark-panel border border-dark-border rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 hover:border-orange-500 hover:bg-dark-bg group">
-                            <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mb-3 group-hover:bg-orange-500/10 transition-all"><i class="fas fa-shopping-cart text-xl text-gray-400 group-hover:text-orange-500"></i></div>
-                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">Orders</span>
-                        </div>
-                        <div onclick="switchView('deposits')" class="p-5 bg-dark-panel border border-dark-border rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 hover:border-orange-500 hover:bg-dark-bg group">
-                            <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mb-3 group-hover:bg-orange-500/10 transition-all"><i class="fas fa-wallet text-xl text-gray-400 group-hover:text-orange-500"></i></div>
-                            <span class="text-sm font-medium text-gray-300 group-hover:text-white">Deposits</span>
                         </div>
                         <div onclick="switchView('users')" class="p-5 bg-dark-panel border border-dark-border rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 hover:border-orange-500 hover:bg-dark-bg group">
                             <div class="w-12 h-12 rounded-full bg-dark-bg border border-dark-border flex items-center justify-center mb-3 group-hover:bg-orange-500/10 transition-all"><i class="fas fa-users text-xl text-gray-400 group-hover:text-orange-500"></i></div>
@@ -630,58 +624,53 @@
                     </div>
 
                     <div class="card">
-                        <h3 class="text-lg font-bold text-white mb-5 border-b border-dark-border pb-3">Payment Modal Logo Config</h3>
-                        <div class="space-y-4">
-                            <div class="p-3 bg-dark-bg rounded-lg border border-dark-border space-y-3">
-                                <h4 class="text-xs font-bold text-pink-400 uppercase">bKash Loading / Modal Logo</h4>
-                                <div>
-                                    <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">bKash Modal Logo URL</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="text" id="set-bkash-logo" class="flat-input flex-1" placeholder="https://...">
-                                        <label class="cursor-pointer bg-dark-panel hover:bg-orange-500/20 text-orange-400 border border-dark-border hover:border-orange-500 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
-                                            <i class="fas fa-image"></i> Gallery
-                                            <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-bkash-logo')">
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="p-3 bg-dark-bg rounded-lg border border-dark-border space-y-3">
-                                <h4 class="text-xs font-bold text-orange-400 uppercase">Nagad Loading / Modal Logo</h4>
-                                <div>
-                                    <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Nagad Modal Logo URL</label>
-                                    <div class="flex items-center gap-2">
-                                        <input type="text" id="set-nagad-logo" class="flat-input flex-1" placeholder="https://...">
-                                        <label class="cursor-pointer bg-dark-panel hover:bg-orange-500/20 text-orange-400 border border-dark-border hover:border-orange-500 px-3 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap">
-                                            <i class="fas fa-image"></i> Gallery
-                                            <input type="file" accept="image/*" class="hidden" onchange="uploadImageFromGallery(this, 'set-nagad-logo')">
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button onclick="saveSettings('payment')" class="flat-btn w-full mt-2"><i class="fas fa-save"></i> Save Payment Logos</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
                         <h3 class="text-lg font-bold text-white mb-5 border-b border-dark-border pb-3">Advanced Config</h3>
                         <div class="space-y-4">
                             <div><label class="block text-xs text-gray-400 mb-1 font-semibold uppercase">How To Add Money (Video ID)</label><input type="text" id="set-tutorial-vid" class="flat-input" placeholder="dQw4w9WgXcQ"></div>
-                            <div class="flex items-center gap-3 p-4 bg-dark-bg rounded-lg border border-dark-border mt-2">
-                                <input type="checkbox" id="set-autopay" class="w-5 h-5 accent-orange-500 rounded cursor-pointer">
-                                <label for="set-autopay" class="text-sm font-bold text-white cursor-pointer select-none">Enable Auto Pay System</label>
-                            </div>
-                            <div class="border-t border-dark-border pt-4 mt-2">
-                                <h4 class="text-sm font-bold text-orange-500 mb-3">Auto TopUp API Setup</h4>
-                                <div class="space-y-3">
-                                    <input type="text" id="set-api-key" placeholder="API Key" class="flat-input">
-                                    <input type="text" id="set-api-url" placeholder="API URL" class="flat-input">
-                                    <input type="text" id="set-api-callback" placeholder="Callback URL" class="flat-input">
-                                </div>
-                            </div>
                             <button onclick="saveSettings('advanced')" class="flat-btn w-full mt-2"><i class="fas fa-save"></i> Save Advanced Config</button>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API & Auto System Settings View -->
+            <div id="view-api-cfg" class="view-section hidden">
+                <div class="card mb-6 max-w-3xl border-amber-500/30">
+                    <h3 class="text-xl font-extrabold text-amber-400 mb-2 flex items-center gap-2 border-b border-dark-border pb-3">
+                        <i class="fas fa-plug text-amber-500"></i> এপিআই ও অটো সিস্টেম সেটিংস (API & Auto Config)
+                    </h3>
+                    <p class="text-xs text-gray-400 mb-6">এখানে অটো পে এবং অটো টপআপ এপিআই কী ও ইউআরএল এর সমস্ত সেটিংস আলাদাভাবে কনফিগার করতে পারবেন।</p>
+                    
+                    <div class="space-y-5">
+                        <div class="flex items-center gap-3 p-4 bg-dark-bg rounded-xl border border-dark-border">
+                            <input type="checkbox" id="set-autopay" class="w-5 h-5 accent-amber-500 rounded cursor-pointer">
+                            <div>
+                                <label for="set-autopay" class="text-sm font-bold text-white cursor-pointer select-none">Enable Auto Pay System (অটো পে সিস্টেম চালু রাখুন)</label>
+                                <p class="text-[11px] text-gray-400">অটো পেমেন্ট গেটওয়ে চালু বা বন্ধ করতে এই অপশনটি টিক দিন।</p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 bg-dark-bg rounded-xl border border-dark-border space-y-4">
+                            <h4 class="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                                <i class="fas fa-key"></i> Auto TopUp API Credentials
+                            </h4>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">API Key (এপিআই কী)</label>
+                                <input type="text" id="set-api-key" placeholder="Enter API Key" class="flat-input font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">API URL (এপিআই ইউআরএল)</label>
+                                <input type="text" id="set-api-url" placeholder="https://api.example.com/v1" class="flat-input font-mono">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">Callback URL (কলব্যাক ইউআরএল)</label>
+                                <input type="text" id="set-api-callback" placeholder="https://your-domain.com/callback" class="flat-input font-mono">
+                            </div>
+                        </div>
+
+                        <button onclick="saveSettings('api_cfg')" class="flat-btn w-full py-3 text-base shadow-lg shadow-amber-500/20 bg-amber-500 hover:bg-amber-400">
+                            <i class="fas fa-save mr-1"></i> সেভ করুন (Save API Settings)
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1279,7 +1268,7 @@
             }
             if(!db) return;
             if(viewId === 'dashboard') loadDashboardData();
-            if(viewId === 'settings' || viewId === 'popup' || viewId === 'app-logos' || viewId === 'app-texts') loadSettings();
+            if(viewId === 'settings' || viewId === 'popup' || viewId === 'app-logos' || viewId === 'app-texts' || viewId === 'api-cfg') loadSettings();
             if(viewId === 'categories') loadCategories();
             if(viewId === 'services') loadServices();
             if(viewId === 'products') {
@@ -1290,11 +1279,8 @@
                 if(param1) { currentProductId = param1; currentProductName = param2; }
                 loadStock();
             }
-            if(viewId === 'orders') loadOrders();
-            if(viewId === 'deposits') loadDeposits();
             if(viewId === 'users') loadUsers();
             if(viewId === 'push-notif') loadNotificationsHistory();
-            if(viewId === 'unpin') loadUnpinCodes();
             if(viewId === 'tutorials') loadTutorials();
             if(viewId === 'banners') loadBanners();
             if(viewId === 'firebase-cfg') loadFirebaseConfigToAdmin();
@@ -1523,6 +1509,9 @@
                     nagad_modal_logo: ngLogo
                 }, {merge: true});
             } else if (type === 'advanced') {
+                db.collection('settings').doc('videos').set({ howToAddMoney: getVal('set-tutorial-vid') }, {merge: true});
+                p1 = Promise.resolve();
+            } else if (type === 'api_cfg') {
                 const ap = document.getElementById('set-autopay');
                 p1 = db.collection('settings').doc('general').set({
                     autoPayEnabled: ap ? ap.checked : false,
@@ -1530,7 +1519,6 @@
                     autoTopUpApiUrl: getVal('set-api-url'),
                     autoTopUpCallbackUrl: getVal('set-api-callback')
                 }, {merge: true});
-                db.collection('settings').doc('videos').set({ howToAddMoney: getVal('set-tutorial-vid') }, {merge: true});
             } else if (type === 'popup') {
                 const lpe = document.getElementById('set-launch-popup-enabled');
                 p1 = db.collection('settings').doc('general').set({

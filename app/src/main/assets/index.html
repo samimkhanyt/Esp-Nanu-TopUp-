@@ -109,8 +109,8 @@
 
         /* --- Fade Toast Notification --- */
         #custom-toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            z-index: 10000; opacity: 0; transition: opacity 0.5s ease-in-out; pointer-events: none;
+            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
+            z-index: 999999 !important; opacity: 0; transition: opacity 0.4s ease-in-out; pointer-events: none;
             width: max-content;
             max-width: 92vw;
         }
@@ -866,13 +866,9 @@
 
         <!-- Referral & Earn Full-Screen Modal -->
         <div id="refer-modal" class="fixed inset-0 bg-slate-50 z-[10020] hidden flex-col w-full h-full overflow-y-auto animate-fade-in">
-            <!-- Header with Back Button -->
-            <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-3.5 flex items-center justify-between sticky top-0 z-10 shadow-md">
-                <button onclick="closeReferralModal()" class="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition active:scale-90">
-                    <i class="fas fa-arrow-left text-sm"></i>
-                </button>
+            <!-- Header without top back button (controlled via phone back button) -->
+            <div class="bg-gradient-to-r from-amber-500 to-orange-600 text-white px-4 py-3.5 flex items-center justify-center sticky top-0 z-10 shadow-md">
                 <h2 class="text-sm font-extrabold tracking-wide">রেফার করুন ও আয় করুন (Refer & Earn)</h2>
-                <div class="w-9"></div>
             </div>
 
             <!-- Full-Screen Content -->
@@ -1579,14 +1575,10 @@
 
     <!-- Full-Screen User Settings Page -->
     <div id="user-settings-page" class="fixed inset-0 bg-slate-100 z-[10005] hidden flex-col overflow-y-auto animate-fade-in">
-        <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-between">
-            <button onclick="closeUserSettingsPage()" class="w-10 h-10 rounded-full bg-slate-800/80 border border-slate-700 flex items-center justify-center text-white hover:bg-slate-700 active:scale-95 transition">
-                <i class="fas fa-arrow-left text-base"></i>
-            </button>
+        <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-center">
             <h2 class="text-lg font-extrabold tracking-wide text-amber-400 flex items-center gap-2">
                 <i class="fas fa-cog text-orange-400"></i> সেটিংস (Settings)
             </h2>
-            <div class="w-10"></div>
         </div>
 
         <div class="p-4 max-w-md mx-auto w-full space-y-4 my-2">
@@ -1642,14 +1634,10 @@
 
     <!-- Full-Screen Balance Transfer Page -->
     <div id="balance-transfer-modal" class="fixed inset-0 bg-slate-100 z-[10020] hidden flex-col w-full h-full overflow-y-auto animate-fade-in">
-        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-between">
-            <button onclick="closeBalanceTransferModal()" class="w-10 h-10 rounded-full bg-white/20 border border-white/30 flex items-center justify-center text-white hover:bg-white/30 active:scale-95 transition">
-                <i class="fas fa-arrow-left text-base"></i>
-            </button>
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-center">
             <h2 class="text-base font-extrabold tracking-wide text-white flex items-center gap-2">
                 <i class="fas fa-exchange-alt"></i> ব্যালেন্স ট্রান্সফার (Transfer)
             </h2>
-            <div class="w-10"></div>
         </div>
 
         <div class="p-4 max-w-md mx-auto w-full space-y-4 my-2 flex-1 pb-12">
@@ -1770,11 +1758,8 @@
 
 <div id="user-deposit-history-modal" class="fixed inset-0 bg-white z-[10020] flex flex-col hidden transition-all duration-300">
     <div class="bg-white w-full h-full overflow-hidden flex flex-col animate-fade-in">
-        <div class="p-4 bg-gradient-to-r from-sky-500 to-blue-600 text-white flex items-center justify-between shadow-md">
-            <div class="flex items-center gap-3">
-                <button onclick="hideUserDepositHistoryModal()" class="text-white hover:text-gray-200 text-xl font-bold border-none bg-transparent outline-none cursor-pointer p-1">
-                    <i class="fas fa-arrow-left"></i>
-                </button>
+        <div class="p-4 bg-gradient-to-r from-sky-500 to-blue-600 text-white flex items-center justify-center shadow-md">
+            <div class="flex items-center justify-center gap-2">
                 <i class="fas fa-history text-xl"></i>
                 <h3 class="font-extrabold text-lg">ডিপোজিট হিস্ট্রি</h3>
             </div>
@@ -2223,6 +2208,7 @@ function loadGlobalSettings() {
 
 function showLaunchPopup(data) {
     if (!data) return;
+    if (window.hasLaunchPopupBeenShown) return;
     const modal = document.getElementById('launch-popup-modal');
     const titleEl = document.getElementById('popup-title');
     const msgEl = document.getElementById('popup-msg');
@@ -2283,7 +2269,10 @@ function showLaunchPopup(data) {
         imgContainer.classList.add('hidden');
     }
 
-    if (modal) modal.classList.remove('hidden');
+    if (modal) {
+        modal.classList.remove('hidden');
+        window.hasLaunchPopupBeenShown = true;
+    }
 }
 
 function closeLaunchPopup() {
@@ -6173,7 +6162,7 @@ function executeBalanceTransfer() {
             return;
         }
 
-        const shortPin = targetPin.replace('ESP-', '');
+        const cleanRawPin = rawPin.toUpperCase().replace('ESP-', '');
 
         db.collection('users').get().then(usersSnap => {
             let receiverDoc = null;
@@ -6181,10 +6170,19 @@ function executeBalanceTransfer() {
             usersSnap.forEach(uDoc => {
                 const uData = uDoc.data() || {};
                 const uUid = uDoc.id;
-                let uPin = (uData.supportPin || uData.referralCode || ("ESP-" + uUid.substring(0, 6).toUpperCase())).toUpperCase();
-                if (!uPin.startsWith('ESP-')) uPin = 'ESP-' + uPin;
+                
+                let uSupportPin = (uData.supportPin || '').toUpperCase().replace('ESP-', '');
+                let uReferralCode = (uData.referralCode || '').toUpperCase().replace('ESP-', '');
+                let uShortUid = uUid.substring(0, 6).toUpperCase();
+                let uEmail = (uData.email || uData.userEmail || '').toLowerCase();
 
-                if (uPin === targetPin || uUid.toUpperCase().startsWith(shortPin)) {
+                if (cleanRawPin && (
+                    cleanRawPin === uSupportPin || 
+                    cleanRawPin === uReferralCode || 
+                    cleanRawPin === uShortUid || 
+                    uUid.toUpperCase() === rawPin.toUpperCase() ||
+                    (rawPin.length >= 5 && uEmail.startsWith(rawPin.toLowerCase()))
+                )) {
                     if (uUid !== senderUid) {
                         receiverDoc = { id: uUid, data: uData };
                     }
