@@ -49,7 +49,7 @@ class MainActivity : ComponentActivity() {
         @JavascriptInterface
         fun exitApp() {
             activity.runOnUiThread {
-                activity.finish()
+                activity.finishAffinity()
             }
         }
 
@@ -77,6 +77,22 @@ class MainActivity : ComponentActivity() {
         @JavascriptInterface
         fun setUserEmail(email: String) {
             activity.saveUserEmail(email)
+        }
+
+        @JavascriptInterface
+        fun setNotificationLogo(url: String) {
+            if (!url.isNullOrEmpty()) {
+                val prefs = activity.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
+                prefs.edit().putString("cached_notif_logo", url).apply()
+            }
+        }
+
+        @JavascriptInterface
+        fun setAppName(appName: String) {
+            if (!appName.isNullOrEmpty()) {
+                val prefs = activity.getSharedPreferences("app_prefs", android.content.Context.MODE_PRIVATE)
+                prefs.edit().putString("site_name", appName).apply()
+            }
         }
 
         @JavascriptInterface
@@ -279,63 +295,80 @@ class MainActivity : ComponentActivity() {
     fun syncFcmTokenWithFirebase(email: String? = null) {
         try {
             FirebaseInitHelper.ensureInitialized(this)
+            
+            // Check Google Play Services availability before invoking FCM tasks
+            val googleApiAvailability = com.google.android.gms.common.GoogleApiAvailability.getInstance()
+            val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
+            if (resultCode != com.google.android.gms.common.ConnectionResult.SUCCESS) {
+                Log.w("MainActivity", "Google Play Services unavailable ($resultCode), relying on Realtime Database fallback for notifications.")
+                return
+            }
+
             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    Log.w("MainActivity", "Fetching FCM registration token failed (FCM unavailable)", task.exception)
-                    return@addOnCompleteListener
-                }
-                val token = task.result
-                if (!token.isNullOrEmpty()) {
-                    val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
-                    prefs.edit().putString("fcm_token", token).apply()
+                try {
+                    if (!task.isSuccessful) {
+                        Log.w("MainActivity", "Fetching FCM registration token failed (FCM unavailable): ${task.exception?.message}")
+                        return@addOnCompleteListener
+                    }
+                    val token = task.result
+                    if (!token.isNullOrEmpty()) {
+                        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+                        prefs.edit().putString("fcm_token", token).apply()
 
-                    val savedEmail = (email ?: prefs.getString("user_email", ""))?.lowercase()?.trim() ?: ""
-                    val savedUid = prefs.getString("user_uid", "")?.lowercase()?.trim() ?: ""
+                        val savedEmail = (email ?: prefs.getString("user_email", ""))?.lowercase()?.trim() ?: ""
+                        val savedUid = prefs.getString("user_uid", "")?.lowercase()?.trim() ?: ""
 
-                    val topics = listOf("broadcast", "notifications_broadcast", "live_notifications", "all", "esp_topup")
-                    for (topic in topics) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnCompleteListener { subTask ->
-                            if (!subTask.isSuccessful) {
-                                Log.w("MainActivity", "Topic $topic subscribe result: ${subTask.exception?.message}")
+                        val topics = listOf("broadcast", "notifications_broadcast", "live_notifications", "all", "esp_topup")
+                        for (topic in topics) {
+                            try {
+                                FirebaseMessaging.getInstance().subscribeToTopic(topic).addOnCompleteListener { subTask ->
+                                    if (!subTask.isSuccessful) {
+                                        Log.w("MainActivity", "Topic $topic subscribe result: ${subTask.exception?.message}")
+                                    }
+                                }
+                            } catch (te: Throwable) {
+                                Log.w("MainActivity", "Topic $topic exception: ${te.message}")
                             }
                         }
-                    }
 
-                    if (savedUid.isNotEmpty()) {
-                        val sanitizedUid = savedUid.replace(Regex("[.#$\\[\\]]"), "_")
-                        FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedUid").addOnCompleteListener {}
-                    }
-
-                    if (savedEmail.isNotEmpty()) {
-                        val sanitizedEmail = savedEmail.replace(Regex("[.#$\\[\\]]"), "_")
-                        FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedEmail").addOnCompleteListener {}
-                    }
-
-                    try {
-                        val db = com.google.firebase.database.FirebaseDatabase.getInstance("https://samim-firebase-default-rtdb.firebaseio.com")
-                        val tokenData = HashMap<String, Any>()
-                        tokenData["token"] = token
-                        tokenData["email"] = savedEmail
-                        tokenData["uid"] = savedUid
-                        tokenData["updatedAt"] = System.currentTimeMillis()
-
-                        val sanitizedToken = token.replace(Regex("[.#$\\[\\]]"), "_")
-                        db.getReference("fcm_tokens").child(sanitizedToken).setValue(tokenData)
+                        if (savedUid.isNotEmpty()) {
+                            val sanitizedUid = savedUid.replace(Regex("[.#$\\[\\]]"), "_")
+                            try { FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedUid").addOnCompleteListener {} } catch (_: Throwable) {}
+                        }
 
                         if (savedEmail.isNotEmpty()) {
-                            val emailKey = savedEmail.replace(Regex("[.#$\\[\\]]"), "_")
-                            db.getReference("user_tokens").child(emailKey).setValue(tokenData)
+                            val sanitizedEmail = savedEmail.replace(Regex("[.#$\\[\\]]"), "_")
+                            try { FirebaseMessaging.getInstance().subscribeToTopic("user_$sanitizedEmail").addOnCompleteListener {} } catch (_: Throwable) {}
                         }
-                        if (savedUid.isNotEmpty()) {
-                            db.getReference("users").child(savedUid).child("fcmToken").setValue(token)
+
+                        try {
+                            val db = com.google.firebase.database.FirebaseDatabase.getInstance("https://samim-firebase-default-rtdb.firebaseio.com")
+                            val tokenData = HashMap<String, Any>()
+                            tokenData["token"] = token
+                            tokenData["email"] = savedEmail
+                            tokenData["uid"] = savedUid
+                            tokenData["updatedAt"] = System.currentTimeMillis()
+
+                            val sanitizedToken = token.replace(Regex("[.#$\\[\\]]"), "_")
+                            db.getReference("fcm_tokens").child(sanitizedToken).setValue(tokenData)
+
+                            if (savedEmail.isNotEmpty()) {
+                                val emailKey = savedEmail.replace(Regex("[.#$\\[\\]]"), "_")
+                                db.getReference("user_tokens").child(emailKey).setValue(tokenData)
+                            }
+                            if (savedUid.isNotEmpty()) {
+                                db.getReference("users").child(savedUid).child("fcmToken").setValue(token)
+                            }
+                        } catch (e: Exception) {
+                            Log.e("MainActivity", "Error uploading FCM token: ${e.message}")
                         }
-                    } catch (e: Exception) {
-                        Log.e("MainActivity", "Error uploading FCM token: ${e.message}")
                     }
+                } catch (t: Throwable) {
+                    Log.w("MainActivity", "FCM token handling safely caught exception: ${t.message}")
                 }
             }
-        } catch (e: Exception) {
-            Log.e("MainActivity", "Error getting FCM token: ${e.message}")
+        } catch (e: Throwable) {
+            Log.w("MainActivity", "Error requesting FCM token: ${e.message}")
         }
     }
 
@@ -784,6 +817,8 @@ class MainActivity : ComponentActivity() {
             settings.userAgentString = settings.userAgentString + " EspTopUpApp/1.0"
 
             webView.addJavascriptInterface(WebAppInterface(this), "AndroidApp")
+            webView.addJavascriptInterface(WebAppInterface(this), "AndroidInterface")
+            webView.addJavascriptInterface(WebAppInterface(this), "Android")
 
             webView.webViewClient = object : WebViewClient() {
                 override fun onPageFinished(view: WebView?, url: String?) {

@@ -20,11 +20,11 @@ import java.net.URL
 object NotificationHelper {
 
     const val SERVICE_NOTIFICATION_ID = 1001
-    const val CHANNEL_ID = "esp_admin_channel_v2"
+    const val CHANNEL_ID = "esp_admin_channel_v3"
     const val CHANNEL_NAME = "Esp TopUp Notifications"
-    const val SERVICE_CHANNEL_ID = "persistent_service_channel_v4"
+    const val SERVICE_CHANNEL_ID = "persistent_service_channel_v5"
     const val SERVICE_CHANNEL_NAME = "Persistent Service"
-    const val DEFAULT_LOGO_URL = "https://i.ibb.co.com/m5Wqb5QV/1000022763.jpg"
+    const val DEFAULT_LOGO_URL = "https://i.ibb.co.com/dJgG0NNN/1000026095.jpg"
 
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -41,20 +41,24 @@ object NotificationHelper {
             val serviceChannel = NotificationChannel(
                 SERVICE_CHANNEL_ID,
                 SERVICE_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_LOW
+                NotificationManager.IMPORTANCE_MIN
             ).apply {
-                description = "Esp TopUp Ongoing Persistent Service"
+                description = "Esp TopUp Ongoing Background Service"
                 enableLights(false)
                 enableVibration(false)
                 setSound(null, null)
                 setShowBadge(false)
-                lockscreenVisibility = android.app.Notification.VISIBILITY_PUBLIC
+                lockscreenVisibility = android.app.Notification.VISIBILITY_SECRET
             }
             notificationManager.createNotificationChannel(serviceChannel)
         }
     }
 
     fun buildOngoingServiceNotification(context: Context): android.app.Notification {
+        createNotificationChannel(context)
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val appName = prefs.getString("site_name", "Esp TopUp") ?: "Esp TopUp"
+
         val intent = Intent(context, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
         }
@@ -67,13 +71,14 @@ object NotificationHelper {
 
         val notification = NotificationCompat.Builder(context, SERVICE_CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification_small)
-            .setColor(0xFFE53935.toInt())
-            .setContentTitle("Esp TopUp")
-            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setColor(0xFF0284C7.toInt())
+            .setContentTitle(appName)
+            .setContentText("")
+            .setPriority(NotificationCompat.PRIORITY_MIN)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
-            .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setSound(null)
             .build()
 
@@ -85,12 +90,23 @@ object NotificationHelper {
         context: Context,
         title: String?,
         body: String?,
-        imageUrl: String? = DEFAULT_LOGO_URL
+        imageUrl: String? = null
     ) {
         createNotificationChannel(context)
         val safeTitle = if (!title.isNullOrEmpty()) title else "Esp TopUp"
         val safeBody = body ?: ""
-        val targetUrl = if (!imageUrl.isNullOrEmpty()) imageUrl else DEFAULT_LOGO_URL
+
+        val prefs = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        val cachedLogo = prefs.getString("cached_notif_logo", null)
+
+        var targetUrl = imageUrl
+        if (targetUrl.isNullOrEmpty() || targetUrl == "logo.png" || targetUrl.contains("1000015293.jpg") || targetUrl.contains("1000022763.jpg")) {
+            if (!cachedLogo.isNullOrEmpty()) {
+                targetUrl = cachedLogo
+            } else {
+                targetUrl = DEFAULT_LOGO_URL
+            }
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             val bitmap = downloadBitmap(targetUrl)
@@ -117,11 +133,12 @@ object NotificationHelper {
 
                 val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                     .setSmallIcon(R.drawable.ic_notification_small)
-                    .setColor(0xFFE53935.toInt()) // Red accent color for notification icon
+                    .setColor(0xFFE53935.toInt())
                     .setColorized(true)
                     .setContentTitle(safeTitle)
                     .setContentText(safeBody)
                     .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     .setAutoCancel(true)
                     .setDefaults(NotificationCompat.DEFAULT_ALL)

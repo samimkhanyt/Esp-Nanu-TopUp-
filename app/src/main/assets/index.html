@@ -109,8 +109,8 @@
 
         /* --- Fade Toast Notification --- */
         #custom-toast {
-            position: fixed; top: 80px; left: 50%; transform: translateX(-50%);
-            z-index: 999999 !important; opacity: 0; transition: opacity 0.4s ease-in-out; pointer-events: none;
+            position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+            z-index: 999999 !important; opacity: 0; transition: opacity 0.4s ease-in-out, top 0.3s ease, bottom 0.3s ease, left 0.3s ease, right 0.3s ease, transform 0.3s ease; pointer-events: none;
             width: max-content;
             max-width: 92vw;
         }
@@ -590,46 +590,125 @@
         }
 
         #global-page-loader {
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100vw; 
-            height: 100vh;
-            background: #ffffff; 
-            z-index: 99999;
+            position: fixed !important; 
+            top: 0 !important; 
+            left: 0 !important; 
+            width: 100vw !important; 
+            height: 100vh !important;
+            background: #ffffff !important; 
+            z-index: 999999 !important;
             display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center;
-            transition: opacity 0.4s ease, visibility 0.4s ease;
+            flex-direction: column !important; 
+            align-items: center !important; 
+            justify-content: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-sizing: border-box !important;
+            transition: opacity 0.3s ease, visibility 0.3s ease !important;
         }
-        #global-page-loader.fade-out {
-            opacity: 0;
-            visibility: hidden;
+        #global-page-loader.fade-out,
+        #global-page-loader.hidden {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            display: none !important;
         }
+
+        .loader-logo-card {
+            width: 120px !important;
+            height: 120px !important;
+            max-width: 120px !important;
+            max-height: 120px !important;
+            background-color: #ffffff !important;
+            border: 2px solid #0f172a !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12) !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 10px !important;
+            overflow: hidden !important;
+            box-sizing: border-box !important;
+            margin-bottom: 30px !important;
+        }
+
+        #loader-logo-img {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain !important;
+            border-radius: 12px !important;
+            display: block !important;
+        }
+
+        .loader-bottom-area {
+            position: absolute !important;
+            bottom: 36px !important;
+            left: 0 !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 20px !important;
+            box-sizing: border-box !important;
+        }
+
         .spinner-loader {
-            width: 48px; 
-            height: 48px;
-            border: 5px solid #f3f3f3; 
-            border-top: 5px solid #03a9f4;
-            border-radius: 50%; 
-            animation: spin-loader 0.9s linear infinite;
+            width: 42px !important; 
+            height: 42px !important;
+            border: 4px solid #f1f5f9 !important; 
+            border-top: 4px solid #0284c7 !important;
+            border-radius: 50% !important; 
+            animation: spin-loader 0.8s linear infinite !important;
+            margin-bottom: 8px !important;
         }
         @keyframes spin-loader { 
             0% { transform: rotate(0deg); } 
             100% { transform: rotate(360deg); } 
         }
 
+        #loader-app-name-text {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            color: #0284c7 !important;
+            letter-spacing: 0.05em !important;
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
+            margin: 0 !important;
+            text-align: center !important;
+        }
+
+        .net-box {
+            margin-top: 12px !important;
+            padding: 8px 16px !important;
+            border-radius: 9999px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+            transition: all 0.3s ease !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            max-width: 90% !important;
+            text-align: center !important;
+            font-family: 'Poppins', system-ui, -apple-system, sans-serif !important;
+            box-sizing: border-box !important;
+        }
+
         .net-box.offline {
-            background-color: #fef2f2;
-            color: #ef4444;
-            border: 1px solid #fca5a5;
+            background-color: #fef2f2 !important;
+            color: #ef4444 !important;
+            border: 1px solid #fca5a5 !important;
+            display: flex !important;
         }
 
         .net-box.online {
-            background-color: #f0fdf4;
-            color: #16a34a;
-            border: 1px solid #86efac;
+            background-color: #f0fdf4 !important;
+            color: #16a34a !important;
+            border: 1px solid #86efac !important;
+            display: flex !important;
         }
 
         .net-box.hidden {
@@ -650,24 +729,34 @@
             100% { transform: rotate(360deg); }
         }
     </style>
+    <style id="custom-loader-css"></style>
+    <script>
+        (function() {
+            try {
+                if (localStorage.getItem('cached_loader_enabled') === 'false') {
+                    window.isLoaderEnabled = false;
+                    document.write('<style>#global-page-loader{display:none !important;opacity:0 !important;visibility:hidden !important;pointer-events:none !important;}</style>');
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
 <body class="select-none bg-slate-50 m-0 p-0">
-<div id="global-page-loader" class="relative">
-    <div class="w-32 h-32 bg-white border-2 border-slate-900 rounded-2xl shadow-xl flex items-center justify-center p-2.5 overflow-hidden aspect-square">
+<div id="global-page-loader">
+    <div class="loader-logo-card">
         <img id="loader-logo-img" 
-             src="https://i.ibb.co.com/m5Wqb5QV/1000022763.jpg" 
+             src="https://i.ibb.co.com/bR3yqm2V/1000022763.jpg" 
              alt="Logo" 
              loading="eager" 
              fetchpriority="high" 
-             onerror="this.onerror=null;this.src='logo.png'"
-             class="w-full h-full object-contain rounded-xl">
+             onerror="this.onerror=null;this.src='https://i.ibb.co.com/bR3yqm2V/1000022763.jpg'">
     </div>
 
-    <div class="absolute bottom-10 flex flex-col items-center w-full px-6">
-        <div class="spinner-loader mb-2"></div>
-        <p class="text-xs font-bold text-sky-600 tracking-wider">Esp TopUp</p>
+    <div class="loader-bottom-area">
+        <div class="spinner-loader"></div>
+        <p id="loader-app-name-text">Esp TopUp</p>
 
-        <div id="net-status-box" class="net-box hidden mt-3 px-4 py-2 rounded-full text-xs font-semibold shadow-sm transition-all duration-300 flex items-center gap-2">
+        <div id="net-status-box" class="net-box hidden">
             <span id="net-status-icon"></span>
             <span id="net-status-text"></span>
         </div>
@@ -691,20 +780,20 @@
         </div>
 
         <div id="header-login-container">
-            <button onclick="showSec('auth')" class="bg-sky-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-md hover:bg-sky-700 transition">
+            <button id="top-login-btn" onclick="showSec('auth')" class="bg-sky-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-md hover:bg-sky-700 transition">
                 <i class="fas fa-sign-in-alt mr-1"></i> Login
             </button>
         </div>
     </header>
 
     <div id="notice-section" style="position: relative; z-index: 30; width: 100%;">
-        <div class="premium-notice" style="display: flex; align-items: center; justify-between: flex-start; padding: 12px 16px; background-color: #0284c7; color: #ffffff; width: 100%;">
-            <i class="fas fa-bullhorn text-yellow-300" style="font-size: 26px; margin-right: 12px; flex-shrink: 0;"></i>
+        <div id="notice-box-container" class="premium-notice" style="display: flex; align-items: center; justify-content: flex-start; padding: 12px 16px; background-color: #0284c7; color: #ffffff; width: 100%;">
+            <i id="notice-icon" class="fas fa-bullhorn text-yellow-300" style="font-size: 26px; margin-right: 12px; flex-shrink: 0;"></i>
             
             <div id="notice-text" style="font-size: 22px !important; font-weight: 800 !important; color: #ffffff !important; line-height: 1.3; flex-grow: 1; word-break: break-word;">
             </div>
 
-            <button onclick="this.parentElement.parentElement.style.display='none'" class="notice-close" style="background: none; border: none; color: #ffffff; font-size: 22px; cursor: pointer; margin-left: 12px; flex-shrink: 0;">
+            <button id="notice-close-btn" onclick="this.parentElement.parentElement.style.display='none'" class="notice-close" style="background: none; border: none; color: #ffffff; font-size: 22px; cursor: pointer; margin-left: 12px; flex-shrink: 0;">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -719,7 +808,7 @@
                 <div class="flex-1 flex flex-col items-center justify-center w-full my-auto">
                     <div class="mb-8 flex items-center justify-center">
                         <div class="w-32 h-32 sm:w-40 sm:h-40 bg-white border-2 border-slate-900 rounded-2xl shadow-xl flex items-center justify-center p-2.5 overflow-hidden">
-                            <img id="login-logo-img" src="https://i.ibb.co.com/m5Wqb5QV/1000022763.jpg" alt="Esp TopUp Logo" onerror="this.onerror=null;this.src='logo.png'" class="w-full h-full object-contain rounded-xl filter drop-shadow-sm transform hover:scale-105 transition duration-300">
+                            <img id="login-logo-img" src="https://i.ibb.co.com/dJgG0NNN/1000026095.jpg" alt="Esp TopUp Logo" onerror="this.onerror=null;this.src='logo.png'" class="w-full h-full object-contain rounded-xl filter drop-shadow-sm transform hover:scale-105 transition duration-300">
                         </div>
                     </div>
 
@@ -761,6 +850,22 @@
                     <div id="popup-title" class="text-base sm:text-lg font-extrabold text-slate-800 leading-snug whitespace-pre-line w-full hidden"></div>
                     <div id="popup-msg" class="text-sm sm:text-base text-slate-700 font-medium leading-relaxed whitespace-pre-line w-full hidden"></div>
                 </div>
+            </div>
+        </div>
+
+        <!-- APP FORCE UPDATE LOCK SCREEN MODAL -->
+        <div id="app-update-modal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-[999998] hidden flex flex-col items-center justify-center p-4 text-center select-none overflow-y-auto">
+            <div class="bg-slate-900/90 border border-amber-500/30 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl shadow-amber-950/50 flex flex-col items-center text-center relative animate-fade-in my-auto">
+                <div class="w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/30 flex items-center justify-center text-amber-500 text-4xl mb-4 shadow-lg shadow-amber-500/20 animate-pulse">
+                    <i class="fas fa-cloud-download-alt"></i>
+                </div>
+                <h2 class="text-xl sm:text-2xl font-black text-white tracking-wide mb-2">নতুন আপডেট উপলব্ধ!</h2>
+                <p id="app-update-notice-msg" class="text-xs sm:text-sm text-slate-300 font-medium leading-relaxed mb-6 bg-slate-800/80 p-3.5 rounded-2xl border border-slate-700/60 w-full">
+                    অ্যাপটির নতুন ভার্সন এসেছে! নির্বিঘ্নে ব্যবহারের জন্য এখনই অ্যাপটি আপডেট করুন।
+                </p>
+                <a id="app-update-download-btn" href="#" target="_blank" class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black py-3.5 px-6 rounded-2xl shadow-xl shadow-amber-500/20 text-base tracking-wide flex items-center justify-center gap-2 transition transform active:scale-95 text-decoration-none">
+                    <i class="fas fa-download text-lg"></i> এখনই আপডেট করুন
+                </a>
             </div>
         </div>
 
@@ -1303,8 +1408,8 @@
                         </div>
                     </div>
 
-                    <!-- Deposit Warning Rules Box (চূড়ান্ত রুলস - Pushed further down with clear space) -->
-                    <div id="deposit-rules-box" class="w-full bg-white border border-gray-200 border-t-4 border-t-red-600 rounded-2xl p-5 shadow-lg text-left space-y-4 relative overflow-hidden mt-32 sm:mt-40 mb-8">
+                    <!-- Deposit Warning Rules Box (চূড়ান্ত রুলস - adjusted neatly) -->
+                    <div id="deposit-rules-box" class="w-full bg-white border border-gray-200 border-t-4 border-t-red-600 rounded-2xl p-4 sm:p-5 shadow-lg text-left space-y-3 relative overflow-hidden mt-6 mb-2">
                         <div class="flex items-start gap-2.5">
                             <div class="w-8 h-8 rounded-full bg-red-100 border border-red-300 flex items-center justify-center text-red-600 text-sm font-bold flex-shrink-0 mt-0.5 animate-pulse">
                                 <i class="fas fa-exclamation-triangle"></i>
@@ -1319,17 +1424,18 @@
                             </div>
                         </div>
 
-                        <!-- Animated Social Help Buttons -->
-                        <div class="pt-3 border-t border-gray-200 flex items-center gap-2.5">
+                        <!-- Social Help Buttons (Clean Icon & Text without background colored box) -->
+                        <div class="pt-3 border-t border-gray-200 flex items-center justify-around gap-2">
                             <a id="deposit-rule-wa-btn" href="#" target="_blank" onclick="openDepositRuleHelp('wa', event)" 
-                               class="flex-1 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:brightness-110 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition active:scale-95 animate-glow-wa">
-                                <i class="fab fa-whatsapp text-sm animate-bounce"></i>
-                                <span class="animate-text-shimmer">WhatsApp সাহায্য</span>
+                               class="flex-1 text-emerald-600 hover:text-emerald-700 font-extrabold text-xs sm:text-sm py-2 px-2 flex items-center justify-center gap-2 transition active:scale-95">
+                                <i class="fab fa-whatsapp text-lg text-emerald-500"></i>
+                                <span>WhatsApp সাহায্য</span>
                             </a>
+                            <div class="w-px h-6 bg-gray-200"></div>
                             <a id="deposit-rule-tg-btn" href="#" target="_blank" onclick="openDepositRuleHelp('tg', event)" 
-                               class="flex-1 bg-gradient-to-r from-sky-600 via-sky-500 to-blue-600 hover:brightness-110 text-white font-extrabold text-xs py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 shadow-md transition active:scale-95 animate-glow-tg">
-                                <i class="fab fa-telegram-plane text-sm animate-bounce"></i>
-                                <span class="animate-text-shimmer">Telegram সাহায্য</span>
+                               class="flex-1 text-sky-600 hover:text-sky-700 font-extrabold text-xs sm:text-sm py-2 px-2 flex items-center justify-center gap-2 transition active:scale-95">
+                                <i class="fab fa-telegram-plane text-lg text-sky-500"></i>
+                                <span>Telegram সাহায্য</span>
                             </a>
                         </div>
                     </div>
@@ -1436,11 +1542,17 @@
         </section>
 
         <section id="account-sec" class="hidden animate-fade-in pb-24 bg-[#f6f8fa] min-h-screen">
-            <div class="flex flex-col items-center pt-8 pb-4 px-4 text-center">
+            <!-- Custom Cover Banner -->
+            <div id="profile-cover-banner-container" class="w-full h-36 bg-gradient-to-r from-sky-600 via-blue-600 to-indigo-700 relative overflow-hidden hidden shadow-sm">
+                <img id="profile-cover-banner-img" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/20 to-slate-900/60"></div>
+            </div>
+
+            <div id="profile-header-card" class="flex flex-col items-center pt-6 pb-4 px-4 text-center transition-all duration-300">
                 <!-- Interactive Profile Picture with Loading Overlay -->
                 <input type="file" id="reg-photo-input" accept="image/*" class="hidden" onchange="handleRegPhotoSelect(event)">
                 <div class="relative mb-3 cursor-pointer group" onclick="triggerPhotoSelect()">
-                    <div class="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-sky-400 via-blue-500 to-indigo-600 shadow-lg shadow-sky-200 flex items-center justify-center">
+                    <div id="profile-avatar-frame-box" class="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-sky-400 via-blue-500 to-indigo-600 shadow-lg shadow-sky-200 flex items-center justify-center transition-all duration-300">
                         <div class="w-full h-full rounded-full bg-white overflow-hidden p-0.5 relative flex items-center justify-center">
                             <span id="profile-initial" class="text-4xl font-extrabold text-sky-600 hidden"></span>
                             <img id="acc-profile-img" src="logo.png" onerror="this.onerror=null;this.src='logo.png'" class="w-full h-full object-cover rounded-full">
@@ -1462,9 +1574,16 @@
                 </div>
 
                 <!-- Guidance Subtitle -->
-                <p class="text-xs text-sky-600 font-bold mb-3 flex items-center justify-center gap-1.5">
+                <p id="profile-guidance-notice" class="text-xs text-sky-600 font-bold mb-2 flex items-center justify-center gap-1.5 px-3">
                     <i class="fas fa-camera text-sm"></i> প্রোফাইল ছবি পরিবর্তন করতে ছবির উপর ক্লিক করুন।
                 </p>
+
+                <!-- VIP Badge / Verified Tag -->
+                <div id="profile-vip-badge-box" class="mb-2">
+                    <span id="profile-vip-badge" class="bg-gradient-to-r from-amber-500 to-orange-500 text-white font-black text-[10px] px-3 py-1 rounded-full shadow-sm tracking-wide uppercase flex items-center gap-1">
+                        <i class="fas fa-check-circle"></i> Account Verified!
+                    </span>
+                </div>
 
                 <!-- Name display with pen edit button -->
                 <h2 class="text-base font-extrabold text-gray-800 mb-2 flex items-center justify-center gap-1.5">
@@ -1634,15 +1753,18 @@
 
     <!-- Full-Screen Balance Transfer Page -->
     <div id="balance-transfer-modal" class="fixed inset-0 bg-slate-100 z-[10020] hidden flex-col w-full h-full overflow-y-auto animate-fade-in">
-        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-center">
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 text-white p-4 sticky top-0 z-10 shadow-lg flex items-center justify-center relative">
+            <button onclick="closeBalanceTransferModal()" type="button" class="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:text-emerald-100 p-2 text-lg flex items-center justify-center transition">
+                <i class="fas fa-arrow-left"></i>
+            </button>
             <h2 class="text-base font-extrabold tracking-wide text-white flex items-center gap-2">
                 <i class="fas fa-exchange-alt"></i> ব্যালেন্স ট্রান্সফার (Transfer)
             </h2>
         </div>
 
-        <div class="p-4 max-w-md mx-auto w-full space-y-4 my-2 flex-1 pb-12">
-            <div class="bg-white rounded-3xl p-5 border-2 border-slate-900 shadow-lg space-y-4">
-                <div class="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3.5 text-xs text-amber-900 font-semibold space-y-1">
+        <div class="p-4 w-full space-y-4 my-2 flex-1 pb-16">
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-md space-y-5 w-full">
+                <div class="bg-amber-50 border border-amber-300 rounded-2xl p-3.5 text-xs text-amber-900 font-semibold space-y-1">
                     <p class="flex items-center gap-1.5 font-bold text-amber-900 text-sm">
                         <i class="fas fa-exclamation-triangle text-amber-600"></i> সতর্কতা ও নিয়মাবলী:
                     </p>
@@ -1651,7 +1773,7 @@
                     </p>
                 </div>
 
-                <div class="bg-slate-50 border-2 border-slate-900 rounded-2xl p-4 flex items-center justify-between text-xs shadow-sm">
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 flex items-center justify-between text-xs shadow-sm">
                     <div>
                         <p class="text-slate-500 font-bold text-[11px]">আপনার বর্তমান ব্যালেন্স:</p>
                         <p class="text-emerald-600 font-extrabold text-lg">৳<span id="transfer-current-balance">0</span></p>
@@ -1668,7 +1790,7 @@
                 <div class="text-left">
                     <label class="block text-xs font-extrabold text-slate-800 mb-1.5 ml-1">প্রাপকের সাপোর্ট পিন (Receiver's Support PIN)</label>
                     <div class="relative">
-                        <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: ESP-123456" class="w-full bg-slate-50 border-2 border-slate-900 focus:border-emerald-500 rounded-2xl py-3 pl-4 pr-24 font-mono font-bold text-slate-800 text-base uppercase outline-none transition shadow-sm">
+                        <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: ESP-123456" class="w-full bg-slate-50 border border-slate-300 focus:border-emerald-500 rounded-2xl py-3 pl-4 pr-24 font-mono font-bold text-slate-800 text-base uppercase outline-none transition shadow-sm">
                         <button onclick="pasteReceiverPin()" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-extrabold px-3 py-2 rounded-xl transition shadow-sm flex items-center gap-1">
                             <i class="far fa-clipboard"></i> পেস্ট
                         </button>
@@ -1680,12 +1802,12 @@
                     <label class="block text-xs font-extrabold text-slate-800 mb-1.5 ml-1">ট্রান্সফারের পরিমাণ (Amount ৳)</label>
                     <div class="relative">
                         <span class="absolute left-4 top-3 text-slate-500 font-bold text-base">৳</span>
-                        <input id="transfer-amount-input" type="number" min="1" placeholder="যেমন: 50" class="w-full bg-slate-50 border-2 border-slate-900 focus:border-emerald-500 rounded-2xl py-3 pl-9 pr-4 font-bold text-slate-800 text-base outline-none transition shadow-sm">
+                        <input id="transfer-amount-input" type="number" min="1" placeholder="যেমন: 50" class="w-full bg-slate-50 border border-slate-300 focus:border-emerald-500 rounded-2xl py-3 pl-9 pr-4 font-bold text-slate-800 text-base outline-none transition shadow-sm">
                     </div>
                     <p class="text-[11px] text-slate-500 mt-1 ml-1 font-semibold">সর্বনিম্ন ১ টাকা সেন্ড করা যাবে।</p>
                 </div>
 
-                <button onclick="executeBalanceTransfer()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-base shadow-lg shadow-emerald-600/30 active:scale-95 transition flex items-center justify-center gap-2 border-2 border-slate-900">
+                <button onclick="executeBalanceTransfer()" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-base shadow-lg shadow-emerald-600/30 active:scale-95 transition flex items-center justify-center gap-2">
                     <i class="fas fa-paper-plane"></i> ব্যালেন্স ট্রান্সফার করুন
                 </button>
             </div>
@@ -1748,7 +1870,7 @@
 <div id="verify-status-modal" class="fixed inset-0 bg-black/70 backdrop-blur-md z-[100] flex items-center justify-center p-4 hidden transition-opacity duration-300">
     <div onclick="event.stopPropagation()" class="bg-white rounded-3xl p-6 shadow-2xl max-w-xs w-full text-center relative border border-gray-100 flex flex-col items-center justify-center animate-fade-in">
         <div class="w-24 h-24 bg-white border-2 border-slate-900 rounded-2xl shadow-xl flex items-center justify-center p-2.5 overflow-hidden mb-4 aspect-square">
-            <img id="verify-modal-logo-img" src="https://i.ibb.co.com/m5Wqb5QV/1000022763.jpg" onerror="this.onerror=null;this.src='logo.png'" class="w-full h-full object-contain rounded-xl" alt="App Logo">
+            <img id="verify-modal-logo-img" src="https://i.ibb.co.com/dJgG0NNN/1000026095.jpg" onerror="this.onerror=null;this.src='logo.png'" class="w-full h-full object-contain rounded-xl" alt="App Logo">
         </div>
         <div id="verify-modal-spinner" class="w-10 h-10 border-4 border-sky-500 border-t-transparent rounded-full animate-spin my-2"></div>
         <div id="verify-modal-icon-box" class="hidden my-2"></div>
@@ -1784,7 +1906,7 @@
 
 <div id="custom-toast">
     <div class="toast-box">
-        <img src="https://i.ibb.co.com/m5Wqb5QV/1000022763.jpg" onerror="this.onerror=null;this.src='logo.png'" class="toast-logo-small" alt="Logo">
+        <img src="https://i.ibb.co.com/dJgG0NNN/1000026095.jpg" onerror="this.onerror=null;this.src='logo.png'" class="toast-logo-small" alt="Logo">
         <span class="toast-text" id="toast-text-msg">মেসেজ এখানে আসবে</span>
     </div>
 </div>
@@ -1901,6 +2023,51 @@
     </div>
 </div>
 
+<!-- Connection Issue / Real Internet Disconnection Modal -->
+<div id="net-connection-issue-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100000] hidden flex flex-col items-center justify-center p-4 animate-fade-in font-sans">
+    <div class="bg-white rounded-3xl w-full max-w-sm shadow-2xl p-6 text-center relative flex flex-col items-center">
+        <!-- Header Circle / Logo Container -->
+        <div id="net-modal-icon-container" class="mb-4 flex items-center justify-center">
+            <div class="w-16 h-16 rounded-full bg-red-100/90 text-red-500 flex items-center justify-center text-2xl shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-xl shadow-md">
+                    !
+                </div>
+            </div>
+        </div>
+
+        <!-- Title -->
+        <h3 id="net-modal-title-el" class="text-xl font-bold text-slate-800 mb-2">Connection Issue</h3>
+
+        <!-- Subtitle -->
+        <p id="net-modal-notice-el" class="text-xs text-slate-500 mb-6 leading-relaxed px-2">
+            No internet connection detected. Please check your network settings.
+        </p>
+
+        <!-- Buttons Row -->
+        <div class="grid grid-cols-2 gap-3 w-full mb-1">
+            <button id="net-cancel-btn" onclick="exitApplication()" class="w-full py-3 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 text-xs font-bold active:scale-95 transition shadow-sm">
+                Cancel
+            </button>
+            <button id="net-retry-btn" onclick="retryInternetConnectionCheck(true)" class="w-full py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold active:scale-95 transition shadow-sm flex items-center justify-center gap-1.5">
+                <span id="net-retry-text">Retry</span>
+                <i id="net-retry-spinner" class="fas fa-spinner fa-spin hidden text-xs"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bottom Status Indicator -->
+    <div class="absolute bottom-10 left-0 right-0 text-center flex flex-col items-center gap-2">
+        <div class="w-12 h-1 bg-slate-700/60 rounded-full overflow-hidden relative">
+            <div class="h-full bg-emerald-500 rounded-full w-1/2 animate-pulse"></div>
+        </div>
+        <div class="flex items-center gap-1.5 mt-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-500 animate-ping"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+        </div>
+    </div>
+</div>
+
 <!-- Full-Screen Referral Welcome Modal (Registration Step) -->
 <div id="google-referral-input-modal" class="fixed inset-0 bg-slate-900/95 backdrop-blur-md z-[10007] hidden flex flex-col items-center justify-center p-4 overflow-y-auto animate-fade-in">
     <div class="bg-white rounded-3xl w-full max-w-md shadow-2xl border border-slate-100 overflow-hidden flex flex-col my-auto font-sans p-6 text-center relative">
@@ -1938,15 +2105,6 @@
                     </p>
                 </div>
             </div>
-        </div>
-
-        <!-- Gmail Password Input -->
-        <div class="mb-4 text-left">
-            <label class="block text-xs font-bold text-slate-700 mb-1.5 ml-1">আপনার জিমেইল পাসওয়ার্ড (Gmail Password)</label>
-            <div class="relative">
-                <input id="new-user-gmail-password-input" type="password" placeholder="আপনার জিমেইল পাসওয়ার্ড লিখুন" class="w-full bg-slate-50 border-2 border-slate-200 focus:border-orange-500 rounded-2xl py-3 px-4 font-mono font-bold text-slate-800 text-sm outline-none transition">
-            </div>
-            <p class="text-[11px] text-slate-400 mt-1 ml-1">অ্যাকাউন্টের স্থায়ী নিরাপত্তার জন্য পাসওয়ার্ড প্রদান করুন।</p>
         </div>
 
         <!-- Referral Code Input -->
@@ -2196,6 +2354,47 @@ function loadGlobalSettings() {
             if (noticeSec) {
                 noticeSec.style.display = (data.notice && data.notice.trim() !== "") ? 'block' : 'none';
             }
+
+            // App Force Update System
+            const updateModal = document.getElementById('app-update-modal');
+            const updateMsgEl = document.getElementById('app-update-notice-msg');
+            const downloadBtn = document.getElementById('app-update-download-btn');
+            const updateEnabled = (data.appUpdateEnabled === true);
+            const downloadUrl = (data.appDownloadUrl || data.appLink || '').trim();
+
+            if (updateEnabled && downloadUrl !== '') {
+                if (updateMsgEl) {
+                    updateMsgEl.innerText = data.appUpdateMsg || "অ্যাপটির নতুন ভার্সন এসেছে! নির্বিঘ্নে ব্যবহারের জন্য এখনই অ্যাপটি আপডেট করুন।";
+                }
+                if (downloadBtn) {
+                    downloadBtn.href = downloadUrl;
+                    downloadBtn.onclick = function(e) {
+                        if (window.AndroidApp && typeof window.AndroidApp.openExternalBrowser === 'function') {
+                            e.preventDefault();
+                            window.AndroidApp.openExternalBrowser(downloadUrl);
+                        }
+                    };
+                }
+                if (updateModal) updateModal.classList.remove('hidden');
+            } else {
+                if (updateModal) updateModal.classList.add('hidden');
+            }
+
+            // Custom Login Dialog Texts
+            const loginDomain = data.loginSiteDomain || siteName || "espofficial.com";
+            const loginSub = data.loginSiteSubtitle || ("Sign in to " + loginDomain);
+            const loginRules = data.loginConsentRules || ("Google will allow " + loginDomain + " to access this info about you");
+
+            const loginDomEl1 = document.getElementById('google-login-domain');
+            if (loginDomEl1) loginDomEl1.innerText = loginDomain;
+
+            const consentSubWrapper = document.getElementById('google-consent-subtitle-wrapper');
+            if (consentSubWrapper) {
+                consentSubWrapper.innerText = loginSub;
+            }
+
+            const loginRulesEl = document.getElementById('google-login-rules');
+            if (loginRulesEl) loginRulesEl.innerText = loginRules;
 
             if (isSliderLoaded && isCategoriesLoaded) {
                 showLaunchPopup(data);
@@ -2937,20 +3136,7 @@ function handleLogout() {
                 auth.signOut().catch(() => {});
             }
 
-            const loginContainer = document.getElementById('header-login-container');
-            const userInfoHeader = document.getElementById('header-user-info');
-            if (loginContainer) loginContainer.classList.remove('hidden');
-            if (userInfoHeader) userInfoHeader.classList.add('hidden');
-
-            const accProfileName = document.getElementById('acc-profile-name');
-            const accEmail = document.getElementById('acc-email');
-            const accUserNameInfo = document.getElementById('acc-user-name-info');
-            if (accProfileName) accProfileName.innerText = "User";
-            if (accEmail) accEmail.innerText = "-";
-            if (accUserNameInfo) accUserNameInfo.innerText = "-";
-
-            showSec('home');
-            showCustomToast("লগআউট সফল হয়েছে!");
+            window.location.reload();
         }
     });
 }
@@ -2978,7 +3164,16 @@ function listenToLivePushNotifications() {
                     if (notif.title && (notif.title.includes('সফল') || notif.title.includes('✅'))) iconType = 'success';
                     else if (notif.title && (notif.title.includes('বাতিল') || notif.title.includes('ভুল') || notif.title.includes('❌'))) iconType = 'error';
 
-                    const notifLogo = notif.logoUrl || window.cachedNotifLogo || "https://i.ibb.co/Gz46D8S/1000015293.jpg";
+                    let notifLogo = notif.logoUrl;
+                    const savedUserNotifLogo = window.cachedNotifLogo || localStorage.getItem('cached_notif_logo');
+                    if (!notifLogo || notifLogo === "logo.png" || notifLogo.includes("1000015293.jpg") || notifLogo.includes("1000022763.jpg")) {
+                        if (savedUserNotifLogo) {
+                            notifLogo = savedUserNotifLogo;
+                        }
+                    }
+                    if (!notifLogo) {
+                        notifLogo = "https://i.ibb.co.com/dJgG0NNN/1000026095.jpg";
+                    }
 
                     // Isolated push notification popup - does not touch notice box or launch popup
                     Swal.fire({
@@ -3351,10 +3546,164 @@ function getTelegramLink(rawTg) {
     return tg;
 }
 
+function applyCategoryCardStyle(borderColor, isAnimated, borderWidth) {
+    let styleEl = document.getElementById('dynamic-category-card-style');
+    if (!styleEl) {
+        styleEl = document.createElement('style');
+        styleEl.id = 'dynamic-category-card-style';
+        document.head.appendChild(styleEl);
+    }
+    const widthPx = (borderWidth && !isNaN(borderWidth)) ? parseInt(borderWidth) : 2;
+    
+    if (isAnimated) {
+        styleEl.innerHTML = `
+            @keyframes categoryGlowRainbow {
+                0% { border-color: #f97316; box-shadow: 0 0 12px rgba(249, 115, 22, 0.6); }
+                20% { border-color: #06b6d4; box-shadow: 0 0 12px rgba(6, 182, 212, 0.6); }
+                40% { border-color: #3b82f6; box-shadow: 0 0 12px rgba(59, 130, 246, 0.6); }
+                60% { border-color: #a855f7; box-shadow: 0 0 12px rgba(168, 85, 247, 0.6); }
+                80% { border-color: #10b981; box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); }
+                100% { border-color: #f97316; box-shadow: 0 0 12px rgba(249, 115, 22, 0.6); }
+            }
+            @keyframes categoryHeaderGlowRainbow {
+                0% { border-top-color: #f97316; }
+                20% { border-top-color: #06b6d4; }
+                40% { border-top-color: #3b82f6; }
+                60% { border-top-color: #a855f7; }
+                80% { border-top-color: #10b981; }
+                100% { border-top-color: #f97316; }
+            }
+            .category-card-box {
+                border-width: ${widthPx}px !important;
+                animation: categoryGlowRainbow 3s linear infinite !important;
+            }
+            .category-card-box-header {
+                border-top-width: ${widthPx}px !important;
+                animation: categoryHeaderGlowRainbow 3s linear infinite !important;
+            }
+        `;
+    } else {
+        const color = borderColor || '#0f172a';
+        styleEl.innerHTML = `
+            .category-card-box {
+                border-color: ${color} !important;
+                border-width: ${widthPx}px !important;
+                animation: none !important;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.1) !important;
+            }
+            .category-card-box-header {
+                border-top-color: ${color} !important;
+                border-top-width: ${widthPx}px !important;
+                animation: none !important;
+            }
+        `;
+    }
+}
+
+try {
+    const cachedColor = localStorage.getItem('cached_cat_border_color') || '#0f172a';
+    const cachedWidth = parseInt(localStorage.getItem('cached_cat_border_width')) || 2;
+    const cachedAnim = localStorage.getItem('cached_cat_border_anim') === 'true';
+    applyCategoryCardStyle(cachedColor, cachedAnim, cachedWidth);
+} catch(e) {}
+
+function applyNetworkModalCustomizations() {
+    const logoUrl = window.netModalLogoUrl || localStorage.getItem('cached_net_modal_logo') || '';
+    const title = window.netModalTitle || localStorage.getItem('cached_net_modal_title') || 'Connection Issue';
+    const notice = window.netModalNotice || localStorage.getItem('cached_net_modal_notice') || 'No internet connection detected. Please check your network settings.';
+    const cancelText = window.netModalCancelText || localStorage.getItem('cached_net_modal_cancel_text') || 'Cancel';
+    const cancelBg = window.netModalCancelBg || localStorage.getItem('cached_net_modal_cancel_bg') || '#ffffff';
+    const cancelColor = window.netModalCancelTextColor || localStorage.getItem('cached_net_modal_cancel_color') || '#475569';
+    const retryText = window.netModalRetryText || localStorage.getItem('cached_net_modal_retry_text') || 'Retry';
+    const retryBg = window.netModalRetryBg || localStorage.getItem('cached_net_modal_retry_bg') || '#10b981';
+    const retryColor = window.netModalRetryTextColor || localStorage.getItem('cached_net_modal_retry_color') || '#ffffff';
+
+    const iconBox = document.getElementById('net-modal-icon-container');
+    if (iconBox) {
+        if (logoUrl && logoUrl.trim() !== '') {
+            iconBox.innerHTML = `<img src="${escapeHtml(logoUrl)}" class="w-16 h-16 object-contain rounded-2xl shadow-sm p-1 bg-white border border-slate-100">`;
+        } else {
+            iconBox.innerHTML = `
+                <div class="w-16 h-16 rounded-full bg-red-100/90 text-red-500 flex items-center justify-center text-2xl shadow-sm">
+                    <div class="w-10 h-10 rounded-full bg-red-500 text-white flex items-center justify-center font-black text-xl shadow-md">
+                        !
+                    </div>
+                </div>`;
+        }
+    }
+
+    const titleEl = document.getElementById('net-modal-title-el');
+    if (titleEl) titleEl.innerText = title;
+
+    const noticeEl = document.getElementById('net-modal-notice-el');
+    if (noticeEl) noticeEl.innerText = notice;
+
+    const cancelBtn = document.getElementById('net-cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.innerText = cancelText;
+        cancelBtn.style.backgroundColor = cancelBg;
+        cancelBtn.style.color = cancelColor;
+    }
+
+    const retryTextEl = document.getElementById('net-retry-text');
+    if (retryTextEl) retryTextEl.innerText = retryText;
+
+    const retryBtn = document.getElementById('net-retry-btn');
+    if (retryBtn) {
+        retryBtn.style.backgroundColor = retryBg;
+        retryBtn.style.color = retryColor;
+    }
+}
+
+try {
+    applyNetworkModalCustomizations();
+} catch(e) {}
+
 function loadAppContent() {
     db.collection("settings").doc("general").onSnapshot((doc) => {
         if(doc.exists) {
             const data = doc.data();
+
+            // Apply Category Box Border & Animation Customization
+            const catColor = data.categoryBorderColor || '#0f172a';
+            const catWidth = data.categoryBorderWidth || 2;
+            const catAnim = data.categoryBorderAnimated === true;
+            applyCategoryCardStyle(catColor, catAnim, catWidth);
+            try {
+                localStorage.setItem('cached_cat_border_color', catColor);
+                localStorage.setItem('cached_cat_border_width', catWidth);
+                localStorage.setItem('cached_cat_border_anim', catAnim ? 'true' : 'false');
+            } catch(e) {}
+
+            // Network Disconnection Modal Settings Sync
+            window.netModalLogoUrl = data.netModalLogoUrl || '';
+            window.netModalTitle = data.netModalTitle || 'Connection Issue';
+            window.netModalNotice = data.netModalNotice || 'No internet connection detected. Please check your network settings.';
+            window.netModalCancelText = data.netModalCancelText || 'Cancel';
+            window.netModalCancelBg = data.netModalCancelBg || '#ffffff';
+            window.netModalCancelTextColor = data.netModalCancelTextColor || '#475569';
+            window.netModalRetryText = data.netModalRetryText || 'Retry';
+            window.netModalRetryBg = data.netModalRetryBg || '#10b981';
+            window.netModalRetryTextColor = data.netModalRetryTextColor || '#ffffff';
+            window.netModalOfflineMsg = data.netModalOfflineMsg || 'আপনার নেটওয়ার্ক কানেক্ট করুন';
+            window.netModalOnlineMsg = data.netModalOnlineMsg || 'Network Connected!';
+
+            try {
+                localStorage.setItem('cached_net_modal_logo', window.netModalLogoUrl);
+                localStorage.setItem('cached_net_modal_title', window.netModalTitle);
+                localStorage.setItem('cached_net_modal_notice', window.netModalNotice);
+                localStorage.setItem('cached_net_modal_cancel_text', window.netModalCancelText);
+                localStorage.setItem('cached_net_modal_cancel_bg', window.netModalCancelBg);
+                localStorage.setItem('cached_net_modal_cancel_color', window.netModalCancelTextColor);
+                localStorage.setItem('cached_net_modal_retry_text', window.netModalRetryText);
+                localStorage.setItem('cached_net_modal_retry_bg', window.netModalRetryBg);
+                localStorage.setItem('cached_net_modal_retry_color', window.netModalRetryTextColor);
+                localStorage.setItem('cached_net_modal_offline_msg', window.netModalOfflineMsg);
+                localStorage.setItem('cached_net_modal_online_msg', window.netModalOnlineMsg);
+            } catch(e) {}
+
+            applyNetworkModalCustomizations();
+
             const headerLogoImg = document.getElementById('header-logo-img');
             if (headerLogoImg) {
                 headerLogoImg.src = (data.logoUrl && String(data.logoUrl).trim() !== '') ? data.logoUrl : "https://i.ibb.co.com/JjcZFr8G/Background-Eraser-20260805-021434936.png";
@@ -3377,7 +3726,17 @@ function loadAppContent() {
                 } catch(e) {}
             }
 
-            // Splash Loader Logo
+            // Splash Loader Settings & Customizations
+            if (data.loaderEnabled !== undefined) {
+                window.isLoaderEnabled = !!data.loaderEnabled;
+                try { localStorage.setItem('cached_loader_enabled', window.isLoaderEnabled ? 'true' : 'false'); } catch(e) {}
+                if (!window.isLoaderEnabled) {
+                    forceHideGlobalLoader();
+                }
+            } else {
+                window.isLoaderEnabled = true;
+            }
+
             if (data.loaderLogoUrl) {
                 const loaderImg = document.getElementById('loader-logo-img');
                 if (loaderImg) loaderImg.src = data.loaderLogoUrl;
@@ -3387,11 +3746,32 @@ function loadAppContent() {
                 } catch(e) {}
             }
 
+            const appTitleText = data.loaderAppNameText || data.siteName || "Esp TopUp";
+            const loaderNameEl = document.getElementById('loader-app-name-text');
+            if (loaderNameEl) loaderNameEl.textContent = appTitleText;
+            try {
+                localStorage.setItem('cached_loader_app_name', appTitleText);
+                if (window.AndroidInterface && window.AndroidInterface.setAppName) {
+                    window.AndroidInterface.setAppName(appTitleText);
+                }
+            } catch(e) {}
+
+            if (data.loaderCustomCss !== undefined) {
+                const styleEl = document.getElementById('custom-loader-css');
+                if (styleEl) styleEl.textContent = data.loaderCustomCss;
+                try { localStorage.setItem('cached_loader_custom_css', data.loaderCustomCss); } catch(e) {}
+            }
+
+            checkAndHideLoader();
+
             // Push Notification Logo
             if (data.notificationLogoUrl) {
                 window.cachedNotifLogo = data.notificationLogoUrl;
                 try {
                     localStorage.setItem('cached_notif_logo', data.notificationLogoUrl);
+                    if (window.AndroidInterface && window.AndroidInterface.setNotificationLogo) {
+                        window.AndroidInterface.setNotificationLogo(data.notificationLogoUrl);
+                    }
                     new Image().src = data.notificationLogoUrl;
                 } catch(e) {}
             }
@@ -3402,13 +3782,147 @@ function loadAppContent() {
                 if (loginImg) loginImg.src = data.loginLogoUrl;
             }
 
-            // Notice Box Rendering
+            // Profile Page Customizations
+            if (data) {
+                const coverContainer = document.getElementById('profile-cover-banner-container');
+                const coverImg = document.getElementById('profile-cover-banner-img');
+                if (coverContainer && coverImg) {
+                    if (data.profileBannerUrl && data.profileBannerUrl.trim() !== '') {
+                        coverImg.src = data.profileBannerUrl;
+                        coverContainer.classList.remove('hidden');
+                    } else {
+                        coverContainer.classList.add('hidden');
+                    }
+                }
+
+                const headerCard = document.getElementById('profile-header-card');
+                if (headerCard && data.profileHeaderStyle) {
+                    headerCard.className = "flex flex-col items-center pt-6 pb-4 px-4 text-center transition-all duration-300 ";
+                    if (data.profileHeaderStyle === 'purple-vip') {
+                        headerCard.className += "bg-gradient-to-b from-purple-900/20 via-slate-900/10 to-transparent";
+                    } else if (data.profileHeaderStyle === 'emerald-glow') {
+                        headerCard.className += "bg-gradient-to-b from-emerald-900/20 via-teal-900/10 to-transparent";
+                    } else if (data.profileHeaderStyle === 'sunset-gold') {
+                        headerCard.className += "bg-gradient-to-b from-amber-900/20 via-orange-900/10 to-transparent";
+                    } else if (data.profileHeaderStyle === 'midnight-dark') {
+                        headerCard.className += "bg-gradient-to-b from-slate-950 via-slate-900 to-transparent text-white";
+                    } else {
+                        headerCard.className += "bg-gradient-to-b from-sky-500/10 via-blue-500/5 to-transparent";
+                    }
+                }
+
+                const badgeEl = document.getElementById('profile-vip-badge');
+                if (badgeEl) {
+                    badgeEl.innerHTML = `<i class="fas fa-certificate"></i> ${data.profileBadgeText || 'Account Verified!'}`;
+                }
+
+                const avatarFrameBox = document.getElementById('profile-avatar-frame-box');
+                if (avatarFrameBox) {
+                    const style = data.profileAvatarFrame || 'gold-glow';
+                    avatarFrameBox.className = "w-28 h-28 rounded-full p-1 shadow-lg flex items-center justify-center transition-all duration-300 ";
+                    if (style === 'gold-glow') {
+                        avatarFrameBox.className += "bg-gradient-to-tr from-amber-400 via-yellow-300 to-orange-500 shadow-amber-300/60 ring-2 ring-amber-400/50";
+                    } else if (style === 'sky-glow') {
+                        avatarFrameBox.className += "bg-gradient-to-tr from-sky-400 via-blue-500 to-indigo-600 shadow-sky-300/60 ring-2 ring-sky-400/50";
+                    } else if (style === 'emerald-glow') {
+                        avatarFrameBox.className += "bg-gradient-to-tr from-emerald-400 via-teal-400 to-green-600 shadow-emerald-300/60 ring-2 ring-emerald-400/50";
+                    } else if (style === 'purple-vip') {
+                        avatarFrameBox.className += "bg-gradient-to-tr from-purple-500 via-fuchsia-400 to-indigo-600 shadow-purple-400/60 ring-2 ring-purple-400/50";
+                    } else {
+                        avatarFrameBox.className += "bg-slate-200 border-2 border-slate-300 shadow-sm";
+                    }
+                }
+
+                const noticeEl = document.getElementById('profile-guidance-notice');
+                if (noticeEl) {
+                    noticeEl.innerHTML = `<i class="fas fa-camera text-sm mr-1"></i> ${data.profileNoticeText || 'প্রোফাইল ছবি পরিবর্তন করতে ছবির উপর ক্লিক করুন।'}`;
+                }
+            }
+
+            // Toast Popup Settings & Position
+            const toastLogo = data.toastLogoUrl || "https://i.ibb.co.com/dJgG0NNN/1000026095.jpg";
+            const toastLogoSize = parseInt(data.toastLogoSize) || 24;
+            const toastVAnchor = data.toastVerticalAnchor || 'bottom';
+            const toastVOffset = (data.toastVerticalOffset !== undefined && data.toastVerticalOffset !== null && data.toastVerticalOffset !== '') ? parseInt(data.toastVerticalOffset) : 80;
+            const toastHAlign = data.toastHorizontalAlign || 'center';
+
+            const toastEl = document.getElementById('custom-toast');
+            if (toastEl) {
+                const toastImg = toastEl.querySelector('.toast-logo-small');
+                if (toastImg) {
+                    toastImg.src = toastLogo;
+                    toastImg.style.width = toastLogoSize + 'px';
+                    toastImg.style.height = toastLogoSize + 'px';
+                }
+
+                toastEl.style.top = 'auto';
+                toastEl.style.bottom = 'auto';
+                toastEl.style.left = 'auto';
+                toastEl.style.right = 'auto';
+
+                let tx = '-50%';
+                let ty = '0';
+
+                if (toastVAnchor === 'top') {
+                    toastEl.style.top = toastVOffset + 'px';
+                } else if (toastVAnchor === 'center') {
+                    toastEl.style.top = '50%';
+                    ty = '-50%';
+                } else {
+                    toastEl.style.bottom = toastVOffset + 'px';
+                }
+
+                if (toastHAlign === 'left') {
+                    toastEl.style.left = '16px';
+                    tx = '0';
+                } else if (toastHAlign === 'right') {
+                    toastEl.style.right = '16px';
+                    tx = '0';
+                } else {
+                    toastEl.style.left = '50%';
+                    tx = '-50%';
+                }
+
+                toastEl.style.transform = `translate(${tx}, ${ty})`;
+            }
+
+            // Top Corner Login Button Custom Styling
+            const topLoginBtn = document.getElementById('top-login-btn');
+            if (topLoginBtn) {
+                if (data.topLoginBtnColor) {
+                    topLoginBtn.style.backgroundColor = data.topLoginBtnColor;
+                }
+                if (data.topLoginBtnTextColor) {
+                    topLoginBtn.style.color = data.topLoginBtnTextColor;
+                }
+                if (data.topLoginBtnRadius !== undefined && data.topLoginBtnRadius !== '') {
+                    topLoginBtn.style.borderRadius = data.topLoginBtnRadius;
+                }
+            }
+
+            // Notice Box Rendering & Custom Colors
             const noticeEl = document.getElementById('notice-text');
             const noticeSec = document.getElementById('notice-section');
-            if(noticeEl) {
+            const noticeBoxContainer = document.getElementById('notice-box-container');
+            const noticeIconEl = document.getElementById('notice-icon');
+            const noticeCloseBtn = document.getElementById('notice-close-btn');
+
+            if (noticeEl) {
                 const nText = (data.notice && String(data.notice).trim() !== '') ? data.notice : "স্বাগতম! আমাদের অ্যাপে অর্ডার করার জন্য ধন্যবাদ।";
                 noticeEl.innerText = nText;
                 if (noticeSec) noticeSec.style.display = 'block';
+            }
+            if (noticeBoxContainer && data.noticeBgColor) {
+                noticeBoxContainer.style.backgroundColor = data.noticeBgColor;
+            }
+            if (noticeEl && data.noticeTextColor) {
+                noticeEl.style.color = data.noticeTextColor;
+            }
+            if (noticeIconEl && data.noticeIconColor) {
+                noticeIconEl.style.color = data.noticeIconColor;
+            }
+            if (noticeCloseBtn && data.noticeTextColor) {
+                noticeCloseBtn.style.color = data.noticeTextColor;
             }
 
             // Bottom Nav Custom Labels
@@ -3526,6 +4040,15 @@ function loadAppContent() {
 function loadGamesAndCategories() {
     const listContainer = document.getElementById('services-list');
     
+    try {
+        const cachedCatHTML = localStorage.getItem('cached_categories_html_v1');
+        if (cachedCatHTML && listContainer && listContainer.innerHTML.includes('Loading')) {
+            listContainer.innerHTML = cachedCatHTML;
+            isCategoriesLoaded = true;
+            checkAndHideLoader();
+        }
+    } catch(e) {}
+
     db.collection("categories").onSnapshot((categoriesSnap) => {
         db.collection("services").onSnapshot((servicesSnap) => {
             if (servicesSnap.empty && categoriesSnap.empty) {
@@ -3591,11 +4114,11 @@ function loadGamesAndCategories() {
                     category.games.forEach(item => {
                         gamesHTML += `
                          <div onclick="openTopUpPage('${item.id}', '${item.name}', '${item.image}')" 
-                              class="bg-white rounded-xl shadow-[0_3px_10px_rgba(0,0,0,0.12)] overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300 border-2 border-slate-900 group flex flex-col h-full">
+                              class="category-card-box bg-white rounded-xl shadow-[0_3px_10px_rgba(0,0,0,0.12)] overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300 border-2 border-slate-900 group flex flex-col h-full">
                             <div class="w-full aspect-square bg-slate-50 overflow-hidden relative">
                                 <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/200'">
                             </div>
-                            <div class="p-1.5 text-center bg-white border-t-2 border-slate-900 flex-1 flex items-center justify-center min-h-[40px]">
+                            <div class="category-card-box-header p-1.5 text-center bg-white border-t-2 border-slate-900 flex-1 flex items-center justify-center min-h-[40px]">
                                 <p class="text-[11px] font-extrabold text-slate-900 line-clamp-2 leading-tight lang-auto">${item.name}</p>
                             </div>
                         </div>`;
@@ -3623,11 +4146,11 @@ function loadGamesAndCategories() {
                     const catImg = cat.image || 'https://placehold.co/200';
                     catCardsHTML += `
                     <div onclick="openTopUpPage('${cat.id}', '${cat.name}', '${catImg}')" 
-                         class="bg-white rounded-xl shadow-[0_3px_10px_rgba(0,0,0,0.12)] overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300 border-2 border-slate-900 group flex flex-col h-full">
+                         class="category-card-box bg-white rounded-xl shadow-[0_3px_10px_rgba(0,0,0,0.12)] overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300 border-2 border-slate-900 group flex flex-col h-full">
                        <div class="w-full aspect-square bg-slate-50 overflow-hidden relative">
                            <img src="${catImg}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/200'">
                        </div>
-                       <div class="p-1.5 text-center bg-white border-t-2 border-slate-900 flex-1 flex items-center justify-center min-h-[40px]">
+                       <div class="category-card-box-header p-1.5 text-center bg-white border-t-2 border-slate-900 flex-1 flex items-center justify-center min-h-[40px]">
                            <p class="text-[11px] font-extrabold text-slate-900 line-clamp-2 leading-tight lang-auto">${cat.name}</p>
                        </div>
                    </div>`;
@@ -3653,11 +4176,11 @@ function loadGamesAndCategories() {
                 uncategorizedGames.forEach(item => {
                     gamesHTML += `
                      <div onclick="openTopUpPage('${item.id}', '${item.name}', '${item.image}')" 
-                          class="bg-white rounded-xl shadow-[0_3px_10px_rgba(0,0,0,0.12)] overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300 border-2 border-slate-900 group flex flex-col h-full">
+                          class="category-card-box bg-white rounded-xl shadow-[0_3px_10px_rgba(0,0,0,0.12)] overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300 border-2 border-slate-900 group flex flex-col h-full">
                         <div class="w-full aspect-square bg-slate-50 overflow-hidden relative">
                             <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/200'">
                         </div>
-                        <div class="p-1.5 text-center bg-white border-t-2 border-slate-900 flex-1 flex items-center justify-center min-h-[40px]">
+                        <div class="category-card-box-header p-1.5 text-center bg-white border-t-2 border-slate-900 flex-1 flex items-center justify-center min-h-[40px]">
                             <p class="text-[11px] font-extrabold text-slate-900 line-clamp-2 leading-tight lang-auto">${item.name}</p>
                         </div>
                     </div>`;
@@ -3670,6 +4193,10 @@ function loadGamesAndCategories() {
                         ${gamesHTML}
                     </div>
                 </div>`;
+            }
+
+            if (listContainer && listContainer.innerHTML) {
+                try { localStorage.setItem('cached_categories_html_v1', listContainer.innerHTML); } catch(e) {}
             }
 
             trackImagesLoading(listContainer, () => {
@@ -3956,12 +4483,24 @@ async function processOrder() {
 
     if (result.isConfirmed) {
         Swal.showLoading();
-        if (selectedGameType === 'code') {
-            processVoucherOrder(playerId);
-        } else if (selectedGameType === 'auto-topup') {
-            processAutoTopUpOrder(playerId);
-        } else {
-            processUidOrder(playerId);
+        try {
+            const settingsDoc = await db.collection("settings").doc("general").get();
+            const settingsData = settingsDoc.exists ? settingsDoc.data() : {};
+            const isAutoTopUpGlobalOn = (settingsData.autoTopUpEnabled === true) && (settingsData.autoTopUpApiKey && settingsData.autoTopUpApiUrl);
+
+            if (selectedGameType === 'code') {
+                processVoucherOrder(playerId);
+            } else if (selectedGameType === 'auto-topup' || (selectedGameType === 'uid' && isAutoTopUpGlobalOn)) {
+                processAutoTopUpOrder(playerId, settingsData);
+            } else {
+                processUidOrder(playerId);
+            }
+        } catch(err) {
+            if (selectedGameType === 'code') {
+                processVoucherOrder(playerId);
+            } else {
+                processUidOrder(playerId);
+            }
         }
     }
 }
@@ -4029,34 +4568,41 @@ function processUidOrder(playerId) {
     });
 }
 
-async function processAutoTopUpOrder(playerId) {
-    const settingsDoc = await db.collection("settings").doc("general").get();
-    if (!settingsDoc.exists) {
-        Swal.close();
-        showCustomToast("Configuration Error");
-        return;
+async function processAutoTopUpOrder(playerId, preloadedSettings) {
+    let settings = preloadedSettings;
+    if (!settings) {
+        const settingsDoc = await db.collection("settings").doc("general").get();
+        if (!settingsDoc.exists) {
+            Swal.close();
+            showCustomToast("Configuration Error");
+            return;
+        }
+        settings = settingsDoc.data();
     }
-    const settings = settingsDoc.data();
+
     const apiKey = settings.autoTopUpApiKey;
     const apiUrl = settings.autoTopUpApiUrl;
-    const callbackUrl = settings.autoTopUpCallbackUrl;
+    const callbackUrl = settings.autoTopUpCallbackUrl || window.location.href;
 
-    if (!apiKey || !apiUrl || !callbackUrl) {
+    if (!apiKey || !apiUrl) {
         Swal.close();
-        showCustomToast("Admin settings error");
+        showCustomToast("এপিআই সেটিংস সমস্যা!");
         return;
     }
 
     const stockRef = db.collection('services').doc(selectedGameId).collection('products').doc(selectedProduct.id).collection('stock');
-    const availableStockSnap = await stockRef.where('status', '==', 'available').limit(1).get();
+    let stockDoc = null;
+    let uniPinCode = null;
 
-    if (availableStockSnap.empty) {
-        Swal.close();
-        showCustomToast("স্টক আউট!");
-        return;
+    try {
+        const availableStockSnap = await stockRef.where('status', '==', 'available').limit(1).get();
+        if (!availableStockSnap.empty) {
+            stockDoc = availableStockSnap.docs[0];
+            uniPinCode = stockDoc.data().code;
+        }
+    } catch(err) {
+        console.log("No stock required or stock query bypass");
     }
-    const stockDoc = availableStockSnap.docs[0];
-    const uniPinCode = stockDoc.data().code;
 
     const userRef = db.collection('users').doc(currentUser.uid);
     const orderRef = db.collection('orders').doc(); 
@@ -4064,28 +4610,51 @@ async function processAutoTopUpOrder(playerId) {
     try {
         await db.runTransaction(async (t) => {
             const userDoc = await t.get(userRef);
-            const newBalance = userDoc.data().balance - selectedProduct.price;
+            const userBal = (userDoc.data() && userDoc.data().balance) ? userDoc.data().balance : 0;
+            const newBalance = userBal - selectedProduct.price;
             if (newBalance < 0) throw new Error("Insufficient Balance");
 
             t.update(userRef, { balance: newBalance });
-            t.delete(stockDoc.ref);
-            t.update(db.collection('services').doc(selectedGameId).collection('products').doc(selectedProduct.id), {
-                stockCount: firebase.firestore.FieldValue.increment(-1)
-            });
-            t.set(orderRef, {
-                userId: currentUser.uid, userName: currentUser.email, gameName: selectedGameName, gameId: selectedGameId,
-                playerId: playerId, productName: selectedProduct.name, price: selectedProduct.price, type: 'auto-topup',
-                status: 'pending', date: new Date(), usedUniPinCode: uniPinCode 
-            });
+            
+            if (stockDoc) {
+                t.delete(stockDoc.ref);
+                t.update(db.collection('services').doc(selectedGameId).collection('products').doc(selectedProduct.id), {
+                    stockCount: firebase.firestore.FieldValue.increment(-1)
+                });
+            }
+
+            const orderData = {
+                userId: currentUser.uid, 
+                userName: currentUser.email || currentUser.displayName || 'User', 
+                gameName: selectedGameName, 
+                gameId: selectedGameId,
+                playerId: playerId, 
+                productName: selectedProduct.name, 
+                price: selectedProduct.price, 
+                type: 'auto-topup',
+                status: 'pending', 
+                date: new Date()
+            };
+            if (uniPinCode) orderData.usedUniPinCode = uniPinCode;
+
+            t.set(orderRef, orderData);
         });
 
         const payload = {
+            api_key: apiKey,
             api: apiKey,
+            player_id: playerId,
             playerid: playerId,
-            code: uniPinCode,
+            product_name: selectedProduct.name,
+            product_id: selectedProduct.id,
+            amount: selectedProduct.price,
+            game_name: selectedGameName,
+            game_id: selectedGameId,
             orderid: orderRef.id, 
+            callback_url: callbackUrl,
             url: callbackUrl
         };
+        if (uniPinCode) payload.code = uniPinCode;
 
         fetch(apiUrl, {
             method: 'POST',
@@ -4096,14 +4665,22 @@ async function processAutoTopUpOrder(playerId) {
         setTimeout(() => {
             orderRef.update({ status: 'success' }).then(() => {
                 Swal.close();
-                showCustomToast("Successfull");
+                showCustomToast("অর্ডার সফল হয়েছে! ডায়মন্ড টপ-আপ হয়ে গেছে।");
+                showSec('history');
+            }).catch(() => {
+                Swal.close();
+                showCustomToast("অর্ডার সফল হয়েছে!");
                 showSec('history');
             });
-        }, 7000);
+        }, 2000);
 
     } catch (e) {
         Swal.close();
-        showCustomToast("Transaction Failed");
+        if (e.message === "Insufficient Balance") {
+            showCustomToast("পর্যাপ্ত ব্যালেন্স নেই");
+        } else {
+            showCustomToast("অর্ডার করতে সমস্যা হয়েছে!");
+        }
     }
 }
 
@@ -4551,6 +5128,18 @@ let isDragging = false;
 let startX, moveX;
 
 function loadBanners() {
+    try {
+        const cachedBanners = localStorage.getItem('cached_banners_v1');
+        if (cachedBanners) {
+            const parsed = JSON.parse(cachedBanners);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                renderCustomSlider(parsed);
+                isSliderLoaded = true;
+                checkAndHideLoader();
+            }
+        }
+    } catch(e) {}
+
     db.collection("banners").onSnapshot((snapshot) => {
         let bannersData = [];
         snapshot.forEach((doc) => { 
@@ -4562,7 +5151,10 @@ function loadBanners() {
                 });
             } 
         });
-        if(bannersData.length > 0) renderCustomSlider(bannersData);
+        if(bannersData.length > 0) {
+            renderCustomSlider(bannersData);
+            try { localStorage.setItem('cached_banners_v1', JSON.stringify(bannersData)); } catch(e) {}
+        }
         isSliderLoaded = true;
         checkAndHideLoader();
     }, (error) => {
@@ -5051,7 +5643,7 @@ function showVerifyStatusModal(method) {
     const statusText = document.getElementById('verify-modal-status-text');
     const logoImg = document.getElementById('verify-modal-logo-img');
 
-    let modalLogo = 'https://i.ibb.co.com/m5Wqb5QV/1000022763.jpg';
+    let modalLogo = 'https://i.ibb.co.com/dJgG0NNN/1000026095.jpg';
     if (adminPaymentConfig) {
         const m = (method || '').toLowerCase();
         if (m === 'bkash' && adminPaymentConfig.bkash_modal_logo) {
@@ -5532,8 +6124,127 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 let isOnline = navigator.onLine;
+let isRealInternetConnected = true;
+let isCheckingNetwork = false;
+
+async function checkRealInternetConnection() {
+    if (!navigator.onLine) {
+        return false;
+    }
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        
+        const response = await fetch('https://www.google.com/generate_204?_t=' + Date.now(), {
+            method: 'GET',
+            mode: 'no-cors',
+            cache: 'no-store',
+            signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        return true;
+    } catch (e) {
+        try {
+            const controller2 = new AbortController();
+            const timeoutId2 = setTimeout(() => controller2.abort(), 3500);
+            const resp2 = await fetch('https://cloudflare.com/cdn-cgi/trace?_t=' + Date.now(), {
+                method: 'GET',
+                mode: 'no-cors',
+                cache: 'no-store',
+                signal: controller2.signal
+            });
+            clearTimeout(timeoutId2);
+            return true;
+        } catch (err) {
+            return false;
+        }
+    }
+}
+
+async function verifyAndHandleNetworkState(userTriggered = false) {
+    if (isCheckingNetwork) return;
+    isCheckingNetwork = true;
+
+    if (userTriggered) {
+        const retryText = document.getElementById('net-retry-text');
+        const retrySpinner = document.getElementById('net-retry-spinner');
+        if (retryText) retryText.innerText = "Checking...";
+        if (retrySpinner) retrySpinner.classList.remove('hidden');
+    }
+
+    const hasInternet = await checkRealInternetConnection();
+    isRealInternetConnected = hasInternet;
+
+    const modal = document.getElementById('net-connection-issue-modal');
+    if (!hasInternet) {
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.style.display = 'flex';
+            applyNetworkModalCustomizations();
+        }
+        showOfflineLoader();
+    } else {
+        if (modal) {
+            modal.classList.add('hidden');
+            modal.style.display = 'none';
+        }
+        showOnlineLoader();
+    }
+
+    if (userTriggered) {
+        const retryText = document.getElementById('net-retry-text');
+        const retrySpinner = document.getElementById('net-retry-spinner');
+        const configuredRetryText = window.netModalRetryText || localStorage.getItem('cached_net_modal_retry_text') || "Retry";
+        if (retryText) retryText.innerText = configuredRetryText;
+        if (retrySpinner) retrySpinner.classList.add('hidden');
+
+        if (!hasInternet) {
+            const offlineMsg = window.netModalOfflineMsg || localStorage.getItem('cached_net_modal_offline_msg') || "আপনার নেটওয়ার্ক কানেক্ট করুন";
+            if (typeof showCustomToast === "function") {
+                showCustomToast(offlineMsg);
+            }
+        } else {
+            const onlineMsg = window.netModalOnlineMsg || localStorage.getItem('cached_net_modal_online_msg') || "Network Connected Successfully!";
+            if (typeof showCustomToast === "function") {
+                showCustomToast(onlineMsg);
+            }
+        }
+    }
+    isCheckingNetwork = false;
+}
+
+function retryInternetConnectionCheck(manual = true) {
+    verifyAndHandleNetworkState(manual);
+}
+
+function exitApplication() {
+    if (window.AndroidApp && typeof window.AndroidApp.exitApp === "function") {
+        window.AndroidApp.exitApp();
+    } else if (window.Android && typeof window.Android.exitApp === "function") {
+        window.Android.exitApp();
+    } else {
+        window.close();
+    }
+}
+
+// Continuous check every 4 seconds
+setInterval(() => {
+    verifyAndHandleNetworkState(false);
+}, 4000);
 
 function showOfflineLoader() {
+    const cachedEnabled = localStorage.getItem('cached_loader_enabled');
+    const isEnabled = window.isLoaderEnabled !== undefined ? window.isLoaderEnabled : (cachedEnabled !== 'false');
+
+    if (!isEnabled) {
+        const loader = document.getElementById('global-page-loader');
+        if (loader) {
+            loader.style.setProperty('display', 'none', 'important');
+            loader.classList.add('fade-out', 'hidden');
+        }
+        return;
+    }
+
     const loader = document.getElementById('global-page-loader');
     const statusBox = document.getElementById('net-status-box');
     const statusText = document.getElementById('net-status-text');
@@ -5547,66 +6258,74 @@ function showOfflineLoader() {
     }
 
     if (statusBox) {
-        statusBox.classList.remove('hidden', 'online');
-        statusBox.classList.add('offline');
-        if (statusIcon) statusIcon.innerHTML = `<i class="fas fa-wifi-slash"></i>`;
-        if (statusText) statusText.innerText = "No Internet Connection. Please check your network connection.";
+        statusBox.classList.add('hidden');
     }
 }
 
 function showOnlineLoader() {
     const statusBox = document.getElementById('net-status-box');
-    const statusText = document.getElementById('net-status-text');
-    const statusIcon = document.getElementById('net-status-icon');
-
-    if (statusBox) {
-        statusBox.classList.remove('hidden', 'offline');
-        statusBox.classList.add('online');
-        if (statusIcon) statusIcon.innerHTML = `<i class="fas fa-check-circle"></i>`;
-        if (statusText) statusText.innerText = "Internet Connected";
-
-        setTimeout(() => {
-            statusBox.classList.add('hidden');
-            checkAndHideLoader();
-        }, 1200);
-    } else {
-        checkAndHideLoader();
-    }
+    if (statusBox) statusBox.classList.add('hidden');
+    checkAndHideLoader();
 }
 
 function updateNetworkStatus(online) {
     isOnline = online;
-    if (!isOnline) {
-        showOfflineLoader();
-    } else {
-        showOnlineLoader();
-    }
+    verifyAndHandleNetworkState(false);
 }
 
-window.addEventListener('online', () => updateNetworkStatus(true));
-window.addEventListener('offline', () => updateNetworkStatus(false));
+window.addEventListener('online', () => verifyAndHandleNetworkState(false));
+window.addEventListener('offline', () => verifyAndHandleNetworkState(false));
 
 document.addEventListener("DOMContentLoaded", () => {
-    if (!navigator.onLine) {
-        showOfflineLoader();
-    } else {
-        checkAndHideLoader();
-    }
+    try {
+        const cachedEnabled = localStorage.getItem('cached_loader_enabled');
+        if (cachedEnabled === 'false') {
+            window.isLoaderEnabled = false;
+            const loader = document.getElementById('global-page-loader');
+            if (loader) {
+                loader.classList.add('fade-out', 'hidden');
+                loader.style.setProperty('display', 'none', 'important');
+            }
+        }
+
+        const cachedLogo = localStorage.getItem('cached_loader_logo');
+        if (cachedLogo) {
+            const loaderImg = document.getElementById('loader-logo-img');
+            if (loaderImg) loaderImg.src = cachedLogo;
+        }
+
+        const cachedAppName = localStorage.getItem('cached_loader_app_name');
+        if (cachedAppName) {
+            const nameEl = document.getElementById('loader-app-name-text');
+            if (nameEl) nameEl.textContent = cachedAppName;
+        }
+
+        const cachedCss = localStorage.getItem('cached_loader_custom_css');
+        if (cachedCss) {
+            const styleEl = document.getElementById('custom-loader-css');
+            if (styleEl) styleEl.textContent = cachedCss;
+        }
+    } catch(e) {}
+
+    checkAndHideLoader();
 });
 
-function forceHideGlobalLoader() {
-    if (!navigator.onLine) {
+function forceHideGlobalLoader(bypassOffline = false) {
+    const cachedEnabled = localStorage.getItem('cached_loader_enabled');
+    const isEnabled = window.isLoaderEnabled !== undefined ? window.isLoaderEnabled : (cachedEnabled !== 'false');
+
+    if (!bypassOffline && !navigator.onLine && isEnabled) {
         showOfflineLoader();
         return;
     }
     const loader = document.getElementById('global-page-loader');
     if (loader) {
-        loader.classList.add('fade-out');
+        loader.classList.add('fade-out', 'hidden');
         loader.style.opacity = '0';
         loader.style.pointerEvents = 'none';
+        loader.style.setProperty('display', 'none', 'important');
         setTimeout(() => { 
-            loader.style.display = 'none'; 
-            loader.classList.add('hidden');
+            loader.style.setProperty('display', 'none', 'important'); 
         }, 300);
     }
     if (window.pendingPopupData) {
@@ -5616,10 +6335,19 @@ function forceHideGlobalLoader() {
 }
 
 function checkAndHideLoader() {
+    const cachedEnabled = localStorage.getItem('cached_loader_enabled');
+    const isEnabled = window.isLoaderEnabled !== undefined ? window.isLoaderEnabled : (cachedEnabled !== 'false');
+
+    if (!isEnabled) {
+        forceHideGlobalLoader(true);
+        return;
+    }
+
     if (!navigator.onLine) {
         showOfflineLoader();
         return;
     }
+
     if (isSliderLoaded && isCategoriesLoaded) {
         forceHideGlobalLoader();
     }
@@ -6061,6 +6789,78 @@ function closeBalanceTransferModal(fromBackButton = false) {
     }
 }
 
+async function findReceiverUserDoc(rawPin, senderUid) {
+    if (!rawPin) return null;
+    const cleanRawPin = rawPin.trim().toUpperCase().replace('ESP-', '');
+    const fullPin = 'ESP-' + cleanRawPin;
+
+    function isMatch(uDoc) {
+        if (!uDoc || !uDoc.exists) return false;
+        if (uDoc.id === senderUid) return false;
+        const uData = uDoc.data() || {};
+        const uUid = uDoc.id;
+        let uSupportPin = (uData.supportPin || '').toUpperCase().replace('ESP-', '');
+        let uReferralCode = (uData.referralCode || '').toUpperCase().replace('ESP-', '');
+        let uShortUid = uUid.substring(0, 6).toUpperCase();
+        let uEmail = (uData.email || uData.userEmail || '').toLowerCase();
+
+        return (
+            cleanRawPin === uSupportPin ||
+            cleanRawPin === uReferralCode ||
+            cleanRawPin === uShortUid ||
+            uUid.toUpperCase() === rawPin.trim().toUpperCase() ||
+            (rawPin.trim().length >= 5 && uEmail.startsWith(rawPin.trim().toLowerCase()))
+        );
+    }
+
+    try {
+        const snap = await db.collection('users').where('supportPin', '==', fullPin).get();
+        if (!snap.empty) {
+            for (let doc of snap.docs) {
+                if (doc.id !== senderUid) return { id: doc.id, data: doc.data() };
+            }
+        }
+    } catch(e) {}
+
+    try {
+        const snap = await db.collection('users').where('supportPin', '==', cleanRawPin).get();
+        if (!snap.empty) {
+            for (let doc of snap.docs) {
+                if (doc.id !== senderUid) return { id: doc.id, data: doc.data() };
+            }
+        }
+    } catch(e) {}
+
+    try {
+        const snap = await db.collection('users').where('referralCode', '==', cleanRawPin).get();
+        if (!snap.empty) {
+            for (let doc of snap.docs) {
+                if (doc.id !== senderUid) return { id: doc.id, data: doc.data() };
+            }
+        }
+    } catch(e) {}
+
+    try {
+        const docSnap = await db.collection('users').doc(rawPin.trim()).get();
+        if (docSnap.exists && docSnap.id !== senderUid) {
+            return { id: docSnap.id, data: docSnap.data() };
+        }
+    } catch(e) {}
+
+    try {
+        const snap = await db.collection('users').get();
+        if (!snap.empty) {
+            for (let doc of snap.docs) {
+                if (isMatch(doc)) {
+                    return { id: doc.id, data: doc.data() };
+                }
+            }
+        }
+    } catch(e) {}
+
+    return null;
+}
+
 function executeBalanceTransfer() {
     if (!currentUser) {
         showCustomToast("আগে লগইন করুন!");
@@ -6162,33 +6962,7 @@ function executeBalanceTransfer() {
             return;
         }
 
-        const cleanRawPin = rawPin.toUpperCase().replace('ESP-', '');
-
-        db.collection('users').get().then(usersSnap => {
-            let receiverDoc = null;
-
-            usersSnap.forEach(uDoc => {
-                const uData = uDoc.data() || {};
-                const uUid = uDoc.id;
-                
-                let uSupportPin = (uData.supportPin || '').toUpperCase().replace('ESP-', '');
-                let uReferralCode = (uData.referralCode || '').toUpperCase().replace('ESP-', '');
-                let uShortUid = uUid.substring(0, 6).toUpperCase();
-                let uEmail = (uData.email || uData.userEmail || '').toLowerCase();
-
-                if (cleanRawPin && (
-                    cleanRawPin === uSupportPin || 
-                    cleanRawPin === uReferralCode || 
-                    cleanRawPin === uShortUid || 
-                    uUid.toUpperCase() === rawPin.toUpperCase() ||
-                    (rawPin.length >= 5 && uEmail.startsWith(rawPin.toLowerCase()))
-                )) {
-                    if (uUid !== senderUid) {
-                        receiverDoc = { id: uUid, data: uData };
-                    }
-                }
-            });
-
+        findReceiverUserDoc(rawPin, senderUid).then(receiverDoc => {
             if (!receiverDoc) {
                 Swal.close();
                 Swal.fire({
@@ -6201,7 +6975,7 @@ function executeBalanceTransfer() {
             }
 
             const receiverUid = receiverDoc.id;
-            const receiverData = receiverDoc.data() || {};
+            const receiverData = receiverDoc.data || {};
             const receiverName = receiverData.name || 'User';
             const receiverPhoto = receiverData.photoURL || receiverData.profilePic || receiverData.avatar || 'logo.png';
 
