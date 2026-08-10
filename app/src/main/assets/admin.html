@@ -138,6 +138,7 @@
             <div onclick="switchView('tutorials')" id="nav-tutorials" class="nav-link"><i class="fas fa-video w-8 text-center"></i> Tutorials</div>
             <div onclick="switchView('banners')" id="nav-banners" class="nav-link"><i class="fas fa-image w-8 text-center"></i> Banners</div>
             <div onclick="switchView('popup')" id="nav-popup" class="nav-link"><i class="fas fa-bullhorn w-8 text-center"></i> Launch Popup</div>
+            <div onclick="switchView('helplines')" id="nav-helplines" class="nav-link"><i class="fab fa-telegram-plane w-8 text-center text-sky-400"></i> হেল্পলাইন ও সোশ্যাল লিংকসমূহ</div>
             <div onclick="switchView('firebase-cfg')" id="nav-firebase-cfg" class="nav-link"><i class="fas fa-fire w-8 text-center text-orange-500"></i> Firebase Config</div>
         </nav>
         <div class="p-4 border-t border-dark-border bg-dark-bg/50">
@@ -1682,6 +1683,127 @@
                 </div>
             </div>
 
+            <!-- Helpline Links View -->
+            <div id="view-helplines" class="view-section hidden">
+                <div class="card mb-6">
+                    <h2 class="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fab fa-telegram-plane text-sky-400"></i>
+                        <span>সকল হেল্পলাইন ও সোশ্যাল লিংক কাস্টমাইজেশন (Helpline Links Control)</span>
+                    </h2>
+                    <p class="text-xs text-gray-400 mb-6">এখানে প্রতিটি টেলিগ্রাম, হোয়াটসঅ্যাপ এবং ফেসবুক বাটনের জন্য আলাদা আলাদা লিংক সেট করতে পারবেন। প্রতিটি ইনপুট বক্সের উপরে লিখে দেওয়া হয়েছে যে এটি অ্যাপের কোথায় চেঞ্জ হবে।</p>
+
+                    <div class="space-y-6">
+                        <!-- Telegram Section -->
+                        <div class="p-4 bg-sky-950/20 border border-sky-500/30 rounded-2xl">
+                            <h3 class="text-sm font-bold text-sky-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fab fa-telegram text-lg"></i> টেলিগ্রাম হেল্পলাইন লিংকসমূহ (Telegram Links)
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-sky-300 font-semibold mb-1">১. অ্যাপ হেডার টেলিগ্রাম বাটন লিংক (Header Telegram Button)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">অ্যাপের একদম উপরে হেডারে যে টেলিগ্রাম বাটন থাকে তার লিংক</p>
+                                    <input type="text" id="set-tg-header" class="flat-input" placeholder="https://t.me/...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-sky-300 font-semibold mb-1">২. ফুটার বাটন টেলিগ্রাম লিংক (Footer Esp TopUp Team Link)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">অ্যাপের নিচে ফুটারে যে Esp TopUp Team (Helpline) বাটন থাকে তার লিংক</p>
+                                    <input type="text" id="set-tg-footer" class="flat-input" placeholder="https://t.me/...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-sky-300 font-semibold mb-1">৩. কন্টাক্ট ইউএস পেজ টেলিগ্রাম লিংক (Contact Telegram Helpline)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">Contact Us পেজে যে Telegram Helpline কার্ড থাকে তার লিংক</p>
+                                    <input type="text" id="set-tg-contact" class="flat-input" placeholder="https://t.me/...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-sky-300 font-semibold mb-1">৪. এবাউট ইউএস পেজ টেলিগ্রাম লিংক (About Telegram Link)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">About Us পেজে টেলিগ্রাম গ্রিড বাটনের লিংক</p>
+                                    <input type="text" id="set-tg-about" class="flat-input" placeholder="https://t.me/...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-sky-300 font-semibold mb-1">৫. ডিপোজিট রুলস ডায়ালগ টেলিগ্রাম লিংক (Deposit Rules Box Telegram)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">ডিপোজিট/এড মানি পেজে লাল রুলস বক্সের নিচে টেলিগ্রাম লিংক</p>
+                                    <input type="text" id="set-tg-rule" class="flat-input" placeholder="https://t.me/...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-sky-300 font-semibold mb-1">৬. রুলস নোটিশ টেলিগ্রাম বার্তা লিংক (Rules Notice Telegram Link)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">অ্যাপের রুলস নোটিশ লেখার সাথে যুক্ত টেলিগ্রাম লিংক</p>
+                                    <input type="text" id="set-tg-rulesnotice" class="flat-input" placeholder="https://t.me/...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- WhatsApp Section -->
+                        <div class="p-4 bg-emerald-950/20 border border-emerald-500/30 rounded-2xl">
+                            <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fab fa-whatsapp text-lg"></i> হোয়াটসঅ্যাপ হেল্পলাইন লিংকসমূহ (WhatsApp Links)
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-emerald-300 font-semibold mb-1">১. কন্টাক্ট ইউএস পেজ হোয়াটসঅ্যাপ লিংক (Contact WhatsApp Helpline)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">Contact Us পেজে যে Whatsapp HelpLine কার্ড থাকে তার লিংক</p>
+                                    <input type="text" id="set-wa-contact" class="flat-input" placeholder="https://wa.me/8801...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-emerald-300 font-semibold mb-1">২. এবাউট ইউএস পেজ হোয়াটসঅ্যাপ লিংক (About WhatsApp Link)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">About Us পেজে হোয়াটসঅ্যাপ গ্রিড বাটনের লিংক</p>
+                                    <input type="text" id="set-wa-about" class="flat-input" placeholder="https://wa.me/8801...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-emerald-300 font-semibold mb-1">৩. ডিপোজিট রুলস ডায়ালগ হোয়াটসঅ্যাপ লিংক (Deposit Rules Box WhatsApp)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">ডিপোজিট/এড মানি পেজে লাল রুলস বক্সের নিচে হোয়াটসঅ্যাপ লিংক</p>
+                                    <input type="text" id="set-wa-rule" class="flat-input" placeholder="https://wa.me/8801...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-emerald-300 font-semibold mb-1">৪. একাউন্ট ব্যান/লক সাপোর্ট হোয়াটসঅ্যাপ লিংক (Ban Support WhatsApp)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">ইউজার ব্যান হলে যে হোয়াটসঅ্যাপ সাপোর্ট বাটন আসে তার লিংক</p>
+                                    <input type="text" id="set-wa-ban" class="flat-input" placeholder="https://wa.me/8801...">
+                                </div>
+                                <div class="md:col-span-2">
+                                    <label class="block text-xs text-emerald-300 font-semibold mb-1">৫. মেইন হোয়াটসঅ্যাপ নাম্বার/লিংক (General WhatsApp)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">অন্যান্য সব সাধারণ জায়গায় ব্যবহূত হোয়াটসঅ্যাপ লিংক</p>
+                                    <input type="text" id="set-wa-main" class="flat-input" placeholder="https://wa.me/8801... বা 8801...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Facebook Section -->
+                        <div class="p-4 bg-blue-950/20 border border-blue-500/30 rounded-2xl">
+                            <h3 class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fab fa-facebook-f text-lg"></i> ফেসবুক হেল্পলাইন ও পেজ লিংকসমূহ (Facebook Links)
+                            </h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs text-blue-300 font-semibold mb-1">১. কন্টাক্ট ইউএস পেজ ফেসবুক লিংক (Contact Facebook Helpline)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">Contact Us পেজে ফেসবুক হেল্পলাইন বাটনের লিংক</p>
+                                    <input type="text" id="set-fb-contact" class="flat-input" placeholder="https://facebook.com/...">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-blue-300 font-semibold mb-1">২. এবাউট ইউএস পেজ ফেসবুক লিংক (About Facebook Link)</label>
+                                    <p class="text-[11px] text-gray-400 mb-1">About Us পেজে ফেসবুক গ্রিড বাটনের লিংক</p>
+                                    <input type="text" id="set-fb-about" class="flat-input" placeholder="https://facebook.com/...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exit Dialog Logo Section -->
+                        <div class="p-4 bg-purple-950/20 border border-purple-500/30 rounded-2xl">
+                            <h3 class="text-sm font-bold text-purple-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+                                <i class="fas fa-sign-out-alt text-lg"></i> ব্যাক বাটন এক্সিট ডায়ালগ লোগো (Exit Dialog Logo)
+                            </h3>
+                            <div>
+                                <label class="block text-xs text-purple-300 font-semibold mb-1">এক্সিট ডায়ালগ লোগো ফটো URL (Exit Confirmation Dialog Logo Image URL)</label>
+                                <p class="text-[11px] text-gray-400 mb-1">ফোনের ব্যাক বাটনে ৩ বার চাপলে যে ডায়ালগ আসে সেটার লোগো পরিবর্তন করার লিংক</p>
+                                <input type="text" id="set-exit-dialog-logo" class="flat-input" placeholder="https://i.ibb.co/...">
+                            </div>
+                        </div>
+
+                        <button onclick="saveSettings('helplines')" class="flat-btn w-full py-3 text-base font-bold bg-orange-500 hover:bg-orange-600 text-white rounded-xl shadow-lg">
+                            <i class="fas fa-save mr-2"></i> সেভ করুন (Save All Helpline Links & Exit Logo)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Firebase Config View -->
             <div id="view-firebase-cfg" class="view-section hidden">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1941,7 +2063,7 @@
             }
             if(!db) return;
             if(viewId === 'dashboard') loadDashboardData();
-            if(viewId === 'settings' || viewId === 'popup' || viewId === 'app-logos' || viewId === 'app-texts' || viewId === 'api-cfg' || viewId === 'category-customize' || viewId === 'profile-customize') loadSettings();
+            if(viewId === 'settings' || viewId === 'popup' || viewId === 'app-logos' || viewId === 'app-texts' || viewId === 'api-cfg' || viewId === 'category-customize' || viewId === 'profile-customize' || viewId === 'helplines') loadSettings();
             if(viewId === 'categories') loadCategories();
             if(viewId === 'services') { loadCategories(); loadServices(); }
             if(viewId === 'products') {
@@ -2018,6 +2140,25 @@
                     setVal('set-telegram', d.telegram);
                     setVal('set-facebook', d.facebook);
                     setVal('set-youtube', d.youtube);
+
+                    // Granular helpline input fields
+                    setVal('set-tg-header', d.tgHeaderUrl || d.telegram || '');
+                    setVal('set-tg-footer', d.tgFooterUrl || d.telegram || '');
+                    setVal('set-tg-contact', d.tgContactUrl || d.telegram || '');
+                    setVal('set-tg-about', d.tgAboutUrl || d.telegram || '');
+                    setVal('set-tg-rule', d.ruleTelegramUrl || d.telegram || '');
+                    setVal('set-tg-rulesnotice', d.tgRulesNoticeUrl || d.telegram || '');
+
+                    setVal('set-wa-contact', d.waContactUrl || d.whatsapp || '');
+                    setVal('set-wa-about', d.waAboutUrl || d.whatsapp || '');
+                    setVal('set-wa-rule', d.ruleWhatsappUrl || d.whatsapp || '');
+                    setVal('set-wa-ban', d.waBanUrl || d.whatsapp || '');
+                    setVal('set-wa-main', d.whatsapp || '');
+
+                    setVal('set-fb-contact', d.fbContactUrl || d.facebook || '');
+                    setVal('set-fb-about', d.fbAboutUrl || d.facebook || '');
+
+                    setVal('set-exit-dialog-logo', d.exitDialogLogoUrl || d.logoUrl || '');
                     setVal('set-rule-box-title', d.ruleBoxTitle || "চূড়ান্ত রুলস (এটা না মানলে আপনার আইডির সমস্যা হতে পারে)");
                     setVal('set-rule-box-msg', d.ruleBoxMsg || "বারবার যদি ট্রানজেকশন আইডি ভুল দিয়ে চেষ্টা করেন, তাহলে আপনার আইডি ব্যান হতে পারে বা আপনার আইডির সমস্যা হতে পারে।");
                     setVal('set-rule-whatsapp-url', d.ruleWhatsappUrl || d.whatsapp || "");
@@ -2486,6 +2627,23 @@
                     rulesNotice: getVal('set-rules-notice'),
                     appLink: getVal('set-applink'),
                     referralBonusAmount: refBonus
+                }, {merge: true});
+            } else if (type === 'helplines') {
+                p1 = db.collection('settings').doc('general').set({
+                    tgHeaderUrl: getVal('set-tg-header'),
+                    tgFooterUrl: getVal('set-tg-footer'),
+                    tgContactUrl: getVal('set-tg-contact'),
+                    tgAboutUrl: getVal('set-tg-about'),
+                    ruleTelegramUrl: getVal('set-tg-rule'),
+                    tgRulesNoticeUrl: getVal('set-tg-rulesnotice'),
+                    waContactUrl: getVal('set-wa-contact'),
+                    waAboutUrl: getVal('set-wa-about'),
+                    ruleWhatsappUrl: getVal('set-wa-rule'),
+                    waBanUrl: getVal('set-wa-ban'),
+                    whatsapp: getVal('set-wa-main'),
+                    fbContactUrl: getVal('set-fb-contact'),
+                    fbAboutUrl: getVal('set-fb-about'),
+                    exitDialogLogoUrl: getVal('set-exit-dialog-logo')
                 }, {merge: true});
             } else if (type === 'social') {
                 p1 = db.collection('settings').doc('general').set({

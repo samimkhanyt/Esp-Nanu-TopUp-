@@ -2289,8 +2289,9 @@ function loadGlobalSettings() {
         if (doc.exists) {
             const data = doc.data();
             
-            const logoUrl = data.logoUrl || "logo.png";
-            const siteName = data.siteName || "Nenox Shop";
+            const rawLogo = (data.logoUrl && String(data.logoUrl).trim() !== '') ? data.logoUrl : "https://i.ibb.co.com/JjcZFr8G/Background-Eraser-20260805-021434936.png";
+            const logoUrl = rawLogo;
+            const siteName = data.siteName || "Esp TopUp";
             
             isAutoPayEnabled = data.autoPayEnabled === true;
             window.transferLimitHours = (data.transferLimitHours !== undefined && !isNaN(parseInt(data.transferLimitHours))) ? parseInt(data.transferLimitHours) : 24;
@@ -2303,6 +2304,8 @@ function loadGlobalSettings() {
             const step2CenterLogo = document.getElementById('step2-center-logo');
             const paySiteLogoSmall = document.getElementById('pay-site-logo-small');
             const loaderLogoImg = document.getElementById('loader-logo-img');
+            const loginLogoImg = document.getElementById('login-logo-img');
+            const verifyModalLogoImg = document.getElementById('verify-modal-logo-img');
 
             if (headerLogo) {
                 headerLogo.src = logoUrl;
@@ -2319,7 +2322,11 @@ function loadGlobalSettings() {
             if (step2Logo) step2Logo.src = logoUrl;
             if (step2CenterLogo) step2CenterLogo.src = logoUrl;
             if (paySiteLogoSmall) paySiteLogoSmall.src = logoUrl;
-            if (loaderLogoImg && logoUrl) loaderLogoImg.src = logoUrl;
+            
+            const effectiveLoaderLogo = (data.loaderLogoUrl && String(data.loaderLogoUrl).trim() !== '') ? data.loaderLogoUrl : logoUrl;
+            if (loaderLogoImg) loaderLogoImg.src = effectiveLoaderLogo;
+            if (loginLogoImg) loginLogoImg.src = (data.loginLogoUrl && String(data.loginLogoUrl).trim() !== '') ? data.loginLogoUrl : logoUrl;
+            if (verifyModalLogoImg) verifyModalLogoImg.src = logoUrl;
 
             const rulesLogo = document.getElementById('rules-footer-logo');
             if (rulesLogo) rulesLogo.src = logoUrl;
@@ -3780,14 +3787,13 @@ function loadAppContent() {
                 window.isLoaderEnabled = true;
             }
 
-            if (data.loaderLogoUrl) {
-                const loaderImg = document.getElementById('loader-logo-img');
-                if (loaderImg) loaderImg.src = data.loaderLogoUrl;
-                try {
-                    localStorage.setItem('cached_loader_logo', data.loaderLogoUrl);
-                    new Image().src = data.loaderLogoUrl;
-                } catch(e) {}
-            }
+            const currentLoaderLogo = (data.loaderLogoUrl && String(data.loaderLogoUrl).trim() !== '') ? data.loaderLogoUrl : ((data.logoUrl && String(data.logoUrl).trim() !== '') ? data.logoUrl : "https://i.ibb.co.com/bR3yqm2V/1000022763.jpg");
+            const loaderImg = document.getElementById('loader-logo-img');
+            if (loaderImg) loaderImg.src = currentLoaderLogo;
+            try {
+                localStorage.setItem('cached_loader_logo', currentLoaderLogo);
+                new Image().src = currentLoaderLogo;
+            } catch(e) {}
 
             const appTitleText = data.loaderAppNameText || data.siteName || "Esp TopUp";
             const loaderNameEl = document.getElementById('loader-app-name-text');
@@ -4048,6 +4054,27 @@ function loadAppContent() {
                 };
             }
 
+            const tgHeader = data.tgHeaderUrl || data.telegram || "#";
+            const tgFooter = data.tgFooterUrl || data.telegram || "#";
+            const tgContact = data.tgContactUrl || data.telegram || "#";
+            const tgAbout = data.tgAboutUrl || data.telegram || "#";
+            const tgRule = data.ruleTelegramUrl || data.telegram || "#";
+            const tgRulesNotice = data.tgRulesNoticeUrl || data.telegram || "#";
+
+            const waContact = data.waContactUrl || data.whatsapp || "#";
+            const waAbout = data.waAboutUrl || data.whatsapp || "#";
+            const waRule = data.ruleWhatsappUrl || data.whatsapp || "#";
+            const waBan = data.waBanUrl || data.whatsapp || "#";
+            const waMain = data.whatsapp || "#";
+
+            const fbContact = data.fbContactUrl || data.facebook || "#";
+            const fbAbout = data.fbAboutUrl || data.facebook || "#";
+
+            window.exitDialogLogoUrl = data.exitDialogLogoUrl || data.logoUrl || "https://i.ibb.co.com/dJgG0NNN/1000026095.jpg";
+            if (window.AndroidApp && typeof window.AndroidApp.setExitDialogLogo === 'function') {
+                window.AndroidApp.setExitDialogLogo(window.exitDialogLogoUrl);
+            }
+
             function attachSocialClick(elementId, targetUrl) {
                 const el = document.getElementById(elementId);
                 if (el) {
@@ -4061,16 +4088,18 @@ function loadAppContent() {
                 }
             }
 
-            attachSocialClick('link-whatsapp', waLink);
-            attachSocialClick('link-telegram', tgLink);
-            attachSocialClick('about-facebook', fbLink);
+            attachSocialClick('link-whatsapp', waMain);
+            attachSocialClick('link-telegram', tgHeader);
+            attachSocialClick('header-telegram-btn', tgHeader);
+            attachSocialClick('about-facebook', fbAbout);
             attachSocialClick('about-youtube', ytLink);
-            attachSocialClick('about-telegram', tgLink);
-            attachSocialClick('about-whatsapp', waLink);
-            attachSocialClick('contact-whatsapp', waLink);
-            attachSocialClick('contact-telegram', tgLink);
-            attachSocialClick('contact-facebook', fbLink);
-            attachSocialClick('footer-telegram-btn', tgLink);
+            attachSocialClick('about-telegram', tgAbout);
+            attachSocialClick('about-whatsapp', waAbout);
+            attachSocialClick('contact-whatsapp', waContact);
+            attachSocialClick('contact-telegram', tgContact);
+            attachSocialClick('contact-facebook', fbContact);
+            attachSocialClick('footer-telegram-btn', tgFooter);
+            attachSocialClick('ban-lock-wa-btn', waBan);
         }
     });
 
@@ -4979,14 +5008,7 @@ function loadHistory() {
             const orders = [];
             snapshot.forEach(doc => {
                 const data = doc.data();
-                const statusRaw = (data.status || 'pending').toLowerCase();
-                const isComplete = (statusRaw === 'success' || statusRaw === 'complete' || statusRaw === 'completed');
-                const isProcessing = (statusRaw === 'processing' || statusRaw === 'process');
-                
-                // Show in history only when approved / completed / processing by admin
-                if (isComplete || isProcessing) {
-                    orders.push({id: doc.id, ...data});
-                }
+                orders.push({id: doc.id, ...data});
             });
 
             if (orders.length === 0) {
@@ -6350,10 +6372,31 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        const cachedLogo = localStorage.getItem('cached_loader_logo');
+        const cachedLogo = localStorage.getItem('cached_loader_logo') || localStorage.getItem('cached_header_logo');
         if (cachedLogo) {
             const loaderImg = document.getElementById('loader-logo-img');
             if (loaderImg) loaderImg.src = cachedLogo;
+            const headerLogoImg = document.getElementById('header-logo-img');
+            if (headerLogoImg) headerLogoImg.src = cachedLogo;
+            const loginLogoImg = document.getElementById('login-logo-img');
+            if (loginLogoImg) loginLogoImg.src = cachedLogo;
+        }
+
+        const cachedHeaderLogo = localStorage.getItem('cached_header_logo');
+        if (cachedHeaderLogo) {
+            const headerLogoImg = document.getElementById('header-logo-img');
+            if (headerLogoImg) headerLogoImg.src = cachedHeaderLogo;
+        }
+
+        const cachedHeaderLogoSize = localStorage.getItem('cached_header_logo_size');
+        if (cachedHeaderLogoSize) {
+            const headerLogoImg = document.getElementById('header-logo-img');
+            if (headerLogoImg) {
+                const szVal = isNaN(cachedHeaderLogoSize) ? cachedHeaderLogoSize : (cachedHeaderLogoSize + 'px');
+                headerLogoImg.style.height = szVal;
+                headerLogoImg.style.maxHeight = 'none';
+                headerLogoImg.style.width = 'auto';
+            }
         }
 
         const cachedAppName = localStorage.getItem('cached_loader_app_name');
@@ -6542,17 +6585,15 @@ function handleNativeBack() {
 }
 
 function showExitDialogFallback() {
-    const currentLogo = document.getElementById('header-logo-img')?.src || 'https://i.ibb.co.com/dJgG0NNN/1000026095.jpg';
+    const exitLogo = window.exitDialogLogoUrl || document.getElementById('header-logo-img')?.src || 'https://i.ibb.co.com/dJgG0NNN/1000026095.jpg';
     Swal.fire({
         title: '',
         html: `
             <div class="flex flex-col items-center justify-center pt-2">
-                <div class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-slate-300 bg-white p-2 mb-3 flex items-center justify-center mx-auto shadow-sm">
-                    <img src="${currentLogo}" class="max-w-full max-h-full object-contain" alt="App Logo" onerror="this.src='https://i.ibb.co.com/dJgG0NNN/1000026095.jpg'">
+                <div class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-slate-300 bg-white p-2 mb-4 flex items-center justify-center mx-auto shadow-sm">
+                    <img src="${exitLogo}" class="max-w-full max-h-full object-contain" alt="App Logo" onerror="this.src='https://i.ibb.co.com/dJgG0NNN/1000026095.jpg'">
                 </div>
-                <h3 class="text-2xl font-extrabold text-slate-800 tracking-normal mb-0.5">TOPUP</h3>
-                <p class="text-xs font-bold text-sky-600 uppercase tracking-wider mb-3">FREE FIRE TOPUP</p>
-                <p class="text-sm font-medium text-slate-600 mb-1">আপনি কি অ্যাপ থেকে বের হয়ে যেতে চান?</p>
+                <p class="text-base font-bold text-slate-800 text-center mb-2 px-2">আপনি কি Esp TopUp অ্যাপ থেকে বেরিয়ে যেতে চান?</p>
             </div>
         `,
         showCancelButton: true,
@@ -6564,6 +6605,8 @@ function showExitDialogFallback() {
         if (result.isConfirmed) {
             if (window.AndroidApp && typeof window.AndroidApp.exitApp === 'function') {
                 window.AndroidApp.exitApp();
+            } else {
+                window.close();
             }
         }
     });

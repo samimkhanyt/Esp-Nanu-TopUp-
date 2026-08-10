@@ -61,6 +61,13 @@ class MainActivity : ComponentActivity() {
         }
 
         @JavascriptInterface
+        fun setExitDialogLogo(url: String) {
+            try {
+                activity.getSharedPreferences("app_prefs", MODE_PRIVATE).edit().putString("exit_dialog_logo_url", url).apply()
+            } catch (e: Exception) {}
+        }
+
+        @JavascriptInterface
         fun googleSignIn() {
             activity.runOnUiThread {
                 activity.promptGoogleAccountSelection()
@@ -420,7 +427,7 @@ class MainActivity : ComponentActivity() {
                 setStroke(3, Color.parseColor("#cbd5e1"))
             }
             layoutParams = LinearLayout.LayoutParams(180, 180).apply {
-                bottomMargin = 20
+                bottomMargin = 24
             }
             setPadding(14, 14, 14, 14)
         }
@@ -431,43 +438,30 @@ class MainActivity : ComponentActivity() {
         logoContainer.addView(logoView)
         container.addView(logoContainer)
 
-        // Title: TOPUP
-        val titleView = TextView(this).apply {
-            text = "TOPUP"
-            textSize = 22f
-            setTypeface(Typeface.DEFAULT, Typeface.BOLD)
-            setTextColor(Color.parseColor("#0f172a"))
-            gravity = Gravity.CENTER
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                bottomMargin = 4
-            }
+        // Load custom logo URL if configured from admin
+        val savedLogoUrl = try { getSharedPreferences("app_prefs", MODE_PRIVATE).getString("exit_dialog_logo_url", "") } catch (e: Exception) { "" }
+        if (!savedLogoUrl.isNullOrEmpty()) {
+            Thread {
+                try {
+                    val conn = java.net.URL(savedLogoUrl).openConnection()
+                    conn.connectTimeout = 3000
+                    conn.readTimeout = 3000
+                    val bmp = android.graphics.BitmapFactory.decodeStream(conn.getInputStream())
+                    if (bmp != null) {
+                        runOnUiThread {
+                            logoView.setImageBitmap(bmp)
+                        }
+                    }
+                } catch (e: Exception) {}
+            }.start()
         }
-        container.addView(titleView)
 
-        // Subtitle: FREE FIRE TOPUP
-        val subTitleView = TextView(this).apply {
-            text = "FREE FIRE TOPUP"
-            textSize = 12f
-            setTypeface(Typeface.DEFAULT, Typeface.BOLD)
-            setTextColor(Color.parseColor("#0284c7"))
-            gravity = Gravity.CENTER
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                bottomMargin = 20
-            }
-        }
-        container.addView(subTitleView)
-
-        // Subtitle / Message
+        // Message in Bengali with App Name (English headers removed)
         val messageView = TextView(this).apply {
-            text = "আপনি কি অ্যাপ থেকে বের হয়ে যেতে চান?"
-            textSize = 14f
-            setTextColor(Color.parseColor("#64748b"))
+            text = "আপনি কি Esp TopUp অ্যাপ থেকে বেরিয়ে যেতে চান?"
+            textSize = 15f
+            setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+            setTextColor(Color.parseColor("#1e293b"))
             gravity = Gravity.CENTER
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
