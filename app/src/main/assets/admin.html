@@ -1839,10 +1839,17 @@
         let adminReferralBonusAmount = 10;
         try {
             if (typeof firebase !== 'undefined') {
-                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                if (!firebase.apps.length) {
+                    try {
+                        firebase.initializeApp(firebaseConfig);
+                    } catch (eCfg) {
+                        console.warn("Custom firebase config error, falling back to default:", eCfg);
+                        firebase.initializeApp(defaultFirebaseConfig);
+                    }
+                }
                 db = firebase.firestore();
                 try {
-                    db.settings({ experimentalForceLongPolling: true });
+                    db.settings({ experimentalForceLongPolling: true, merge: true });
                 } catch (e) {}
                 rtdb = firebase.database();
             }
@@ -2957,7 +2964,293 @@
             });
         }
 
-        // STOCK MANAGEMENT
+        function toggleSelectAllOrders(masterCheckbox) {
+            const checkboxes = document.querySelectorAll('.order-select-checkbox');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+            updateOrderSelectCount();
+        }
+
+        function updateOrderSelectCount() {
+            const checked = document.querySelectorAll('.order-select-checkbox:checked');
+            setTxt('order-select-count', checked.length);
+            const btn = document.getElementById('btn-order-bulk-delete');
+            if (btn) {
+                if (checked.length > 0) btn.classList.remove('hidden');
+                else btn.classList.add('hidden');
+            }
+            const master = document.getElementById('order-select-all');
+            const total = document.querySelectorAll('.order-select-checkbox');
+            if (master && total.length > 0) {
+                master.checked = checked.length === total.length;
+            }
+        }
+
+        function deleteSelectedOrders() {
+            const checked = document.querySelectorAll('.order-select-checkbox:checked');
+            if (checked.length === 0) return;
+            const count = checked.length;
+            Swal.fire({
+                title: `Delete ${count} Selected Orders?`,
+                text: 'সিলেক্ট করা অর্ডারগুলো ডিলিট করতে চান?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete',
+                confirmButtonColor: '#d33'
+            }).then(r => {
+                if (r.isConfirmed && db) {
+                    showLoading();
+                    const batch = db.batch();
+                    checked.forEach(cb => {
+                        const docRef = db.collection('orders').doc(cb.value);
+                        batch.delete(docRef);
+                    });
+                    batch.commit().then(() => {
+                        hideLoading();
+                        updateOrderSelectCount();
+                        Swal.fire({toast: true, position: 'top-end', icon: 'success', title: `${count} orders deleted`, timer: 1500, showConfirmButton: false});
+                    }).catch(dbError);
+                }
+            });
+        }
+
+        function renderOrdersTable() {
+            const list = document.getElementById('order-list');
+            if(!list) return;
+            list.innerHTML = '';
+            const search = getVal('order-search').toLowerCase();
+
+            const thSelect = document.getElementById('th-order-select');
+            if (thSelect) thSelect.classList.remove('hidden');
+
+            const filtered = allOrdersList.filter(o => {
+                const statusMatches = currentOrderTab === 'pending' ? (o.status === 'pending' || o.status === 'Pending') :
+                                      (currentOrderTab === 'history' ? (o.status === 'success' || o.status === 'Completed' || o.status === 'rejected' || o.status === 'Rejected') :
+                                      (o.status === 'deleted' || o.isDeleted === true));
+                if(!statusMatches) return false;
+                if(!search) return true;
+                return (o.userEmail || '').toLowerCase().includes(search) ||
+                       (o.gameName || '').toLowerCase().includes(search) ||
+                       (o.playerId || '').toLowerCase().includes(search) ||
+                       (o.id || '').toLowerCase().includes(search);
+            });
+
+            if(filtered.length === 0) {
+                list.innerHTML = `<tr><td colspan="7" class="text-center py-12 text-slate-500">No orders found.</td></tr>`;
+                updateOrderSelectCount();
+                return;
+            }
+
+            filtered.forEach(o => {
+                const st = o.status || 'pending';
+                let statusBadge = `<span class="bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded text-[11px] font-semibold">Pending</span>`;
+                if(st === 'success' || st === 'Completed') statusBadge = `<span class="bg-green-500/10 text-green-400 border border-green-500/30 px-2 py-0.5 rounded text-[11px] font-semibold">Completed</span>`;
+                else if(st === 'rejected' || st === 'Rejected') statusBadge = `<span class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-0.5 rounded text-[11px] font-semibold">Rejected</span>`;
+
+                list.innerHTML += `<tr class="hover:bg-[#161B26]/60 transition-colors">
+                    <td class="p-4 border-b border-[#1E2230] text-center">
+                        <input type="checkbox" class="order-select-checkbox rounded bg-[#09090B] border-[#202638] text-blue-500 focus:ring-0 cursor-pointer" value="${o.id}" onchange="updateOrderSelectCount()">
+                    </td>
+                    <td class="p-4 border-b border-[#1E2230]">
+                        <div class="font-semibold text-slate-200 text-xs">${o.userEmail || 'Guest'}</div>
+                        <div class="text-[10px] text-slate-500">${o.date ? new Date(o.date).toLocaleString() : ''}</div>
+                    </td>
+                    <td class="p-4 border-b border-[#1E2230]">
+                        <div class="font-bold text-blue-400 text-xs">${o.gameName || o.serviceName || 'TopUp'}</div>
+                        <div class="text-xs text-slate-300 font-medium">${o.productName || o.package || ''}</div>
+                    </td>
+                    <td class="p-4 border-b border-[#1E2230]">
+                        <div class="font-mono text-xs text-slate-200 font-bold">${o.playerId || o.playerID || o.uid || 'N/A'}</div>
+                        ${o.code ? `<div class="text-[11px] text-amber-400 font-mono mt-0.5">Code: ${o.code}</div>` : ''}
+                    </td>
+                    <td class="p-4 border-b border-[#1E2230] font-bold text-green-400 text-sm">৳${o.price || o.amount || 0}</td>
+                    <td class="p-4 border-b border-[#1E2230]">${statusBadge}</td>
+                    <td class="p-4 border-b border-[#1E2230] text-center">
+                        ${st === 'pending' || st === 'Pending' ? `
+                            <button onclick="approveOrder('${o.id}')" class="bg-green-600/20 text-green-400 border border-green-600/30 hover:bg-green-600 hover:text-white px-2.5 py-1 rounded text-xs font-bold mr-1 transition"><i class="fas fa-check"></i></button>
+                            <button onclick="rejectOrder('${o.id}')" class="bg-red-600/20 text-red-400 border border-red-600/30 hover:bg-red-600 hover:text-white px-2.5 py-1 rounded text-xs font-bold mr-1 transition"><i class="fas fa-times"></i></button>
+                        ` : ''}
+                        <button onclick="deleteOrder('${o.id}')" class="bg-slate-700/40 text-slate-400 hover:text-red-400 px-2 py-1 rounded text-xs transition"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            updateOrderSelectCount();
+        }
+
+        function approveOrder(docId) {
+            showLoading();
+            const order = allOrdersList.find(o => o.id === docId);
+            db.collection('orders').doc(docId).update({ status: 'success', approvedAt: firebase.firestore.FieldValue.serverTimestamp() }).then(() => {
+                if(rtdb) rtdb.ref('orders/' + docId).update({ status: 'Completed' }).catch(e => {});
+                if(order && order.userEmail) {
+                    sendInstantStatusNotification("অর্ডার সফল ✅", `আপনার ${order.gameName || 'টপআপ'} অর্ডার সফলভাবে সম্পন্ন হয়েছে।`, order.userEmail);
+                }
+                hideLoading();
+                Swal.fire({toast:true, position:'top-end', icon:'success', title:'Order Approved!', timer:1500, showConfirmButton:false});
+            }).catch(dbError);
+        }
+
+        function rejectOrder(docId) {
+            Swal.fire({ title: 'Reject Order?', input: 'text', inputPlaceholder: 'Reason for rejection...', showCancelButton: true, confirmButtonText: 'Reject', confirmButtonColor: '#d33' }).then(r => {
+                if(r.value !== undefined) {
+                    showLoading();
+                    const order = allOrdersList.find(o => o.id === docId);
+                    const reason = r.value || 'Rejected by Admin';
+                    db.collection('orders').doc(docId).update({ status: 'rejected', rejectReason: reason }).then(() => {
+                        if(rtdb) rtdb.ref('orders/' + docId).update({ status: 'Rejected' }).catch(e => {});
+                        if(order && order.userId && (order.price || order.amount)) {
+                            const refundAmt = parseFloat(order.price || order.amount || 0);
+                            if(refundAmt > 0) {
+                                db.collection('users').doc(order.userId).update({ balance: firebase.firestore.FieldValue.increment(refundAmt) }).catch(e => {});
+                            }
+                        }
+                        if(order && order.userEmail) {
+                            sendInstantStatusNotification("অর্ডার বাতিল ❌", `আপনার অর্ডারটি বাতিল করা হয়েছে। টাকা ওয়ালেটে রিফান্ড করা হয়েছে।`, order.userEmail);
+                        }
+                        hideLoading();
+                        Swal.fire({toast:true, position:'top-end', icon:'info', title:'Order Rejected & Refunded', timer:1500, showConfirmButton:false});
+                    }).catch(dbError);
+                }
+            });
+        }
+
+        function deleteOrder(docId) {
+            Swal.fire({ title: 'Delete Order?', icon: 'warning', showCancelButton: true, confirmButtonText: 'Delete', confirmButtonColor: '#d33' }).then(r => {
+                if(r.isConfirmed) { db.collection('orders').doc(docId).delete().catch(dbError); }
+            });
+        }
+
+        // DEPOSITS MANAGEMENT
+        function loadDeposits() {
+            if(!db) return;
+            db.collection('deposits').orderBy('date', 'desc').onSnapshot(snap => {
+                allDepositsList = [];
+                snap.forEach(doc => allDepositsList.push({ id: doc.id, ...doc.data() }));
+                renderDepositsTable();
+            }, err => {
+                db.collection('deposits').onSnapshot(snap => {
+                    allDepositsList = [];
+                    snap.forEach(doc => allDepositsList.push({ id: doc.id, ...doc.data() }));
+                    renderDepositsTable();
+                }, dbError);
+            });
+        }
+
+        function switchDepositTab(tab) {
+            currentDepositTab = tab;
+            ['pending', 'history', 'deleted'].forEach(t => {
+                const btn = document.getElementById('tab-' + t);
+                if(btn) {
+                    if(t === tab) btn.className = 'py-2.5 px-5 text-sm font-semibold border-b-2 border-[#F49E0B] text-[#F49E0B] transition-all';
+                    else btn.className = 'py-2.5 px-5 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-white transition-all';
+                }
+            });
+            renderDepositsTable();
+        }
+
+        function filterDeposits() { renderDepositsTable(); }
+
+        function toggleSelectAllDeposits(masterCheckbox) {
+            const checkboxes = document.querySelectorAll('.deposit-select-checkbox');
+            checkboxes.forEach(cb => cb.checked = masterCheckbox.checked);
+            updateDepositSelectCount();
+        }
+
+        function updateDepositSelectCount() {
+            const checked = document.querySelectorAll('.deposit-select-checkbox:checked');
+            setTxt('select-count', checked.length);
+            const btn = document.getElementById('btn-bulk-delete');
+            if (btn) {
+                if (checked.length > 0) btn.classList.remove('hidden');
+                else btn.classList.add('hidden');
+            }
+            const master = document.getElementById('deposit-select-all');
+            const total = document.querySelectorAll('.deposit-select-checkbox');
+            if (master && total.length > 0) {
+                master.checked = checked.length === total.length;
+            }
+        }
+
+        function deleteSelectedDeposits() {
+            const checked = document.querySelectorAll('.deposit-select-checkbox:checked');
+            if (checked.length === 0) return;
+            const count = checked.length;
+            Swal.fire({
+                title: `Delete ${count} Selected Deposits?`,
+                text: 'সিলেক্ট করা ডিপোজিট রিকোয়েস্টগুলো ডিলিট করতে চান?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Delete',
+                confirmButtonColor: '#d33'
+            }).then(r => {
+                if (r.isConfirmed && db) {
+                    showLoading();
+                    const batch = db.batch();
+                    checked.forEach(cb => {
+                        const docRef = db.collection('deposits').doc(cb.value);
+                        batch.delete(docRef);
+                    });
+                    batch.commit().then(() => {
+                        hideLoading();
+                        updateDepositSelectCount();
+                        Swal.fire({toast: true, position: 'top-end', icon: 'success', title: `${count} deposit requests deleted`, timer: 1500, showConfirmButton: false});
+                    }).catch(dbError);
+                }
+            });
+        }
+
+        function renderDepositsTable() {
+            const list = document.getElementById('deposit-list');
+            if(!list) return;
+            list.innerHTML = '';
+            const search = getVal('deposit-search').toLowerCase();
+
+            const thSelect = document.getElementById('th-select');
+            if (thSelect) thSelect.classList.remove('hidden');
+
+            const filtered = allDepositsList.filter(d => {
+                const statusMatches = currentDepositTab === 'pending' ? (d.status === 'pending' || d.status === 'Pending') :
+                                       (currentDepositTab === 'history' ? (d.status === 'approved' || d.status === 'Approved' || d.status === 'rejected' || d.status === 'Rejected') :
+                                       (d.status === 'deleted' || d.isDeleted === true));
+                if(!statusMatches) return false;
+                if(!search) return true;
+                return (d.userEmail || '').toLowerCase().includes(search) ||
+                       (d.trxId || '').toLowerCase().includes(search) ||
+                       (d.method || '').toLowerCase().includes(search);
+            });
+
+            if(filtered.length === 0) {
+                list.innerHTML = `<tr><td colspan="7" class="text-center py-12 text-gray-500">No deposit requests found.</td></tr>`;
+                updateDepositSelectCount();
+                return;
+            }
+
+            filtered.forEach(d => {
+                const st = d.status || 'pending';
+                let statusBadge = `<span class="bg-orange-500/10 text-orange-500 px-2 py-1 rounded text-xs">Pending</span>`;
+                if(st === 'approved' || st === 'Approved') statusBadge = `<span class="bg-green-500/10 text-green-400 px-2 py-1 rounded text-xs">Approved</span>`;
+                else if(st === 'rejected' || st === 'Rejected') statusBadge = `<span class="bg-red-500/10 text-red-500 px-2 py-1 rounded text-xs">Rejected</span>`;
+
+                list.innerHTML += `<tr>
+                    <td class="text-center">
+                        <input type="checkbox" class="deposit-select-checkbox rounded bg-[#09090B] border-[#27272A] text-[#F49E0B] focus:ring-0 cursor-pointer" value="${d.id}" onchange="updateDepositSelectCount()">
+                    </td>
+                    <td>${d.userEmail || 'User'}</td>
+                    <td><span class="text-orange-500 font-mono font-bold">${d.method || 'bKash'}</span></td>
+                    <td class="font-mono text-gray-300 font-bold">${d.trxId || ''}</td>
+                    <td class="text-green-400 font-bold">৳${d.amount || 0}</td>
+                    <td>${statusBadge}</td>
+                    <td class="text-center">
+                        ${st === 'pending' || st === 'Pending' ? `
+                            <button onclick="approveDeposit('${d.id}', '${d.userId}', ${d.amount}, '${d.userEmail}', '${d.trxId}')" class="bg-green-500/20 text-green-500 hover:bg-green-500 hover:text-white px-3 py-1 rounded mr-2 transition"><i class="fas fa-check"></i></button>
+                            <button onclick="rejectDeposit('${d.id}', '${d.userEmail}', '${d.trxId}', ${d.amount})" class="bg-red-500/20 text-red-500 hover:bg-red-500 hover:text-white px-3 py-1 rounded transition mr-2"><i class="fas fa-times"></i></button>
+                        ` : ''}
+                        <button onclick="deleteDeposit('${d.id}')" class="bg-gray-700/40 text-gray-400 hover:text-red-400 px-2 py-1 rounded text-xs transition"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            });
+            updateDepositSelectCount();
+        }
+
         function loadStock() {
             if(!db || !currentServiceId || !currentProductId) return;
             setTxt('stock-prod-name', currentProductName || '');
@@ -3345,7 +3638,10 @@
                 (u.email || '').toLowerCase().includes(term) ||
                 (u.name || '').toLowerCase().includes(term) ||
                 (u.deviceName || '').toLowerCase().includes(term) ||
-                (u.referralCode || '').toLowerCase().includes(term)
+                (u.referralCode || '').toLowerCase().includes(term) ||
+                (u.userId || '').toLowerCase().includes(term) ||
+                (u.supportPin || '').toLowerCase().includes(term) ||
+                (u.id || '').toLowerCase().includes(term)
             );
             renderUsersGrid(filtered);
         }
@@ -3359,10 +3655,16 @@
         function updateUserSelectCount() {
             const checked = document.querySelectorAll('.user-select-checkbox:checked');
             setTxt('selected-user-count', checked.length);
-            const master = document.getElementById('select-all-users');
+            setTxt('user-select-count', checked.length);
+            const master = document.getElementById('user-select-all') || document.getElementById('select-all-users');
             const total = document.querySelectorAll('.user-select-checkbox');
             if (master && total.length > 0) {
                 master.checked = checked.length === total.length;
+            }
+            const bulkBtn = document.getElementById('btn-user-bulk-delete');
+            if (bulkBtn) {
+                if (checked.length > 0) bulkBtn.classList.remove('hidden');
+                else bulkBtn.classList.add('hidden');
             }
         }
 
@@ -3381,6 +3683,7 @@
                 const deviceName = u.deviceName || u.deviceModel || 'Unknown Device';
                 const resolution = u.screenResolution || 'N/A';
                 const refCode = u.referralCode || ('ESP-' + u.id.slice(0, 6).toUpperCase());
+                const displayUserId = u.userId || u.supportPin || u.id.slice(0, 8);
                 const refCount = u.totalReferCount || 0;
                 const refEarn = u.totalReferEarnings || 0;
 
@@ -3395,7 +3698,10 @@
                             <div>
                                 <h4 class="text-white font-bold text-lg tracking-tight truncate">${u.name || 'Anonymous User'}</h4>
                                 <p class="text-xs text-gray-400 truncate font-medium">${u.email || 'No email'}</p>
-                                <span class="text-[10px] text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded font-mono">Ref: ${refCode}</span>
+                                <div class="flex flex-wrap gap-1 mt-1">
+                                    <span class="text-[10px] text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded font-mono font-bold">ID: ${displayUserId}</span>
+                                    <span class="text-[10px] text-orange-400 bg-orange-500/10 px-2 py-0.5 rounded font-mono">Ref: ${refCode}</span>
+                                </div>
                             </div>
                         </div>
                         <div class="flex flex-col items-end gap-1">

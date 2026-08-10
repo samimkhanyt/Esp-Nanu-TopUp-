@@ -141,6 +141,23 @@ class MainActivity : ComponentActivity() {
         }
 
         @JavascriptInterface
+        fun shareText(text: String) {
+            activity.runOnUiThread {
+                try {
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, text)
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, "Share")
+                    activity.startActivity(shareIntent)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        @JavascriptInterface
         fun getDeviceDetails(): String {
             return try {
                 val obj = org.json.JSONObject()
@@ -381,44 +398,60 @@ class MainActivity : ComponentActivity() {
             gravity = Gravity.CENTER_HORIZONTAL
             background = GradientDrawable().apply {
                 setColor(Color.WHITE)
-                cornerRadius = 32f
+                cornerRadius = 28f
             }
         }
 
-        // App Logo Container (Square with Rounded Corners and Border)
+        // App Logo Container (Square Box with Four Corners)
         val logoContainer = android.widget.FrameLayout(this).apply {
             background = GradientDrawable().apply {
                 setColor(Color.WHITE)
-                cornerRadius = 32f
-                setStroke(2, Color.parseColor("#e2e8f0"))
+                cornerRadius = 20f
+                setStroke(3, Color.parseColor("#cbd5e1"))
             }
-            layoutParams = LinearLayout.LayoutParams(160, 160).apply {
-                bottomMargin = 24
+            layoutParams = LinearLayout.LayoutParams(180, 180).apply {
+                bottomMargin = 20
             }
-            setPadding(12, 12, 12, 12)
+            setPadding(14, 14, 14, 14)
         }
         val logoView = ImageView(this).apply {
-            setImageResource(R.drawable.app_launcher_logo_1785854861781)
+            setImageResource(R.drawable.official_app_logo)
             scaleType = ImageView.ScaleType.FIT_CENTER
         }
         logoContainer.addView(logoView)
         container.addView(logoContainer)
 
-        // Title
+        // Title: TOPUP
         val titleView = TextView(this).apply {
-            text = "Esp TopUp"
-            textSize = 20f
-            setTypeface(null, Typeface.BOLD)
-            setTextColor(Color.parseColor("#1e293b"))
+            text = "TOPUP"
+            textSize = 22f
+            setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+            setTextColor(Color.parseColor("#0f172a"))
             gravity = Gravity.CENTER
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                bottomMargin = 12
+                bottomMargin = 4
             }
         }
         container.addView(titleView)
+
+        // Subtitle: FREE FIRE TOPUP
+        val subTitleView = TextView(this).apply {
+            text = "FREE FIRE TOPUP"
+            textSize = 12f
+            setTypeface(Typeface.DEFAULT, Typeface.BOLD)
+            setTextColor(Color.parseColor("#0284c7"))
+            gravity = Gravity.CENTER
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                bottomMargin = 20
+            }
+        }
+        container.addView(subTitleView)
 
         // Subtitle / Message
         val messageView = TextView(this).apply {
@@ -430,7 +463,7 @@ class MainActivity : ComponentActivity() {
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
             ).apply {
-                bottomMargin = 40
+                bottomMargin = 36
             }
         }
         container.addView(messageView)
@@ -451,7 +484,7 @@ class MainActivity : ComponentActivity() {
         val closeBtn = TextView(this).apply {
             text = "Close"
             textSize = 14f
-            setTypeface(null, Typeface.BOLD)
+            setTypeface(Typeface.DEFAULT, Typeface.BOLD)
             setTextColor(Color.parseColor("#475569"))
             gravity = Gravity.CENTER
             setPadding(0, 30, 0, 30)
@@ -476,7 +509,7 @@ class MainActivity : ComponentActivity() {
         val exitBtn = TextView(this).apply {
             text = "Exit"
             textSize = 14f
-            setTypeface(null, Typeface.BOLD)
+            setTypeface(Typeface.DEFAULT, Typeface.BOLD)
             setTextColor(Color.WHITE)
             gravity = Gravity.CENTER
             setPadding(0, 30, 0, 30)

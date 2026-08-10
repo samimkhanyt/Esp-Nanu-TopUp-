@@ -1610,12 +1610,12 @@
             <div class="grid grid-cols-2 gap-3 px-4 mb-6">
                 <div class="bg-white py-3 px-2 rounded-2xl border-2 border-slate-900 text-center shadow-md flex flex-col items-center justify-center relative">
                     <div class="flex items-center gap-1.5 justify-center">
-                        <h3 class="text-sky-600 font-extrabold text-sm tracking-wide font-mono" id="acc-support-pin">ESP-000000</h3>
-                        <button onclick="copySupportPin()" title="Copy Support PIN" class="text-slate-500 hover:text-sky-600 p-1 active:scale-95 transition">
+                        <h3 class="text-sky-600 font-extrabold text-sm tracking-wide font-mono" id="acc-support-pin">A1b2C3d4</h3>
+                        <button onclick="copySupportPin()" title="Copy User ID" class="text-slate-500 hover:text-sky-600 p-1 active:scale-95 transition">
                             <i class="far fa-copy text-xs"></i>
                         </button>
                     </div>
-                    <p class="text-slate-800 font-bold text-[11px] mt-0.5">Support Pin</p>
+                    <p class="text-slate-800 font-bold text-[11px] mt-0.5">User ID</p>
                 </div>
                 
                 <div class="bg-white py-3.5 px-2 rounded-2xl border-2 border-slate-900 text-center shadow-md">
@@ -1710,7 +1710,7 @@
                         </div>
                         <div>
                             <h3 class="text-base font-extrabold text-slate-800">ব্যালেন্স ট্রান্সফার</h3>
-                            <p class="text-xs text-slate-500 font-bold">ইউজার টু ইউজার সাপোর্ট পিন দিয়ে টাকা পাঠান</p>
+                            <p class="text-xs text-slate-500 font-bold">ইউজার টু ইউজার আইডি দিয়ে টাকা পাঠান</p>
                         </div>
                     </div>
                     <i class="fas fa-chevron-right text-slate-400 text-sm"></i>
@@ -1769,7 +1769,7 @@
                         <i class="fas fa-exclamation-triangle text-amber-600"></i> সতর্কতা ও নিয়মাবলী:
                     </p>
                     <p class="text-xs leading-relaxed text-slate-700 font-bold">
-                        • সাপোর্ট পিন দিয়ে ২৪ ঘণ্টায় <span class="font-bold text-red-600">১ বার</span> ব্যালেন্স ট্রান্সফার করা যাবে।
+                        • ইউজার আইডি দিয়ে ২৪ ঘণ্টায় <span class="font-bold text-red-600">১ বার</span> ব্যালেন্স ট্রান্সফার করা যাবে।
                     </p>
                 </div>
 
@@ -1779,7 +1779,7 @@
                         <p class="text-emerald-600 font-extrabold text-lg">৳<span id="transfer-current-balance">0</span></p>
                     </div>
                     <div class="text-right">
-                        <p class="text-slate-500 font-bold text-[11px]">আপনার সাপোর্ট পিন:</p>
+                        <p class="text-slate-500 font-bold text-[11px]">আপনার ইউজার আইডি:</p>
                         <p class="text-sky-600 font-mono font-extrabold text-sm flex items-center justify-end gap-1.5 cursor-pointer hover:text-sky-800 transition" onclick="copySupportPin()" title="কপি করুন">
                             <span id="transfer-my-pin">...</span>
                             <i class="far fa-copy text-xs"></i>
@@ -1788,14 +1788,14 @@
                 </div>
 
                 <div class="text-left">
-                    <label class="block text-xs font-extrabold text-slate-800 mb-1.5 ml-1">প্রাপকের সাপোর্ট পিন (Receiver's Support PIN)</label>
+                    <label class="block text-xs font-extrabold text-slate-800 mb-1.5 ml-1">প্রাপকের ইউজার আইডি (Receiver's User ID)</label>
                     <div class="relative">
-                        <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: ESP-123456" class="w-full bg-slate-50 border border-slate-300 focus:border-emerald-500 rounded-2xl py-3 pl-4 pr-24 font-mono font-bold text-slate-800 text-base uppercase outline-none transition shadow-sm">
+                        <input id="transfer-receiver-pin-input" type="text" placeholder="যেমন: aB8kX2q9 (৮ সংখ্যার ID)" class="w-full bg-slate-50 border border-slate-300 focus:border-emerald-500 rounded-2xl py-3 pl-4 pr-24 font-mono font-bold text-slate-800 text-base outline-none transition shadow-sm">
                         <button onclick="pasteReceiverPin()" type="button" class="absolute right-2 top-1/2 -translate-y-1/2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-extrabold px-3 py-2 rounded-xl transition shadow-sm flex items-center gap-1">
                             <i class="far fa-clipboard"></i> পেস্ট
                         </button>
                     </div>
-                    <p class="text-[11px] text-slate-500 mt-1 ml-1 font-semibold">প্রাপকের অ্যাকাউন্ট বা প্রোফাইলে থাকা সাপোর্ট পিনটি লিখুন।</p>
+                    <p class="text-[11px] text-slate-500 mt-1 ml-1 font-semibold">প্রাপকের প্রোফাইলে থাকা ৮ সংখ্যার ইউজার আইডিটি লিখুন।</p>
                 </div>
 
                 <div class="text-left">
@@ -2407,7 +2407,12 @@ function loadGlobalSettings() {
 
 function showLaunchPopup(data) {
     if (!data) return;
-    if (window.hasLaunchPopupBeenShown) return;
+    if (window.hasLaunchPopupBeenShown || sessionStorage.getItem('launch_popup_shown') === 'true') return;
+    
+    // Do not show popup if logged out or auth screen is active
+    const authSec = document.getElementById('sec-auth');
+    if (!currentUser || (authSec && !authSec.classList.contains('hidden'))) return;
+
     const modal = document.getElementById('launch-popup-modal');
     const titleEl = document.getElementById('popup-title');
     const msgEl = document.getElementById('popup-msg');
@@ -2471,12 +2476,14 @@ function showLaunchPopup(data) {
     if (modal) {
         modal.classList.remove('hidden');
         window.hasLaunchPopupBeenShown = true;
+        sessionStorage.setItem('launch_popup_shown', 'true');
     }
 }
 
 function closeLaunchPopup() {
     const modal = document.getElementById('launch-popup-modal');
     if (modal) modal.classList.add('hidden');
+    sessionStorage.setItem('launch_popup_shown', 'true');
 }
 
 loadGlobalSettings();
@@ -3125,6 +3132,7 @@ function handleLogout() {
         confirmButtonColor: '#ef4444'
     }).then((result) => {
         if (result.isConfirmed) {
+            sessionStorage.setItem('launch_popup_shown', 'true');
             localStorage.removeItem('esp_logged_email');
             localStorage.removeItem('esp_logged_uid');
             currentUser = null;
@@ -3360,6 +3368,34 @@ function logoutBannedUser() {
     }
 }
 
+function generate8CharUserId(uid) {
+    if (!uid) return 'A1b2C3d4';
+    let clean = uid.replace(/[^a-zA-Z0-9]/g, '');
+    if (clean.length < 8) {
+        let chars = 'aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789';
+        while (clean.length < 8) {
+            clean += chars.charAt((uid.length * 7 + clean.length) % chars.length);
+        }
+    }
+    let str = clean.substring(0, 8);
+    let hasUpper = /[A-Z]/.test(str);
+    let hasLower = /[a-z]/.test(str);
+    let hasNum = /[0-9]/.test(str);
+
+    let arr = str.split('');
+    let pos0 = uid.charCodeAt(0) % 8;
+    let pos1 = (uid.charCodeAt(1) || 5) % 8;
+    if (pos1 === pos0) pos1 = (pos0 + 3) % 8;
+    let pos2 = (uid.charCodeAt(2) || 9) % 8;
+    while (pos2 === pos0 || pos2 === pos1) pos2 = (pos2 + 2) % 8;
+
+    if (!hasUpper) arr[pos0] = String.fromCharCode(65 + (uid.charCodeAt(0) % 26));
+    if (!hasLower) arr[pos1] = String.fromCharCode(97 + ((uid.charCodeAt(1) || 5) % 26));
+    if (!hasNum) arr[pos2] = String.fromCharCode(48 + ((uid.charCodeAt(2) || 9) % 10));
+
+    return arr.join('');
+}
+
 function loadUserData(uid) {
     if (typeof updateDeviceAndOnlineStatus === "function") updateDeviceAndOnlineStatus(uid);
     db.collection('users').doc(uid).onSnapshot((doc) => {
@@ -3435,12 +3471,19 @@ function loadUserData(uid) {
             if(accUserNameInfoEl) accUserNameInfoEl.innerText = userName;
             if(accBalEl) accBalEl.innerText = userBalance;
             if(accBalCardEl) accBalCardEl.innerText = userBalance.toFixed(2);
-            const permanentSupportPin = (data && data.supportPin) ? data.supportPin : ("ESP-" + uid.substring(0, 6).toUpperCase());
-            if(accPinEl) accPinEl.innerText = permanentSupportPin;
+            let permanentUserId = (data && (data.userId || data.supportPin)) ? (data.userId || data.supportPin) : '';
+            if (typeof permanentUserId === 'string' && permanentUserId.startsWith('ESP-')) {
+                permanentUserId = permanentUserId.replace('ESP-', '');
+            }
+            if (typeof permanentUserId !== 'string' || permanentUserId.length !== 8 || !/[A-Z]/.test(permanentUserId) || !/[a-z]/.test(permanentUserId) || !/[0-9]/.test(permanentUserId)) {
+                permanentUserId = generate8CharUserId(uid);
+            }
+
+            if(accPinEl) accPinEl.innerText = permanentUserId;
             const transferMyPinEl = document.getElementById('transfer-my-pin');
-            if(transferMyPinEl) transferMyPinEl.innerText = permanentSupportPin;
-            if (data && !data.supportPin) {
-                db.collection('users').doc(uid).update({ supportPin: permanentSupportPin }).catch(() => {});
+            if(transferMyPinEl) transferMyPinEl.innerText = permanentUserId;
+            if (data && (data.userId !== permanentUserId || data.supportPin !== permanentUserId)) {
+                db.collection('users').doc(uid).update({ userId: permanentUserId, supportPin: permanentUserId }).catch(() => {});
             }
         }
     });
@@ -5755,7 +5798,12 @@ function listenToDepositStatus(txKey) {
     } catch (e) {}
 }
 
+let isVerifyingSubmission = false;
+let submittedTrxSet = new Set();
+
 async function handleNewVerify() {
+    if (isVerifyingSubmission) return;
+
     const trxInput = document.getElementById('pay-trx-input');
     const rawTrx = trxInput ? trxInput.value.trim() : '';
     const amount = currentDepositAmount || 0;
@@ -5777,6 +5825,12 @@ async function handleNewVerify() {
     }
 
     const cleanTrx = rawTrx.toUpperCase().trim();
+
+    if (submittedTrxSet.has(cleanTrx)) {
+        showCustomToast("আপনার ট্রানজেকশন আইডিটি ইতিমধ্যে সাবমিট করা হয়েছে");
+        return;
+    }
+
     let isValidTrx = false;
 
     if (method.toLowerCase() === 'bkash') {
@@ -5801,93 +5855,101 @@ async function handleNewVerify() {
         return;
     }
 
-    // Identify current user or active firebase auth user
-    const activeUser = currentUser || (firebase.auth() ? firebase.auth().currentUser : null);
-    const uid = activeUser ? (activeUser.uid || activeUser.id) : null;
-    const userEmail = activeUser ? (activeUser.email || 'user@app.com') : 'user@app.com';
+    isVerifyingSubmission = true;
+    submittedTrxSet.add(cleanTrx);
 
-    if (!uid) {
-        showCustomToast("অনুগ্রহ করে পুনরায় লগইন করুন");
-        return;
-    }
-
-    // Safe duplicate check
-    let isUsed = false;
     try {
-        const snapshot = await rtdb.ref('deposit_requests').orderByChild('trxId').equalTo(cleanTrx).once('value');
-        if (snapshot && snapshot.exists()) {
-            isUsed = true;
-        }
-    } catch (eTrx) {
-        console.warn("RTDB index check fallback:", eTrx);
-    }
+        // Identify current user or active firebase auth user
+        const activeUser = currentUser || (firebase.auth() ? firebase.auth().currentUser : null);
+        const uid = activeUser ? (activeUser.uid || activeUser.id) : null;
+        const userEmail = activeUser ? (activeUser.email || 'user@app.com') : 'user@app.com';
 
-    if (!isUsed) {
+        if (!uid) {
+            showCustomToast("অনুগ্রহ করে পুনরায় লগইন করুন");
+            submittedTrxSet.delete(cleanTrx);
+            return;
+        }
+
+        // Safe duplicate check
+        let isUsed = false;
         try {
-            const fsSnap = await db.collection('deposits').where('trxId', '==', cleanTrx).get();
-            if (fsSnap && !fsSnap.empty) {
+            const snapshot = await rtdb.ref('deposit_requests').orderByChild('trxId').equalTo(cleanTrx).once('value');
+            if (snapshot && snapshot.exists()) {
                 isUsed = true;
             }
-        } catch (fse) {}
-    }
+        } catch (eTrx) {
+            console.warn("RTDB index check fallback:", eTrx);
+        }
 
-    if (isUsed) {
-        showCustomToast("আপনার ট্রানজেকশন আইডিটি ব্যবহৃত");
-        return;
-    }
+        if (!isUsed) {
+            try {
+                const fsSnap = await db.collection('deposits').where('trxId', '==', cleanTrx).get();
+                if (fsSnap && !fsSnap.empty) {
+                    isUsed = true;
+                }
+            } catch (fse) {}
+        }
 
-    // Immediately show status modal with App Logo + Spinner!
-    if (trxInput) trxInput.value = "";
-    showVerifyStatusModal(method);
+        if (isUsed) {
+            showCustomToast("আপনার ট্রানজেকশন আইডিটি ব্যবহৃত");
+            return;
+        }
 
-    const txKey = rtdb.ref('deposit_requests').push().key || ('dep_' + Date.now());
-    const depositData = {
-        uid: uid, 
-        userId: uid,
-        userEmail: userEmail, 
-        method: method, 
-        trxId: cleanTrx, 
-        amount: amount, 
-        status: 'Pending', 
-        date: new Date().toLocaleString('en-GB'),
-        timestamp: (firebase.database.ServerValue && firebase.database.ServerValue.TIMESTAMP) ? firebase.database.ServerValue.TIMESTAMP : Date.now()
-    };
+        // Immediately show status modal with App Logo + Spinner!
+        if (trxInput) trxInput.value = "";
+        showVerifyStatusModal(method);
 
-    try {
-        await rtdb.ref('deposit_requests/' + txKey).set(depositData);
-    } catch (rtdbErr) {
-        console.warn("RTDB deposit set warning:", rtdbErr);
-    }
-
-    try {
-        await db.collection('deposits').doc(txKey).set({
-            uid: uid,
+        const txKey = rtdb.ref('deposit_requests').push().key || ('dep_' + Date.now());
+        const depositData = {
+            uid: uid, 
             userId: uid,
-            userEmail: userEmail,
-            method: method,
-            trxId: cleanTrx,
-            amount: amount,
-            status: 'pending',
-            date: (firebase.firestore.FieldValue && firebase.firestore.FieldValue.serverTimestamp) ? firebase.firestore.FieldValue.serverTimestamp() : new Date()
-        });
-    } catch (fsw) {}
-    
-    try {
-        const tid = rtdb.ref('transactions/' + uid).push().key || ('tx_' + Date.now());
-        await rtdb.ref('transactions/' + uid + '/' + tid).set({
-            type: 'Add Money', 
-            amount: amount, 
+            userEmail: userEmail, 
             method: method, 
             trxId: cleanTrx, 
-            status: 'Pending',
-            date: new Date().toLocaleString('en-GB'), 
+            amount: amount, 
+            status: 'Pending', 
+            date: new Date().toLocaleString('en-GB'),
             timestamp: (firebase.database.ServerValue && firebase.database.ServerValue.TIMESTAMP) ? firebase.database.ServerValue.TIMESTAMP : Date.now()
-        });
-    } catch (txErr) {
-        console.warn("RTDB transaction set warning:", txErr);
-    }
+        };
 
-    listenToDepositStatus(txKey);
+        try {
+            await rtdb.ref('deposit_requests/' + txKey).set(depositData);
+        } catch (rtdbErr) {
+            console.warn("RTDB deposit set warning:", rtdbErr);
+        }
+
+        try {
+            await db.collection('deposits').doc(txKey).set({
+                uid: uid,
+                userId: uid,
+                userEmail: userEmail,
+                method: method,
+                trxId: cleanTrx,
+                amount: amount,
+                status: 'pending',
+                date: (firebase.firestore.FieldValue && firebase.firestore.FieldValue.serverTimestamp) ? firebase.firestore.FieldValue.serverTimestamp() : new Date()
+            });
+        } catch (fsw) {}
+        
+        try {
+            const tid = rtdb.ref('transactions/' + uid).push().key || ('tx_' + Date.now());
+            await rtdb.ref('transactions/' + uid + '/' + tid).set({
+                type: 'Add Money', 
+                amount: amount, 
+                method: method, 
+                trxId: cleanTrx, 
+                status: 'Pending',
+                date: new Date().toLocaleString('en-GB'), 
+                timestamp: (firebase.database.ServerValue && firebase.database.ServerValue.TIMESTAMP) ? firebase.database.ServerValue.TIMESTAMP : Date.now()
+            });
+        } catch (txErr) {
+            console.warn("RTDB transaction set warning:", txErr);
+        }
+
+        listenToDepositStatus(txKey);
+    } finally {
+        isVerifyingSubmission = false;
+    }
 }
 
 let userDepositListCache = [];
@@ -6480,16 +6542,17 @@ function handleNativeBack() {
 }
 
 function showExitDialogFallback() {
-    const currentLogo = document.getElementById('header-logo-img')?.src || 'logo.png';
+    const currentLogo = document.getElementById('header-logo-img')?.src || 'https://i.ibb.co.com/dJgG0NNN/1000026095.jpg';
     Swal.fire({
         title: '',
         html: `
             <div class="flex flex-col items-center justify-center pt-2">
-                <div class="w-20 h-20 rounded-2xl overflow-hidden shadow-md border border-gray-200 bg-white p-1 mb-3 flex items-center justify-center mx-auto">
-                    <img src="${currentLogo}" class="max-w-full max-h-full object-contain" alt="App Logo" onerror="this.src='logo.png'">
+                <div class="w-24 h-24 rounded-2xl overflow-hidden border-2 border-slate-300 bg-white p-2 mb-3 flex items-center justify-center mx-auto shadow-sm">
+                    <img src="${currentLogo}" class="max-w-full max-h-full object-contain" alt="App Logo" onerror="this.src='https://i.ibb.co.com/dJgG0NNN/1000026095.jpg'">
                 </div>
-                <h3 class="text-xl font-bold text-gray-800 mb-1">Esp TopUp</h3>
-                <p class="text-sm text-gray-600">আপনি কি অ্যাপ থেকে বের হয়ে যেতে চান?</p>
+                <h3 class="text-2xl font-extrabold text-slate-800 tracking-normal mb-0.5">TOPUP</h3>
+                <p class="text-xs font-bold text-sky-600 uppercase tracking-wider mb-3">FREE FIRE TOPUP</p>
+                <p class="text-sm font-medium text-slate-600 mb-1">আপনি কি অ্যাপ থেকে বের হয়ে যেতে চান?</p>
             </div>
         `,
         showCancelButton: true,
@@ -6698,13 +6761,13 @@ function copySupportPin() {
     const pinEl = document.getElementById('acc-support-pin') || document.getElementById('transfer-my-pin');
     let pin = pinEl ? pinEl.innerText.trim() : '';
     if (!pin || pin === '...') {
-        if (currentUser) pin = "ESP-" + currentUser.uid.substring(0, 6).toUpperCase();
+        if (currentUser) pin = generate8CharUserId(currentUser.uid);
     }
     if (!pin) return;
 
     if (navigator.clipboard) {
         navigator.clipboard.writeText(pin);
-        showCustomToast("সাপোর্ট পিন কপি হয়েছে!");
+        showCustomToast("ইউজার আইডি কপি হয়েছে!");
     } else {
         const ta = document.createElement('textarea');
         ta.value = pin;
@@ -6712,7 +6775,7 @@ function copySupportPin() {
         ta.select();
         document.execCommand('copy');
         document.body.removeChild(ta);
-        showCustomToast("সাপোর্ট পিন কপি হয়েছে!");
+        showCustomToast("ইউজার আইডি কপি হয়েছে!");
     }
 }
 
@@ -6759,7 +6822,9 @@ function openBalanceTransferModal() {
     if (amountInput) amountInput.value = '';
     
     if (balEl) balEl.innerText = (userBalance || 0).toFixed(2);
-    if (myPinEl) myPinEl.innerText = "ESP-" + currentUser.uid.substring(0, 6).toUpperCase();
+    const accPinEl = document.getElementById('acc-support-pin');
+    let myId = (accPinEl && accPinEl.innerText && accPinEl.innerText !== '...') ? accPinEl.innerText.trim() : generate8CharUserId(currentUser.uid);
+    if (myPinEl) myPinEl.innerText = myId;
 
     const modal = document.getElementById('balance-transfer-modal');
     if (modal) {
@@ -6791,30 +6856,32 @@ function closeBalanceTransferModal(fromBackButton = false) {
 
 async function findReceiverUserDoc(rawPin, senderUid) {
     if (!rawPin) return null;
-    const cleanRawPin = rawPin.trim().toUpperCase().replace('ESP-', '');
-    const fullPin = 'ESP-' + cleanRawPin;
+    const cleanRawPin = rawPin.trim().replace(/^ESP-/i, '');
 
     function isMatch(uDoc) {
         if (!uDoc || !uDoc.exists) return false;
         if (uDoc.id === senderUid) return false;
         const uData = uDoc.data() || {};
         const uUid = uDoc.id;
-        let uSupportPin = (uData.supportPin || '').toUpperCase().replace('ESP-', '');
-        let uReferralCode = (uData.referralCode || '').toUpperCase().replace('ESP-', '');
-        let uShortUid = uUid.substring(0, 6).toUpperCase();
+        let uUserId = (uData.userId || '').trim();
+        let uSupportPin = (uData.supportPin || '').trim().replace(/^ESP-/i, '');
+        let uReferralCode = (uData.referralCode || '').trim().replace(/^ESP-/i, '');
+        let uShortUid = uUid.substring(0, 8);
         let uEmail = (uData.email || uData.userEmail || '').toLowerCase();
+        let targetClean = cleanRawPin.toLowerCase();
 
         return (
-            cleanRawPin === uSupportPin ||
-            cleanRawPin === uReferralCode ||
-            cleanRawPin === uShortUid ||
-            uUid.toUpperCase() === rawPin.trim().toUpperCase() ||
+            targetClean === uUserId.toLowerCase() ||
+            targetClean === uSupportPin.toLowerCase() ||
+            targetClean === uReferralCode.toLowerCase() ||
+            targetClean === uShortUid.toLowerCase() ||
+            uUid.toLowerCase() === rawPin.trim().toLowerCase() ||
             (rawPin.trim().length >= 5 && uEmail.startsWith(rawPin.trim().toLowerCase()))
         );
     }
 
     try {
-        const snap = await db.collection('users').where('supportPin', '==', fullPin).get();
+        const snap = await db.collection('users').where('userId', '==', cleanRawPin).get();
         if (!snap.empty) {
             for (let doc of snap.docs) {
                 if (doc.id !== senderUid) return { id: doc.id, data: doc.data() };
@@ -6876,18 +6943,13 @@ function executeBalanceTransfer() {
     const amountInput = document.getElementById('transfer-amount-input');
 
     let rawPin = (receiverPinInput?.value || '').trim();
-    let targetPin = rawPin.toUpperCase();
-    if (targetPin && !targetPin.startsWith('ESP-')) {
-        targetPin = 'ESP-' + targetPin;
-    }
+    let targetPin = rawPin;
 
     const rawAmountStr = (amountInput?.value || '').trim();
     const amount = parseFloat(rawAmountStr);
-    const isAmountValid = !isNaN(amount) && amount >= 1;
 
-    // Check empty validation as requested
     if (!rawPin && (!rawAmountStr || isNaN(amount) || amount <= 0)) {
-        showCustomToast("আপনার সাপোর্ট পিন এবং অ্যামাউন্টটা দিন");
+        showCustomToast("আপনার ইউজার আইডি এবং অ্যামাউন্টটা দিন");
         return;
     }
 
@@ -6897,18 +6959,21 @@ function executeBalanceTransfer() {
     }
 
     if (!rawPin) {
-        showCustomToast("আপনার সাপোর্ট পিন দিন");
+        showCustomToast("আপনার ইউজার আইডি দিন");
         return;
     }
 
     if (!targetPin || targetPin.length < 5) {
-        showCustomToast("সঠিক সাপোর্ট পিন লিখুন!");
+        showCustomToast("সঠিক ইউজার আইডি লিখুন!");
         return;
     }
 
-    const myPin = "ESP-" + currentUser.uid.substring(0, 6).toUpperCase();
-    if (targetPin === myPin) {
-        showCustomToast("নিজের সাপোর্ট পিনে টাকা ট্রান্সফার করা সম্ভব নয়!");
+    const senderUid = currentUser.uid;
+    const accPinEl = document.getElementById('acc-support-pin');
+    const myUserId = (accPinEl && accPinEl.innerText && accPinEl.innerText !== '...') ? accPinEl.innerText.trim() : generate8CharUserId(senderUid);
+
+    if (targetPin.toLowerCase() === myUserId.toLowerCase() || targetPin.toLowerCase() === senderUid.toLowerCase()) {
+        showCustomToast("নিজের ইউজার আইডিতে টাকা ট্রান্সফার করা সম্ভব নয়!");
         return;
     }
 
@@ -6917,8 +6982,6 @@ function executeBalanceTransfer() {
         allowOutsideClick: false,
         didOpen: () => { Swal.showLoading(); }
     });
-
-    const senderUid = currentUser.uid;
 
     db.collection('users').doc(senderUid).get().then(senderDoc => {
         if (!senderDoc.exists) {
@@ -6968,7 +7031,7 @@ function executeBalanceTransfer() {
                 Swal.fire({
                     icon: 'error',
                     title: 'প্রাপক পাওয়া যায়নি!',
-                    text: `সাপোর্ট পিন ${targetPin} সম্বলিত কোনো অ্যাকাউন্ট পাওয়া যায়নি। সঠিক সাপোর্ট পিন চেক করুন।`,
+                    text: `ইউজার আইডি ${rawPin} সম্বলিত কোনো অ্যাকাউন্ট পাওয়া যায়নি। সঠিক ইউজার আইডি চেক করুন।`,
                     confirmButtonColor: '#d33'
                 });
                 return;
@@ -6978,6 +7041,7 @@ function executeBalanceTransfer() {
             const receiverData = receiverDoc.data || {};
             const receiverName = receiverData.name || 'User';
             const receiverPhoto = receiverData.photoURL || receiverData.profilePic || receiverData.avatar || 'logo.png';
+            const displayReceiverId = receiverData.userId || receiverData.supportPin || rawPin;
 
             Swal.fire({
                 title: 'ট্রান্সফার নিশ্চিত করুন',
@@ -6988,7 +7052,7 @@ function executeBalanceTransfer() {
                         </div>
                         <div>
                             <h4 class="font-extrabold text-slate-800 text-base mb-0.5">${receiverName}</h4>
-                            <p class="font-mono font-bold text-sky-600 text-xs bg-sky-50 px-2 py-0.5 rounded border border-sky-200 inline-block">${targetPin}</p>
+                            <p class="font-mono font-bold text-sky-600 text-xs bg-sky-50 px-2 py-0.5 rounded border border-sky-200 inline-block">ID: ${displayReceiverId}</p>
                         </div>
                         <div class="w-full bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-center mt-1">
                             <p class="text-xs text-emerald-800 font-bold uppercase">ট্রান্সফারের পরিমাণ</p>
@@ -7102,13 +7166,22 @@ function copyMyReferralCode() {
 function shareMyReferralCode() {
     const codeEl = document.getElementById('my-referral-code-text');
     if (!codeEl) return;
-    const code = codeEl.innerText;
-    const text = `Esp TopUp অ্যাপে আমার রেফার কোড (${code}) ব্যবহার করে রেজিস্ট্রেশন করুন ও প্রথম ডিপোজিট সম্পন্ন করুন!`;
-    if (navigator.share) {
+    const code = (codeEl.innerText || '').trim();
+    if (!code || code === '----') {
+        showCustomToast("রেফার কোড পাওয়া যায়নি");
+        return;
+    }
+    const text = `Esp TopUp অ্যাপে আমার রেফার কোড (${code}) ব্যবহার করে রেজিস্ট্রেশন করুন ও স্পেশাল অফার বোনাস গ্রহণ করুন!`;
+    if (window.AndroidApp && typeof window.AndroidApp.shareText === 'function') {
+        window.AndroidApp.shareText(text);
+    } else if (window.AndroidInterface && typeof window.AndroidInterface.shareText === 'function') {
+        window.AndroidInterface.shareText(text);
+    } else if (window.Android && typeof window.Android.shareText === 'function') {
+        window.Android.shareText(text);
+    } else if (navigator.share) {
         navigator.share({
             title: 'Esp TopUp Refer Code',
-            text: text,
-            url: window.location.href
+            text: text
         }).catch(()=>{});
     } else {
         copyMyReferralCode();
