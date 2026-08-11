@@ -38,6 +38,11 @@
     </script>
 
     <style>
+        /* Guarantee .hidden works 100% offline even if Tailwind CDN fails to load */
+        .hidden, [hidden] {
+            display: none !important;
+        }
+
         /* Enable text selection and copy/cut/paste menu on input & textarea */
         input, textarea, select, [contenteditable], .select-text, .flat-input {
             -webkit-user-select: text !important;
@@ -46,7 +51,7 @@
 
         /* Global Font: Poppins for everywhere except Home */
         body { 
-            font-family: 'Poppins', sans-serif; 
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             background-color: #f8fafc; 
             margin: 0;
             padding: 0;
@@ -54,12 +59,94 @@
             overflow-x: hidden;
         }
 
-        /* --- Full Screen White Loader --- */
+        /* --- Full Screen White Loader Standalone --- */
         #global-page-loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.3s ease;
+            position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important;
+            background: white !important; z-index: 999999 !important;
+            display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;
+            transition: opacity 0.3s ease !important;
+        }
+        #global-page-loader.hidden {
+            display: none !important;
+        }
+
+        /* --- Full Screen Offline Network Modal Standalone Fallback --- */
+        #net-connection-issue-modal {
+            position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; bottom: 0 !important; width: 100vw !important; height: 100vh !important;
+            background-color: rgba(15, 23, 42, 0.95) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            z-index: 1000000 !important;
+            display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;
+            padding: 16px !important; box-sizing: border-box !important;
+        }
+        #net-connection-issue-modal.hidden {
+            display: none !important;
+        }
+
+        #net-connection-issue-modal > div:first-child {
+            background-color: #ffffff !important;
+            border-radius: 24px !important;
+            width: 100% !important;
+            max-width: 360px !important;
+            padding: 24px !important;
+            text-align: center !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35) !important;
+            box-sizing: border-box !important;
+            display: flex !important; flex-direction: column !important; align-items: center !important;
+            color: #1e293b !important;
+        }
+
+        #net-modal-title-el {
+            font-size: 20px !important;
+            font-weight: 700 !important;
+            color: #1e293b !important;
+            margin-top: 10px !important;
+            margin-bottom: 8px !important;
+        }
+
+        #net-modal-notice-el {
+            font-size: 13px !important;
+            color: #64748b !important;
+            margin-bottom: 20px !important;
+            line-height: 1.5 !important;
+        }
+
+        #net-connection-issue-modal .grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 12px !important;
+            width: 100% !important;
+        }
+
+        #net-cancel-btn {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            border: 1px solid #cbd5e1 !important;
+            background-color: #ffffff !important;
+            color: #475569 !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            box-sizing: border-box !important;
+        }
+
+        #net-retry-btn {
+            width: 100% !important;
+            padding: 12px 16px !important;
+            border-radius: 12px !important;
+            border: none !important;
+            background-color: #10b981 !important;
+            color: #ffffff !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            cursor: pointer !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 6px !important;
+            box-sizing: border-box !important;
         }
         .spinner-loader {
             width: 45px; height: 45px;
@@ -449,31 +536,19 @@
             border-bottom: 1px solid rgba(255,255,255,0.1);
         }
 
-        #notice-text {
-            font-size: 12px;
-            font-weight: 700;
-            font-family: 'Noto Serif Bengali', serif;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex: 1;
-        }
-
         body { font-family: 'Poppins', sans-serif; }
         #home-sec, #account-sec, #tutorial-sec { font-family: 'Bree Serif', serif; }
         .hidden { display: none !important; }
         img { -webkit-user-drag: none; user-select: none; }
 
         #notice-text {
-            font-size: 50px;
-            font-weight: 900;
+            font-size: 14px;
+            font-weight: 700;
             font-family: 'Noto Serif Bengali', serif;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            display: inline-block;
-            will-change: transform;
-            animation: scroll-with-pause 12s linear infinite;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+            width: 100%;
         }
 
         .premium-notice {
@@ -524,16 +599,6 @@
             position: relative;
             display: flex;
             align-items: center;
-        }
-
-        #notice-text {
-            font-size: 11.5px;
-            font-weight: 700;
-            font-family: 'Noto Serif Bengali', serif;
-            white-space: nowrap;
-            display: inline-block;
-            will-change: transform;
-            animation: scroll-with-pause 12s linear infinite;
         }
 
         @keyframes scroll-with-pause {
@@ -735,7 +800,7 @@
             try {
                 if (localStorage.getItem('cached_loader_enabled') === 'false') {
                     window.isLoaderEnabled = false;
-                    document.write('<style>#global-page-loader{display:none !important;opacity:0 !important;visibility:hidden !important;pointer-events:none !important;}</style>');
+                    document.write('<style id="inline-loader-hide-style">#global-page-loader{display:none !important;opacity:0 !important;visibility:hidden !important;pointer-events:none !important;}</style>');
                 }
             } catch(e) {}
         })();
@@ -786,14 +851,19 @@
         </div>
     </header>
 
-    <div id="notice-section" style="position: relative; z-index: 30; width: 100%;">
-        <div id="notice-box-container" class="premium-notice" style="display: flex; align-items: center; justify-content: flex-start; padding: 12px 16px; background-color: #0284c7; color: #ffffff; width: 100%;">
-            <i id="notice-icon" class="fas fa-bullhorn text-yellow-300" style="font-size: 26px; margin-right: 12px; flex-shrink: 0;"></i>
+    <div id="notice-section" style="position: relative; z-index: 30; width: 100%; overflow: hidden;">
+        <div id="notice-box-container" class="premium-notice" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background-color: #0284c7; color: #ffffff; width: 100%; overflow: hidden; position: relative;">
+            <div id="notice-icon-box" style="position: relative; z-index: 20; display: flex; align-items: center; padding-right: 10px; flex-shrink: 0; background-color: inherit;">
+                <i id="notice-icon" class="fas fa-bullhorn text-yellow-300" style="font-size: 20px; margin-right: 4px;"></i>
+            </div>
             
-            <div id="notice-text" style="font-size: 22px !important; font-weight: 800 !important; color: #ffffff !important; line-height: 1.3; flex-grow: 1; word-break: break-word;">
+            <div id="notice-text-scroll-wrap" style="flex: 1; overflow: hidden; position: relative; display: flex; align-items: center; min-width: 0;">
+                <marquee id="notice-text" behavior="scroll" direction="left" scrollamount="6" style="font-size: 15px; font-weight: 700; color: #ffffff; line-height: 1.4; margin: 0; padding: 0; width: 100%; vertical-align: middle; display: block;">
+                    স্বাগতম! আমাদের অ্যাপে অর্ডার করার জন্য ধন্যবাদ।
+                </marquee>
             </div>
 
-            <button id="notice-close-btn" onclick="this.parentElement.parentElement.style.display='none'" class="notice-close" style="background: none; border: none; color: #ffffff; font-size: 22px; cursor: pointer; margin-left: 12px; flex-shrink: 0;">
+            <button id="notice-close-btn" onclick="document.getElementById('notice-section').style.display='none'" class="notice-close" style="position: relative; z-index: 20; background: none; border: none; color: #ffffff; font-size: 18px; cursor: pointer; padding-left: 10px; flex-shrink: 0; background-color: inherit;">
                 <i class="fas fa-times"></i>
             </button>
         </div>
@@ -2285,131 +2355,7 @@ function toggleBottomNav(visible) {
 }
 
 function loadGlobalSettings() {
-    db.collection("settings").doc("general").onSnapshot((doc) => {
-        if (doc.exists) {
-            const data = doc.data();
-            
-            const rawLogo = (data.logoUrl && String(data.logoUrl).trim() !== '') ? data.logoUrl : "https://i.ibb.co.com/JjcZFr8G/Background-Eraser-20260805-021434936.png";
-            const logoUrl = rawLogo;
-            const siteName = data.siteName || "Esp TopUp";
-            
-            isAutoPayEnabled = data.autoPayEnabled === true;
-            window.transferLimitHours = (data.transferLimitHours !== undefined && !isNaN(parseInt(data.transferLimitHours))) ? parseInt(data.transferLimitHours) : 24;
-            window.transferDisabled = (data.transferDisabled === true);
-            
-            const headerLogo = document.getElementById('header-logo-img');
-            const aboutLogo = document.getElementById('about-logo-img');
-            const aboutSiteName = document.getElementById('about-site-name');
-            const step2Logo = document.getElementById('step2-logo');
-            const step2CenterLogo = document.getElementById('step2-center-logo');
-            const paySiteLogoSmall = document.getElementById('pay-site-logo-small');
-            const loaderLogoImg = document.getElementById('loader-logo-img');
-            const loginLogoImg = document.getElementById('login-logo-img');
-            const verifyModalLogoImg = document.getElementById('verify-modal-logo-img');
-
-            if (headerLogo) {
-                headerLogo.src = logoUrl;
-                if (data.headerLogoSize || data.logoSize) {
-                    const sz = data.headerLogoSize || data.logoSize;
-                    const szVal = isNaN(sz) ? sz : (sz + 'px');
-                    headerLogo.style.height = szVal;
-                    headerLogo.style.maxHeight = 'none';
-                    headerLogo.style.width = 'auto';
-                }
-            }
-            if (aboutLogo) aboutLogo.src = logoUrl;
-            if (aboutSiteName) aboutSiteName.innerText = siteName;
-            if (step2Logo) step2Logo.src = logoUrl;
-            if (step2CenterLogo) step2CenterLogo.src = logoUrl;
-            if (paySiteLogoSmall) paySiteLogoSmall.src = logoUrl;
-            
-            const effectiveLoaderLogo = (data.loaderLogoUrl && String(data.loaderLogoUrl).trim() !== '') ? data.loaderLogoUrl : logoUrl;
-            if (loaderLogoImg) loaderLogoImg.src = effectiveLoaderLogo;
-            if (loginLogoImg) loginLogoImg.src = (data.loginLogoUrl && String(data.loginLogoUrl).trim() !== '') ? data.loginLogoUrl : logoUrl;
-            if (verifyModalLogoImg) verifyModalLogoImg.src = logoUrl;
-
-            const rulesLogo = document.getElementById('rules-footer-logo');
-            if (rulesLogo) rulesLogo.src = logoUrl;
-            document.querySelectorAll('.rules-site-name').forEach(el => el.innerText = siteName);
-            const rulesNotice = document.getElementById('rules-footer-notice');
-            if (rulesNotice) {
-                rulesNotice.innerText = (data.rulesNotice !== undefined && data.rulesNotice !== null && data.rulesNotice.trim() !== "") 
-                    ? data.rulesNotice 
-                    : "কোন সমস্যায় পড়লে Telegram এ যোগাযোগ করবেন। তাহলে দ্রুত সমাধান পেয়ে যাবেন।";
-            }
-
-            // Deposit Warning Rules Box Updates
-            document.querySelectorAll('.deposit-rule-title-el, #deposit-rule-title').forEach(el => {
-                if (data.ruleBoxTitle) el.innerText = data.ruleBoxTitle;
-            });
-            document.querySelectorAll('.deposit-rule-msg-el, #deposit-rule-msg').forEach(el => {
-                if (data.ruleBoxMsg) el.innerText = data.ruleBoxMsg;
-            });
-            if (data.ruleWhatsappUrl) currentRuleWaUrl = data.ruleWhatsappUrl;
-            else if (data.whatsapp) currentRuleWaUrl = data.whatsapp;
-
-            if (data.ruleTelegramUrl) currentRuleTgUrl = data.ruleTelegramUrl;
-            else if (data.telegram) currentRuleTgUrl = data.telegram;
-
-            document.title = siteName;
-
-            const noticeEl = document.getElementById('notice-text');
-            const noticeSec = document.getElementById('notice-section');
-            if (noticeEl) {
-                noticeEl.innerText = data.notice || "";
-            }
-            if (noticeSec) {
-                noticeSec.style.display = (data.notice && data.notice.trim() !== "") ? 'block' : 'none';
-            }
-
-            // App Force Update System
-            const updateModal = document.getElementById('app-update-modal');
-            const updateMsgEl = document.getElementById('app-update-notice-msg');
-            const downloadBtn = document.getElementById('app-update-download-btn');
-            const updateEnabled = (data.appUpdateEnabled === true);
-            const downloadUrl = (data.appDownloadUrl || data.appLink || '').trim();
-
-            if (updateEnabled && downloadUrl !== '') {
-                if (updateMsgEl) {
-                    updateMsgEl.innerText = data.appUpdateMsg || "অ্যাপটির নতুন ভার্সন এসেছে! নির্বিঘ্নে ব্যবহারের জন্য এখনই অ্যাপটি আপডেট করুন।";
-                }
-                if (downloadBtn) {
-                    downloadBtn.href = downloadUrl;
-                    downloadBtn.onclick = function(e) {
-                        if (window.AndroidApp && typeof window.AndroidApp.openExternalBrowser === 'function') {
-                            e.preventDefault();
-                            window.AndroidApp.openExternalBrowser(downloadUrl);
-                        }
-                    };
-                }
-                if (updateModal) updateModal.classList.remove('hidden');
-            } else {
-                if (updateModal) updateModal.classList.add('hidden');
-            }
-
-            // Custom Login Dialog Texts
-            const loginDomain = data.loginSiteDomain || siteName || "espofficial.com";
-            const loginSub = data.loginSiteSubtitle || ("Sign in to " + loginDomain);
-            const loginRules = data.loginConsentRules || ("Google will allow " + loginDomain + " to access this info about you");
-
-            const loginDomEl1 = document.getElementById('google-login-domain');
-            if (loginDomEl1) loginDomEl1.innerText = loginDomain;
-
-            const consentSubWrapper = document.getElementById('google-consent-subtitle-wrapper');
-            if (consentSubWrapper) {
-                consentSubWrapper.innerText = loginSub;
-            }
-
-            const loginRulesEl = document.getElementById('google-login-rules');
-            if (loginRulesEl) loginRulesEl.innerText = loginRules;
-
-            if (isSliderLoaded && isCategoriesLoaded) {
-                showLaunchPopup(data);
-            } else {
-                window.pendingPopupData = data; 
-            }
-        }
-    });
+    // Handled by loadAppContent unified Firestore listener
 }
 
 function showLaunchPopup(data) {
@@ -2429,7 +2375,10 @@ function showLaunchPopup(data) {
 
     // Check enabled status from admin settings
     const enabled = (data.launchPopupEnabled !== undefined) ? data.launchPopupEnabled : (data.popupEnabled !== false);
-    if (!enabled) return;
+    if (!enabled) {
+        if (modal) modal.classList.add('hidden');
+        return;
+    }
 
     const title = data.launchPopupTitle || data.popupTitle || "";
     const msg = data.launchPopupMsg || data.popupMessage || "";
@@ -3780,11 +3729,95 @@ function loadAppContent() {
             if (data.loaderEnabled !== undefined) {
                 window.isLoaderEnabled = !!data.loaderEnabled;
                 try { localStorage.setItem('cached_loader_enabled', window.isLoaderEnabled ? 'true' : 'false'); } catch(e) {}
+                let inlineHideStyle = document.getElementById('inline-loader-hide-style');
                 if (!window.isLoaderEnabled) {
-                    forceHideGlobalLoader();
+                    forceHideGlobalLoader(true);
+                    if (!inlineHideStyle) {
+                        const st = document.createElement('style');
+                        st.id = 'inline-loader-hide-style';
+                        st.textContent = '#global-page-loader{display:none !important;opacity:0 !important;visibility:hidden !important;pointer-events:none !important;}';
+                        document.head.appendChild(st);
+                    }
+                } else {
+                    if (inlineHideStyle) {
+                        inlineHideStyle.remove();
+                    }
                 }
             } else {
                 window.isLoaderEnabled = true;
+            }
+
+            // Sync Auto Pay & Transfer Toggles
+            isAutoPayEnabled = data.autoPayEnabled === true;
+            window.transferLimitHours = (data.transferLimitHours !== undefined && !isNaN(parseInt(data.transferLimitHours))) ? parseInt(data.transferLimitHours) : 24;
+            window.transferDisabled = (data.transferDisabled === true);
+
+            // Sync Site Name & All Logos
+            const siteName = data.siteName || "Esp TopUp";
+            document.title = siteName;
+            const rawLogo = (data.logoUrl && String(data.logoUrl).trim() !== '') ? data.logoUrl : "https://i.ibb.co.com/JjcZFr8G/Background-Eraser-20260805-021434936.png";
+            const logoUrl = rawLogo;
+
+            const aboutLogo = document.getElementById('about-logo-img');
+            const aboutSiteName = document.getElementById('about-site-name');
+            const step2Logo = document.getElementById('step2-logo');
+            const step2CenterLogo = document.getElementById('step2-center-logo');
+            const paySiteLogoSmall = document.getElementById('pay-site-logo-small');
+            const verifyModalLogoImg = document.getElementById('verify-modal-logo-img');
+
+            if (aboutLogo) aboutLogo.src = logoUrl;
+            if (aboutSiteName) aboutSiteName.innerText = siteName;
+            if (step2Logo) step2Logo.src = logoUrl;
+            if (step2CenterLogo) step2CenterLogo.src = logoUrl;
+            if (paySiteLogoSmall) paySiteLogoSmall.src = logoUrl;
+            if (verifyModalLogoImg) verifyModalLogoImg.src = logoUrl;
+
+            // App Force Update System Toggle
+            const updateModal = document.getElementById('app-update-modal');
+            const updateMsgEl = document.getElementById('app-update-notice-msg');
+            const downloadBtn = document.getElementById('app-update-download-btn');
+            const updateEnabled = (data.appUpdateEnabled === true);
+            const downloadUrl = (data.appDownloadUrl || data.appLink || '').trim();
+
+            if (updateEnabled && downloadUrl !== '') {
+                if (updateMsgEl) {
+                    updateMsgEl.innerText = data.appUpdateMsg || "অ্যাপটির নতুন ভার্সন এসেছে! নির্বিঘ্নে ব্যবহারের জন্য এখনই অ্যাপটি আপডেট করুন।";
+                }
+                if (downloadBtn) {
+                    downloadBtn.href = downloadUrl;
+                    downloadBtn.onclick = function(e) {
+                        if (window.AndroidApp && typeof window.AndroidApp.openExternalBrowser === 'function') {
+                            e.preventDefault();
+                            window.AndroidApp.openExternalBrowser(downloadUrl);
+                        }
+                    };
+                }
+                if (updateModal) updateModal.classList.remove('hidden');
+            } else {
+                if (updateModal) updateModal.classList.add('hidden');
+            }
+
+            // Custom Login Dialog Texts
+            const loginDomain = data.loginSiteDomain || siteName || "espofficial.com";
+            const loginSub = data.loginSiteSubtitle || ("Sign in to " + loginDomain);
+            const loginRules = data.loginConsentRules || ("Google will allow " + loginDomain + " to access this info about you");
+
+            const loginDomEl1 = document.getElementById('google-login-domain');
+            if (loginDomEl1) loginDomEl1.innerText = loginDomain;
+
+            const consentSubWrapper = document.getElementById('google-consent-subtitle-wrapper');
+            if (consentSubWrapper) {
+                consentSubWrapper.innerText = loginSub;
+            }
+
+            const loginRulesEl = document.getElementById('google-login-rules');
+            if (loginRulesEl) loginRulesEl.innerText = loginRules;
+
+            // Launch Announcement Popup Toggle
+            if (isSliderLoaded && isCategoriesLoaded) {
+                showLaunchPopup(data);
+            } else {
+                window.pendingPopupData = data; 
             }
 
             const currentLoaderLogo = (data.loaderLogoUrl && String(data.loaderLogoUrl).trim() !== '') ? data.loaderLogoUrl : ((data.logoUrl && String(data.logoUrl).trim() !== '') ? data.logoUrl : "https://i.ibb.co.com/bR3yqm2V/1000022763.jpg");
@@ -3939,13 +3972,20 @@ function loadAppContent() {
             const topLoginBtn = document.getElementById('top-login-btn');
             if (topLoginBtn) {
                 if (data.topLoginBtnColor) {
-                    topLoginBtn.style.backgroundColor = data.topLoginBtnColor;
+                    topLoginBtn.style.setProperty('background-color', data.topLoginBtnColor, 'important');
+                    try { localStorage.setItem('cached_top_login_bg', data.topLoginBtnColor); } catch(e) {}
                 }
                 if (data.topLoginBtnTextColor) {
-                    topLoginBtn.style.color = data.topLoginBtnTextColor;
+                    topLoginBtn.style.setProperty('color', data.topLoginBtnTextColor, 'important');
+                    try { localStorage.setItem('cached_top_login_txt', data.topLoginBtnTextColor); } catch(e) {}
                 }
                 if (data.topLoginBtnRadius !== undefined && data.topLoginBtnRadius !== '') {
-                    topLoginBtn.style.borderRadius = data.topLoginBtnRadius;
+                    topLoginBtn.style.setProperty('border-radius', data.topLoginBtnRadius, 'important');
+                    try { localStorage.setItem('cached_top_login_radius', data.topLoginBtnRadius); } catch(e) {}
+                }
+                if (data.topLoginBtnText) {
+                    topLoginBtn.innerHTML = `<i class="fas fa-sign-in-alt mr-1"></i> ${data.topLoginBtnText}`;
+                    try { localStorage.setItem('cached_top_login_text', data.topLoginBtnText); } catch(e) {}
                 }
             }
 
@@ -3953,6 +3993,7 @@ function loadAppContent() {
             const noticeEl = document.getElementById('notice-text');
             const noticeSec = document.getElementById('notice-section');
             const noticeBoxContainer = document.getElementById('notice-box-container');
+            const noticeIconBox = document.getElementById('notice-icon-box');
             const noticeIconEl = document.getElementById('notice-icon');
             const noticeCloseBtn = document.getElementById('notice-close-btn');
 
@@ -3961,17 +4002,17 @@ function loadAppContent() {
                 noticeEl.innerText = nText;
                 if (noticeSec) noticeSec.style.display = 'block';
             }
-            if (noticeBoxContainer && data.noticeBgColor) {
-                noticeBoxContainer.style.backgroundColor = data.noticeBgColor;
+            if (data.noticeBgColor) {
+                if (noticeBoxContainer) noticeBoxContainer.style.setProperty('background-color', data.noticeBgColor, 'important');
+                if (noticeIconBox) noticeIconBox.style.setProperty('background-color', data.noticeBgColor, 'important');
+                if (noticeCloseBtn) noticeCloseBtn.style.setProperty('background-color', data.noticeBgColor, 'important');
             }
-            if (noticeEl && data.noticeTextColor) {
-                noticeEl.style.color = data.noticeTextColor;
+            if (data.noticeTextColor) {
+                if (noticeEl) noticeEl.style.setProperty('color', data.noticeTextColor, 'important');
+                if (noticeCloseBtn) noticeCloseBtn.style.setProperty('color', data.noticeTextColor, 'important');
             }
             if (noticeIconEl && data.noticeIconColor) {
-                noticeIconEl.style.color = data.noticeIconColor;
-            }
-            if (noticeCloseBtn && data.noticeTextColor) {
-                noticeCloseBtn.style.color = data.noticeTextColor;
+                noticeIconEl.style.setProperty('color', data.noticeIconColor, 'important');
             }
 
             // Bottom Nav Custom Labels
@@ -4070,6 +4111,18 @@ function loadAppContent() {
             const fbContact = data.fbContactUrl || data.facebook || "#";
             const fbAbout = data.fbAboutUrl || data.facebook || "#";
 
+            // Update Deposit Warning Rules Box
+            const ruleTitleEl = document.getElementById('deposit-rule-title');
+            if (ruleTitleEl && data.ruleBoxTitle) {
+                ruleTitleEl.innerText = data.ruleBoxTitle;
+            }
+            const ruleMsgEl = document.getElementById('deposit-rule-msg');
+            if (ruleMsgEl && data.ruleBoxMsg) {
+                ruleMsgEl.innerText = data.ruleBoxMsg;
+            }
+            currentRuleWaUrl = waRule;
+            currentRuleTgUrl = tgRule;
+
             window.exitDialogLogoUrl = data.exitDialogLogoUrl || data.logoUrl || "https://i.ibb.co.com/dJgG0NNN/1000026095.jpg";
             if (window.AndroidApp && typeof window.AndroidApp.setExitDialogLogo === 'function') {
                 window.AndroidApp.setExitDialogLogo(window.exitDialogLogoUrl);
@@ -4090,6 +4143,8 @@ function loadAppContent() {
 
             attachSocialClick('link-whatsapp', waMain);
             attachSocialClick('link-telegram', tgHeader);
+            attachSocialClick('home-whatsapp', waMain);
+            attachSocialClick('home-telegram', tgHeader);
             attachSocialClick('header-telegram-btn', tgHeader);
             attachSocialClick('about-facebook', fbAbout);
             attachSocialClick('about-youtube', ytLink);
@@ -4099,7 +4154,11 @@ function loadAppContent() {
             attachSocialClick('contact-telegram', tgContact);
             attachSocialClick('contact-facebook', fbContact);
             attachSocialClick('footer-telegram-btn', tgFooter);
+            attachSocialClick('rules-tg-btn', tgRulesNotice);
+            attachSocialClick('rules-yt-btn', ytLink);
             attachSocialClick('ban-lock-wa-btn', waBan);
+            attachSocialClick('deposit-rule-wa-btn', waRule);
+            attachSocialClick('deposit-rule-tg-btn', tgRule);
         }
     });
 
@@ -4492,7 +4551,8 @@ function selectProduct(element, name, price, id) {
 function selectPaymentOption(option) {
     selectedPaymentMethod = option;
     document.querySelectorAll('.pay-option-card').forEach(el => el.classList.remove('selected'));
-    document.getElementById('opt-' + option).classList.add('selected');
+    const targetOpt = document.getElementById('opt-' + option);
+    if (targetOpt) targetOpt.classList.add('selected');
 }
 
 async function processOrder() {
@@ -4503,7 +4563,7 @@ async function processOrder() {
     }
 
     if(!selectedProduct) {
-        showCustomToast("এটা সিলেক্ট করুন (প্যাকেজ)");
+        showCustomToast("প্যাকেজ সিলেক্ট করুন");
         return;
     }
 
@@ -4519,7 +4579,8 @@ async function processOrder() {
         playerId = "Voucher Request";
     }
     
-    if (selectedPaymentMethod === 'instant') {
+    // Direct Payment via bKash / Nagad / Instant Pay
+    if (selectedPaymentMethod === 'bkash' || selectedPaymentMethod === 'nagad' || selectedPaymentMethod === 'instant') {
         isDirectBuy = true;
         currentDepositAmount = selectedProduct.price;
         pendingDirectOrder = {
@@ -4527,30 +4588,72 @@ async function processOrder() {
             product: selectedProduct,
             gameId: selectedGameId,
             gameName: selectedGameName,
-            gameType: selectedGameType
+            gameType: selectedGameType,
+            paymentMethod: selectedPaymentMethod
         };
+        
         document.getElementById('topup-sec').classList.add('hidden');
         document.getElementById('addmoney-sec').classList.remove('hidden');
-        document.getElementById('am-step-1').classList.add('hidden');
-        document.getElementById('am-step-2').classList.remove('hidden');
-        document.getElementById('am-step-3').classList.add('hidden');
+
+        if (selectedPaymentMethod === 'bkash') {
+            goToPaymentPage('bKash', 'theme-bkash', 'https://i.ibb.co.com/4gS1wZ6L/bkash-logo.png');
+        } else if (selectedPaymentMethod === 'nagad') {
+            goToPaymentPage('Nagad', 'theme-nagad', 'https://i.ibb.co.com/84N3BvhS/nagad-logo.png');
+        } else {
+            document.getElementById('am-step-1').classList.add('hidden');
+            document.getElementById('am-step-2').classList.remove('hidden');
+            document.getElementById('am-step-3').classList.add('hidden');
+        }
+        
         toggleBottomNav(false);
         window.scrollTo({ top: 0, behavior: 'instant' });
         return;
     }
 
+    // Wallet Payment Check
     if(userBalance < selectedProduct.price) {
-        showCustomToast("পর্যাপ্ত ব্যালেন্স নেই");
+        const switchRes = await Swal.fire({
+            title: 'পর্যাপ্ত ব্যালেন্স নেই',
+            text: 'আপনার ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই। বিকাশ বা নগদ এর মাধ্যমে সরাসরি ওয়াডারটি করতে চান?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e2136e',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'বিকাশ/নগদ দিয়ে অর্ডার করুন',
+            cancelButtonText: 'বাতিল'
+        });
+
+        if (switchRes.isConfirmed) {
+            isDirectBuy = true;
+            currentDepositAmount = selectedProduct.price;
+            pendingDirectOrder = {
+                playerId: playerId,
+                product: selectedProduct,
+                gameId: selectedGameId,
+                gameName: selectedGameName,
+                gameType: selectedGameType,
+                paymentMethod: 'instant'
+            };
+            document.getElementById('topup-sec').classList.add('hidden');
+            document.getElementById('addmoney-sec').classList.remove('hidden');
+            document.getElementById('am-step-1').classList.add('hidden');
+            document.getElementById('am-step-2').classList.remove('hidden');
+            document.getElementById('am-step-3').classList.add('hidden');
+            toggleBottomNav(false);
+            window.scrollTo({ top: 0, behavior: 'instant' });
+        }
         return;
     }
 
     const result = await Swal.fire({
-        title: 'Confirm Purchase?',
-        html: `Item: ${selectedProduct.name}<br>Price: ৳${selectedProduct.price}`,
+        title: 'অর্ডার কনফার্ম করুন',
+        html: `আইটেম: <b>${selectedProduct.name}</b><br>প্লেয়ার আইডি: <b>${playerId}</b><br>মূল্য: ৳<b>${selectedProduct.price}</b>`,
         icon: 'question',
         showCancelButton: true,
         confirmButtonColor: '#03a9f4',
-        confirmButtonText: 'Yes, Buy Now'
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'হ্যাঁ, বাই করুন',
+        cancelButtonText: 'বাতিল'
     });
 
     if (result.isConfirmed) {
@@ -4562,7 +4665,7 @@ async function processOrder() {
 
             if (selectedGameType === 'code') {
                 processVoucherOrder(playerId);
-            } else if (selectedGameType === 'auto-topup' || (selectedGameType === 'uid' && isAutoTopUpGlobalOn)) {
+            } else if (isAutoTopUpGlobalOn && (selectedGameType === 'auto-topup' || selectedGameType === 'uid')) {
                 processAutoTopUpOrder(playerId, settingsData);
             } else {
                 processUidOrder(playerId);
@@ -4962,12 +5065,13 @@ function showSec(secId) {
         
         if(content) content.style.opacity = '1';
 
-        if(secId === 'home') {
-            const ns = document.getElementById('notice-section');
-            if(ns) ns.classList.remove('hidden');
-        } else {
-            const ns = document.getElementById('notice-section');
-            if(ns) ns.classList.add('hidden');
+        const ns = document.getElementById('notice-section');
+        if(ns) {
+            if(secId === 'auth') {
+                ns.classList.add('hidden');
+            } else {
+                ns.classList.remove('hidden');
+            }
         }
         
         if(secId === 'history') loadHistory();
@@ -5008,6 +5112,16 @@ function loadHistory() {
             const orders = [];
             snapshot.forEach(doc => {
                 const data = doc.data();
+                const st = (data.status || 'pending').toLowerCase();
+                // If it is a Direct Buy / Instant Pay order from Category:
+                // - Do NOT show when pending
+                // - Do NOT show when rejected / canceled
+                // - Show as Completed when approved / success
+                if (data.isDirectBuy === true) {
+                    if (st === 'pending' || st === 'rejected' || st === 'cancel' || st === 'cancelled') {
+                        return;
+                    }
+                }
                 orders.push({id: doc.id, ...data});
             });
 
@@ -5753,11 +5867,12 @@ function hideVerifyStatusModal() {
     }
 }
 
-function listenToDepositStatus(txKey) {
+function listenToDepositStatus(txKey, isDirectOrder) {
     if (currentDepositListener) currentDepositListener.off();
     if (currentFsDepositUnsub) currentFsDepositUnsub();
 
     let statusHandled = false;
+    const isDirect = (isDirectOrder !== undefined) ? isDirectOrder : (typeof isDirectBuy !== 'undefined' && isDirectBuy);
 
     const handleStatusUpdate = (statusRaw) => {
         if (statusHandled) return;
@@ -5775,12 +5890,12 @@ function listenToDepositStatus(txKey) {
                 iconBox.innerHTML = '<i class="fas fa-check-circle text-emerald-500 text-5xl"></i>';
             }
             if (statusText) {
-                statusText.innerText = 'ডিপোজিট সফল!';
+                statusText.innerText = isDirect ? 'Order Success' : 'ডিপোজিট সফল!';
                 statusText.className = 'text-xl font-black text-emerald-600 uppercase tracking-wider mt-2';
             }
             setTimeout(() => {
                 hideVerifyStatusModal();
-                showCustomToast("ডিপোজিট সফল হয়েছে!");
+                showCustomToast(isDirect ? "Order Success" : "ডিপোজিট সফল হয়েছে!");
                 if (currentUser && currentUser.uid) loadUserData(currentUser.uid);
                 showSec('home');
             }, 1800);
@@ -5792,7 +5907,7 @@ function listenToDepositStatus(txKey) {
                 iconBox.innerHTML = '<i class="fas fa-times-circle text-rose-500 text-5xl"></i>';
             }
             if (statusText) {
-                statusText.innerText = 'ট্রানজেকশন আইডি ভুল';
+                statusText.innerText = 'Transaction ID wrong';
                 statusText.className = 'text-base font-extrabold text-rose-600 mt-2';
             }
             setTimeout(() => {
@@ -5922,6 +6037,45 @@ async function handleNewVerify() {
         showVerifyStatusModal(method);
 
         const txKey = rtdb.ref('deposit_requests').push().key || ('dep_' + Date.now());
+        
+        let createdOrderId = null;
+        if (isDirectBuy && pendingDirectOrder) {
+            createdOrderId = db.collection('orders').doc().id;
+            const orderPayload = {
+                id: createdOrderId,
+                orderId: createdOrderId,
+                userId: uid,
+                userName: userEmail,
+                userEmail: userEmail,
+                gameName: pendingDirectOrder.gameName || 'Free Fire',
+                gameId: pendingDirectOrder.gameId || 'freefire',
+                playerId: pendingDirectOrder.playerId || 'N/A',
+                productName: pendingDirectOrder.product ? pendingDirectOrder.product.name : 'Package',
+                productId: pendingDirectOrder.product ? pendingDirectOrder.product.id : '',
+                price: amount,
+                type: pendingDirectOrder.gameType || 'uid',
+                paymentMethod: method,
+                trxId: cleanTrx,
+                depositTxKey: txKey,
+                isDirectBuy: true,
+                status: 'pending',
+                date: new Date().toLocaleString('en-GB'),
+                timestamp: (firebase.database.ServerValue && firebase.database.ServerValue.TIMESTAMP) ? firebase.database.ServerValue.TIMESTAMP : Date.now()
+            };
+
+            try {
+                await db.collection('orders').doc(createdOrderId).set(orderPayload);
+            } catch (eOrd) {
+                console.warn("Firestore order set error:", eOrd);
+            }
+
+            try {
+                await rtdb.ref('orders/' + createdOrderId).set(orderPayload);
+            } catch (eRtdbOrd) {
+                console.warn("RTDB order set error:", eRtdbOrd);
+            }
+        }
+
         const depositData = {
             uid: uid, 
             userId: uid,
@@ -5930,6 +6084,13 @@ async function handleNewVerify() {
             trxId: cleanTrx, 
             amount: amount, 
             status: 'Pending', 
+            isDirectBuy: isDirectBuy ? true : false,
+            orderId: createdOrderId || null,
+            orderInfo: pendingDirectOrder ? {
+                gameName: pendingDirectOrder.gameName,
+                productName: pendingDirectOrder.product ? pendingDirectOrder.product.name : '',
+                playerId: pendingDirectOrder.playerId
+            } : null,
             date: new Date().toLocaleString('en-GB'),
             timestamp: (firebase.database.ServerValue && firebase.database.ServerValue.TIMESTAMP) ? firebase.database.ServerValue.TIMESTAMP : Date.now()
         };
@@ -5949,6 +6110,13 @@ async function handleNewVerify() {
                 trxId: cleanTrx,
                 amount: amount,
                 status: 'pending',
+                isDirectBuy: isDirectBuy ? true : false,
+                orderId: createdOrderId || null,
+                orderInfo: pendingDirectOrder ? {
+                    gameName: pendingDirectOrder.gameName,
+                    productName: pendingDirectOrder.product ? pendingDirectOrder.product.name : '',
+                    playerId: pendingDirectOrder.playerId
+                } : null,
                 date: (firebase.firestore.FieldValue && firebase.firestore.FieldValue.serverTimestamp) ? firebase.firestore.FieldValue.serverTimestamp() : new Date()
             });
         } catch (fsw) {}
@@ -5968,7 +6136,7 @@ async function handleNewVerify() {
             console.warn("RTDB transaction set warning:", txErr);
         }
 
-        listenToDepositStatus(txKey);
+        listenToDepositStatus(txKey, isDirectBuy);
     } finally {
         isVerifyingSubmission = false;
     }
@@ -6256,21 +6424,45 @@ async function verifyAndHandleNetworkState(userTriggered = false) {
         if (retrySpinner) retrySpinner.classList.remove('hidden');
     }
 
+    const modal = document.getElementById('net-connection-issue-modal');
+
+    if (!navigator.onLine) {
+        if (modal) {
+            modal.classList.remove('hidden');
+            modal.style.setProperty('display', 'flex', 'important');
+            applyNetworkModalCustomizations();
+        }
+        showOfflineLoader();
+        if (userTriggered) {
+            const retryText = document.getElementById('net-retry-text');
+            const retrySpinner = document.getElementById('net-retry-spinner');
+            const configuredRetryText = window.netModalRetryText || localStorage.getItem('cached_net_modal_retry_text') || "Retry";
+            if (retryText) retryText.innerText = configuredRetryText;
+            if (retrySpinner) retrySpinner.classList.add('hidden');
+
+            const offlineMsg = window.netModalOfflineMsg || localStorage.getItem('cached_net_modal_offline_msg') || "আপনার নেটওয়ার্ক কানেক্ট করুন";
+            if (typeof showCustomToast === "function") {
+                showCustomToast(offlineMsg);
+            }
+        }
+        isCheckingNetwork = false;
+        return;
+    }
+
     const hasInternet = await checkRealInternetConnection();
     isRealInternetConnected = hasInternet;
 
-    const modal = document.getElementById('net-connection-issue-modal');
     if (!hasInternet) {
         if (modal) {
             modal.classList.remove('hidden');
-            modal.style.display = 'flex';
+            modal.style.setProperty('display', 'flex', 'important');
             applyNetworkModalCustomizations();
         }
         showOfflineLoader();
     } else {
         if (modal) {
             modal.classList.add('hidden');
-            modal.style.display = 'none';
+            modal.style.setProperty('display', 'none', 'important');
         }
         showOnlineLoader();
     }
@@ -6317,32 +6509,29 @@ setInterval(() => {
 }, 4000);
 
 function showOfflineLoader() {
+    const modal = document.getElementById('net-connection-issue-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        modal.style.setProperty('display', 'flex', 'important');
+        if (typeof applyNetworkModalCustomizations === "function") {
+            applyNetworkModalCustomizations();
+        }
+    }
+
     const cachedEnabled = localStorage.getItem('cached_loader_enabled');
     const isEnabled = window.isLoaderEnabled !== undefined ? window.isLoaderEnabled : (cachedEnabled !== 'false');
 
-    if (!isEnabled) {
-        const loader = document.getElementById('global-page-loader');
-        if (loader) {
+    const loader = document.getElementById('global-page-loader');
+    if (loader) {
+        if (!isEnabled) {
             loader.style.setProperty('display', 'none', 'important');
             loader.classList.add('fade-out', 'hidden');
+        } else {
+            loader.classList.remove('fade-out', 'hidden');
+            loader.style.setProperty('display', 'flex', 'important');
+            loader.style.opacity = '1';
+            loader.style.pointerEvents = 'auto';
         }
-        return;
-    }
-
-    const loader = document.getElementById('global-page-loader');
-    const statusBox = document.getElementById('net-status-box');
-    const statusText = document.getElementById('net-status-text');
-    const statusIcon = document.getElementById('net-status-icon');
-
-    if (loader) {
-        loader.classList.remove('fade-out', 'hidden');
-        loader.style.display = 'flex';
-        loader.style.opacity = '1';
-        loader.style.pointerEvents = 'auto';
-    }
-
-    if (statusBox) {
-        statusBox.classList.add('hidden');
     }
 }
 
@@ -6361,6 +6550,7 @@ window.addEventListener('online', () => verifyAndHandleNetworkState(false));
 window.addEventListener('offline', () => verifyAndHandleNetworkState(false));
 
 document.addEventListener("DOMContentLoaded", () => {
+    verifyAndHandleNetworkState(false);
     try {
         const cachedEnabled = localStorage.getItem('cached_loader_enabled');
         if (cachedEnabled === 'false') {
@@ -6409,6 +6599,18 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cachedCss) {
             const styleEl = document.getElementById('custom-loader-css');
             if (styleEl) styleEl.textContent = cachedCss;
+        }
+
+        const cachedTopLoginBg = localStorage.getItem('cached_top_login_bg');
+        const cachedTopLoginTxt = localStorage.getItem('cached_top_login_txt');
+        const cachedTopLoginRadius = localStorage.getItem('cached_top_login_radius');
+        const cachedTopLoginText = localStorage.getItem('cached_top_login_text');
+        const topBtn = document.getElementById('top-login-btn');
+        if (topBtn) {
+            if (cachedTopLoginBg) topBtn.style.setProperty('background-color', cachedTopLoginBg, 'important');
+            if (cachedTopLoginTxt) topBtn.style.setProperty('color', cachedTopLoginTxt, 'important');
+            if (cachedTopLoginRadius) topBtn.style.setProperty('border-radius', cachedTopLoginRadius, 'important');
+            if (cachedTopLoginText) topBtn.innerHTML = `<i class="fas fa-sign-in-alt mr-1"></i> ${cachedTopLoginText}`;
         }
     } catch(e) {}
 

@@ -545,25 +545,38 @@
                             <i class="fas fa-info-circle text-sky-400 mr-1"></i> অ্যাপের একদম উপরে ডানদিকের লগইন বাটনটির ব্যাকগ্রাউন্ড কালার, টেক্সট কালার এবং দুই কোনার শেপ বা রিডিয়াস পছন্দমতো পরিবর্তন করুন।
                         </p>
                         <div class="space-y-3">
+                            <!-- Live Preview Box -->
+                            <div class="bg-dark-bg p-3 rounded-xl border border-dark-border text-center mb-2">
+                                <span class="text-[11px] text-gray-400 block mb-2 font-semibold">লাইভ প্রাকদর্শন (Live Preview)</span>
+                                <button id="top-login-preview-btn" class="px-4 py-2 text-sm font-bold shadow-md inline-flex items-center gap-1.5 transition">
+                                    <i class="fas fa-sign-in-alt"></i> <span id="top-login-preview-text">Login</span>
+                                </button>
+                            </div>
+
+                            <div>
+                                <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">বাটন লেখা / টেক্সট (Button Text)</label>
+                                <input type="text" id="set-top-login-text" class="flat-input w-full" placeholder="Login" value="Login" oninput="updateTopLoginPreview()">
+                            </div>
+
                             <div>
                                 <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">বাটন ব্যাকগ্রাউন্ড কালার (Button Background Color)</label>
                                 <div class="flex items-center gap-2">
-                                    <input type="color" id="set-top-login-bg-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#0284c7" onchange="document.getElementById('set-top-login-bg-color').value = this.value">
-                                    <input type="text" id="set-top-login-bg-color" class="flat-input flex-1" placeholder="#0284c7" value="#0284c7" onchange="document.getElementById('set-top-login-bg-color-picker').value = this.value">
+                                    <input type="color" id="set-top-login-bg-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#0284c7" oninput="document.getElementById('set-top-login-bg-color').value = this.value; updateTopLoginPreview();">
+                                    <input type="text" id="set-top-login-bg-color" class="flat-input flex-1" placeholder="#0284c7" value="#0284c7" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-top-login-bg-color-picker').value = this.value; updateTopLoginPreview();">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">বাটন টেক্সট কালার (Button Text Color)</label>
                                 <div class="flex items-center gap-2">
-                                    <input type="color" id="set-top-login-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" onchange="document.getElementById('set-top-login-text-color').value = this.value">
-                                    <input type="text" id="set-top-login-text-color" class="flat-input flex-1" placeholder="#ffffff" value="#ffffff" onchange="document.getElementById('set-top-login-text-color-picker').value = this.value">
+                                    <input type="color" id="set-top-login-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" oninput="document.getElementById('set-top-login-text-color').value = this.value; updateTopLoginPreview();">
+                                    <input type="text" id="set-top-login-text-color" class="flat-input flex-1" placeholder="#ffffff" value="#ffffff" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-top-login-text-color-picker').value = this.value; updateTopLoginPreview();">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">বাটন কোনা / শেপ স্টাইল (Corner / Border Radius)</label>
-                                <select id="set-top-login-shape" class="flat-input">
+                                <select id="set-top-login-shape" class="flat-input" onchange="updateTopLoginPreview()">
                                     <option value="9999px">সম্পূর্ণ গোল / ওভাল (Full Oval Rounded - 9999px)</option>
                                     <option value="6px">হালকা কোনা / কার্ভ (Modern Curved - 6px)</option>
                                     <option value="12px 2px 12px 2px">দুই পাশ কোনা / ডায়াগোনাল কোনা (Diagonal Cut Corners - 12px 2px)</option>
@@ -590,24 +603,24 @@
                             <div>
                                 <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">নোটিশ বক্স ব্যাকগ্রাউন্ড কালার (Notice Background Color)</label>
                                 <div class="flex items-center gap-2">
-                                    <input type="color" id="set-notice-bg-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#0284c7" onchange="document.getElementById('set-notice-bg-color').value = this.value">
-                                    <input type="text" id="set-notice-bg-color" class="flat-input flex-1" placeholder="#0284c7" value="#0284c7" onchange="document.getElementById('set-notice-bg-color-picker').value = this.value">
+                                    <input type="color" id="set-notice-bg-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#0284c7" oninput="document.getElementById('set-notice-bg-color').value = this.value">
+                                    <input type="text" id="set-notice-bg-color" class="flat-input flex-1" placeholder="#0284c7" value="#0284c7" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-notice-bg-color-picker').value = this.value">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">নোটিশ টেক্সট ও ক্রস বাটন কালার (Notice Text & Cross Color)</label>
                                 <div class="flex items-center gap-2">
-                                    <input type="color" id="set-notice-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" onchange="document.getElementById('set-notice-text-color').value = this.value">
-                                    <input type="text" id="set-notice-text-color" class="flat-input flex-1" placeholder="#ffffff" value="#ffffff" onchange="document.getElementById('set-notice-text-color-picker').value = this.value">
+                                    <input type="color" id="set-notice-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" oninput="document.getElementById('set-notice-text-color').value = this.value">
+                                    <input type="text" id="set-notice-text-color" class="flat-input flex-1" placeholder="#ffffff" value="#ffffff" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-notice-text-color-picker').value = this.value">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-[11px] text-gray-400 mb-1 font-semibold uppercase">নোটিশ আইকন কালার (Icon Color)</label>
                                 <div class="flex items-center gap-2">
-                                    <input type="color" id="set-notice-icon-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#fde047" onchange="document.getElementById('set-notice-icon-color').value = this.value">
-                                    <input type="text" id="set-notice-icon-color" class="flat-input flex-1" placeholder="#fde047" value="#fde047" onchange="document.getElementById('set-notice-icon-color-picker').value = this.value">
+                                    <input type="color" id="set-notice-icon-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#fde047" oninput="document.getElementById('set-notice-icon-color').value = this.value">
+                                    <input type="text" id="set-notice-icon-color" class="flat-input flex-1" placeholder="#fde047" value="#fde047" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-notice-icon-color-picker').value = this.value">
                                 </div>
                             </div>
 
@@ -1078,7 +1091,7 @@
 
                                 <div class="flex items-center gap-2">
                                     <input type="color" id="set-category-border-color-picker" class="w-10 h-10 rounded-lg cursor-pointer bg-transparent border-0 p-0" oninput="syncCatColorPickerToInput(this.value)">
-                                    <input type="text" id="set-category-border-color" class="flat-input flex-1 font-mono uppercase" placeholder="#0F172A" oninput="updateCatPreviewFromInputs()">
+                                    <input type="text" id="set-category-border-color" class="flat-input flex-1 font-mono uppercase" placeholder="#0F172A" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-category-border-color-picker').value = this.value; updateCatPreviewFromInputs();">
                                 </div>
                             </div>
 
@@ -1198,15 +1211,15 @@
                                     <div>
                                         <label class="block text-[11px] text-gray-400 mb-1 font-semibold">ব্যাকগ্রাউন্ড কালার</label>
                                         <div class="flex items-center gap-2">
-                                            <input type="color" id="set-net-modal-cancel-bg-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" onchange="document.getElementById('set-net-modal-cancel-bg').value = this.value; updateNetModalLivePreview();">
-                                            <input type="text" id="set-net-modal-cancel-bg" class="flat-input flex-1" value="#ffffff" oninput="document.getElementById('set-net-modal-cancel-bg-picker').value = this.value; updateNetModalLivePreview();">
+                                            <input type="color" id="set-net-modal-cancel-bg-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" oninput="document.getElementById('set-net-modal-cancel-bg').value = this.value; updateNetModalLivePreview();">
+                                            <input type="text" id="set-net-modal-cancel-bg" class="flat-input flex-1" value="#ffffff" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-net-modal-cancel-bg-picker').value = this.value; updateNetModalLivePreview();">
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-[11px] text-gray-400 mb-1 font-semibold">টেক্সট কালার</label>
                                         <div class="flex items-center gap-2">
-                                            <input type="color" id="set-net-modal-cancel-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#475569" onchange="document.getElementById('set-net-modal-cancel-text-color').value = this.value; updateNetModalLivePreview();">
-                                            <input type="text" id="set-net-modal-cancel-text-color" class="flat-input flex-1" value="#475569" oninput="document.getElementById('set-net-modal-cancel-text-color-picker').value = this.value; updateNetModalLivePreview();">
+                                            <input type="color" id="set-net-modal-cancel-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#475569" oninput="document.getElementById('set-net-modal-cancel-text-color').value = this.value; updateNetModalLivePreview();">
+                                            <input type="text" id="set-net-modal-cancel-text-color" class="flat-input flex-1" value="#475569" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-net-modal-cancel-text-color-picker').value = this.value; updateNetModalLivePreview();">
                                         </div>
                                     </div>
                                 </div>
@@ -1225,15 +1238,15 @@
                                     <div>
                                         <label class="block text-[11px] text-gray-400 mb-1 font-semibold">ব্যাকগ্রাউন্ড কালার</label>
                                         <div class="flex items-center gap-2">
-                                            <input type="color" id="set-net-modal-retry-bg-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#10b981" onchange="document.getElementById('set-net-modal-retry-bg').value = this.value; updateNetModalLivePreview();">
-                                            <input type="text" id="set-net-modal-retry-bg" class="flat-input flex-1" value="#10b981" oninput="document.getElementById('set-net-modal-retry-bg-picker').value = this.value; updateNetModalLivePreview();">
+                                            <input type="color" id="set-net-modal-retry-bg-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#10b981" oninput="document.getElementById('set-net-modal-retry-bg').value = this.value; updateNetModalLivePreview();">
+                                            <input type="text" id="set-net-modal-retry-bg" class="flat-input flex-1" value="#10b981" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-net-modal-retry-bg-picker').value = this.value; updateNetModalLivePreview();">
                                         </div>
                                     </div>
                                     <div>
                                         <label class="block text-[11px] text-gray-400 mb-1 font-semibold">টেক্সট কালার</label>
                                         <div class="flex items-center gap-2">
-                                            <input type="color" id="set-net-modal-retry-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" onchange="document.getElementById('set-net-modal-retry-text-color').value = this.value; updateNetModalLivePreview();">
-                                            <input type="text" id="set-net-modal-retry-text-color" class="flat-input flex-1" value="#ffffff" oninput="document.getElementById('set-net-modal-retry-text-color-picker').value = this.value; updateNetModalLivePreview();">
+                                            <input type="color" id="set-net-modal-retry-text-color-picker" class="w-10 h-10 p-1 rounded-lg bg-dark-bg border border-dark-border cursor-pointer" value="#ffffff" oninput="document.getElementById('set-net-modal-retry-text-color').value = this.value; updateNetModalLivePreview();">
+                                            <input type="text" id="set-net-modal-retry-text-color" class="flat-input flex-1" value="#ffffff" oninput="if(this.value.length===7 && this.value.startsWith('#')) document.getElementById('set-net-modal-retry-text-color-picker').value = this.value; updateNetModalLivePreview();">
                                         </div>
                                     </div>
                                 </div>
@@ -2201,15 +2214,18 @@
                     setVal('set-toast-v-offset', d.toastVerticalOffset !== undefined ? d.toastVerticalOffset : 80);
                     setVal('set-toast-h-align', d.toastHorizontalAlign || 'center');
 
-                    // Top Login Button Color & Shape Settings
+                    // Top Login Button Color, Text & Shape Settings
                     const topLoginBg = d.topLoginBtnColor || '#0284c7';
                     const topLoginText = d.topLoginBtnTextColor || '#ffffff';
                     const topLoginShape = d.topLoginBtnRadius || '9999px';
+                    const topLoginLabel = d.topLoginBtnText || 'Login';
                     setVal('set-top-login-bg-color', topLoginBg);
                     setVal('set-top-login-bg-color-picker', topLoginBg);
                     setVal('set-top-login-text-color', topLoginText);
                     setVal('set-top-login-text-color-picker', topLoginText);
                     setVal('set-top-login-shape', topLoginShape);
+                    setVal('set-top-login-text', topLoginLabel);
+                    updateTopLoginPreview();
 
                     // Notice Box Custom Colors
                     const noticeBg = d.noticeBgColor || '#0284c7';
@@ -2346,22 +2362,40 @@
             }).catch(dbError);
         }
 
+        function updateTopLoginPreview() {
+            const btn = document.getElementById('top-login-preview-btn');
+            const txtEl = document.getElementById('top-login-preview-text');
+            if (!btn) return;
+            const bg = getVal('set-top-login-bg-color') || '#0284c7';
+            const txt = getVal('set-top-login-text-color') || '#ffffff';
+            const shape = getVal('set-top-login-shape') || '9999px';
+            const label = getVal('set-top-login-text') || 'Login';
+
+            btn.style.setProperty('background-color', bg, 'important');
+            btn.style.setProperty('color', txt, 'important');
+            btn.style.setProperty('border-radius', shape, 'important');
+            if (txtEl) txtEl.innerText = label;
+        }
+
         function saveTopLoginBtnSettings() {
             if (!db) return;
             showLoading();
             const bgColor = getVal('set-top-login-bg-color') || '#0284c7';
             const textColor = getVal('set-top-login-text-color') || '#ffffff';
             const shape = getVal('set-top-login-shape') || '9999px';
+            const btnText = getVal('set-top-login-text') || 'Login';
 
             db.collection('settings').doc('general').set({
                 topLoginBtnColor: bgColor,
                 topLoginBtnTextColor: textColor,
-                topLoginBtnRadius: shape
+                topLoginBtnRadius: shape,
+                topLoginBtnText: btnText
             }, { merge: true }).then(() => {
                 if (!window.adminGeneralData) window.adminGeneralData = {};
                 window.adminGeneralData.topLoginBtnColor = bgColor;
                 window.adminGeneralData.topLoginBtnTextColor = textColor;
                 window.adminGeneralData.topLoginBtnRadius = shape;
+                window.adminGeneralData.topLoginBtnText = btnText;
                 hideLoading();
                 Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: 'লগইন বাটন সেটিংস সেভ হয়েছে!', timer: 1500, showConfirmButton: false });
             }).catch(dbError);
@@ -3388,11 +3422,16 @@
                 if(st === 'approved' || st === 'Approved') statusBadge = `<span class="bg-green-500/10 text-green-400 px-2 py-1 rounded text-xs">Approved</span>`;
                 else if(st === 'rejected' || st === 'Rejected') statusBadge = `<span class="bg-red-500/10 text-red-500 px-2 py-1 rounded text-xs">Rejected</span>`;
 
+                const orderInfoHtml = d.orderInfo ? `<div class="text-[11px] text-sky-400 font-medium mt-0.5">📦 ${d.orderInfo.gameName || ''} - ${d.orderInfo.productName || ''} (ID: ${d.orderInfo.playerId || ''})</div>` : (d.isDirectBuy ? `<div class="text-[11px] text-sky-400 font-medium mt-0.5">📦 Direct Order</div>` : '');
+
                 list.innerHTML += `<tr>
                     <td class="text-center">
                         <input type="checkbox" class="deposit-select-checkbox rounded bg-[#09090B] border-[#27272A] text-[#F49E0B] focus:ring-0 cursor-pointer" value="${d.id}" onchange="updateDepositSelectCount()">
                     </td>
-                    <td>${d.userEmail || 'User'}</td>
+                    <td>
+                        <div class="font-medium">${d.userEmail || 'User'}</div>
+                        ${orderInfoHtml}
+                    </td>
                     <td><span class="text-orange-500 font-mono font-bold">${d.method || 'bKash'}</span></td>
                     <td class="font-mono text-gray-300 font-bold">${d.trxId || ''}</td>
                     <td class="text-green-400 font-bold">৳${d.amount || 0}</td>
@@ -3662,66 +3701,71 @@
         async function approveDeposit(docId, userId, amount, email, trxId) {
             showLoading();
             try {
-                const userRef = db.collection('users').doc(userId);
+                const depSnap = await db.collection('deposits').doc(docId).get();
+                const dData = depSnap.exists ? depSnap.data() : null;
+                const isDirect = dData && (dData.isDirectBuy === true || !!dData.orderId);
+
                 let referralAwarded = false;
-                let referrerEmail = "";
 
-                await db.runTransaction(async (transaction) => {
-                    const userDoc = await transaction.get(userRef);
-                    if (!userDoc.exists) throw "ইউজার খুঁজে পাওয়া যায়নি!";
-                    
-                    const uData = userDoc.data();
-                    let currentBalance = parseFloat(uData.balance || 0);
-                    let newBalance = currentBalance + parseFloat(amount);
-                    
-                    const refCode = uData.referredByCode;
-                    const isPaid = uData.referralBonusPaid === true;
-                    if (refCode && !isPaid && parseFloat(amount) > 0) {
-                        referralAwarded = true;
-                    }
+                if (!isDirect) {
+                    const userRef = db.collection('users').doc(userId);
+                    await db.runTransaction(async (transaction) => {
+                        const userDoc = await transaction.get(userRef);
+                        if (!userDoc.exists) throw "ইউজার খুঁজে পাওয়া যায়নি!";
+                        
+                        const uData = userDoc.data();
+                        let currentBalance = parseFloat(uData.balance || 0);
+                        let newBalance = currentBalance + parseFloat(amount);
+                        
+                        const refCode = uData.referredByCode;
+                        const isPaid = uData.referralBonusPaid === true;
+                        if (refCode && !isPaid && parseFloat(amount) > 0) {
+                            referralAwarded = true;
+                        }
 
-                    transaction.update(userRef, { 
-                        balance: newBalance,
-                        referralBonusPaid: true
+                        transaction.update(userRef, { 
+                            balance: newBalance,
+                            referralBonusPaid: true
+                        });
                     });
-                });
 
-                const uDocAfter = await userRef.get();
-                const referredCode = uDocAfter.data()?.referredByCode;
-                if (referredCode && referralAwarded) {
-                    let cleanRefCode = String(referredCode).trim().toUpperCase();
-                    if (!cleanRefCode.startsWith('ESP-')) {
-                        cleanRefCode = 'ESP-' + cleanRefCode;
-                    }
-                    const shortCode = cleanRefCode.replace('ESP-', '');
+                    const uDocAfter = await userRef.get();
+                    const referredCode = uDocAfter.data()?.referredByCode;
+                    if (referredCode && referralAwarded) {
+                        let cleanRefCode = String(referredCode).trim().toUpperCase();
+                        if (!cleanRefCode.startsWith('ESP-')) {
+                            cleanRefCode = 'ESP-' + cleanRefCode;
+                        }
+                        const shortCode = cleanRefCode.replace('ESP-', '');
 
-                    let refUserDoc = null;
-                    const referrerSnap = await db.collection('users').where('referralCode', '==', cleanRefCode).get();
-                    if (!referrerSnap.empty) {
-                        refUserDoc = referrerSnap.docs[0];
-                    } else {
-                        const allUsers = await db.collection('users').get();
-                        allUsers.forEach(d => {
-                            const genCode = (d.data().referralCode || ("ESP-" + d.id.slice(0, 6).toUpperCase())).toUpperCase();
-                            if (genCode === cleanRefCode || d.id.toUpperCase().startsWith(shortCode)) {
-                                refUserDoc = d;
-                            }
-                        });
-                    }
+                        let refUserDoc = null;
+                        const referrerSnap = await db.collection('users').where('referralCode', '==', cleanRefCode).get();
+                        if (!referrerSnap.empty) {
+                            refUserDoc = referrerSnap.docs[0];
+                        } else {
+                            const allUsers = await db.collection('users').get();
+                            allUsers.forEach(d => {
+                                const genCode = (d.data().referralCode || ("ESP-" + d.id.slice(0, 6).toUpperCase())).toUpperCase();
+                                if (genCode === cleanRefCode || d.id.toUpperCase().startsWith(shortCode)) {
+                                    refUserDoc = d;
+                                }
+                            });
+                        }
 
-                    if (refUserDoc) {
-                        referrerEmail = refUserDoc.data().email || "";
-                        const refBonus = parseFloat(adminReferralBonusAmount) || 10;
-                        await db.collection('users').doc(refUserDoc.id).update({
-                            referralCode: cleanRefCode,
-                            balance: firebase.firestore.FieldValue.increment(refBonus),
-                            totalReferEarnings: firebase.firestore.FieldValue.increment(refBonus)
-                        });
-                        sendInstantStatusNotification(
-                            "🎉 রেফার বোনাস প্রাপ্তি!",
-                            `আপনার বন্ধু ডিপোজিট সম্পন্ন করায় আপনি ${refBonus} ৳ রেফার বোনাস পেয়েছেন!`,
-                            referrerEmail
-                        );
+                        if (refUserDoc) {
+                            const referrerEmail = refUserDoc.data().email || "";
+                            const refBonus = parseFloat(adminReferralBonusAmount) || 10;
+                            await db.collection('users').doc(refUserDoc.id).update({
+                                referralCode: cleanRefCode,
+                                balance: firebase.firestore.FieldValue.increment(refBonus),
+                                totalReferEarnings: firebase.firestore.FieldValue.increment(refBonus)
+                            });
+                            sendInstantStatusNotification(
+                                "🎉 রেফার বোনাস প্রাপ্তি!",
+                                `আপনার বন্ধু ডিপোজিট সম্পন্ন করায় আপনি ${refBonus} ৳ রেফার বোনাস পেয়েছেন!`,
+                                referrerEmail
+                            );
+                        }
                     }
                 }
 
@@ -3734,17 +3778,36 @@
                     rtdb.ref('deposit_requests/' + docId).update({ status: 'Approved' }).catch(e => {});
                 }
 
-                sendInstantStatusNotification(
-                    "ডিপোজিট সফল",
-                    `আপনার অ্যাকাউন্টে ${amount} টাকা এড হয়েছে`,
-                    email
-                );
+                // Check and update linked direct category order
+                if (dData && dData.orderId) {
+                    await db.collection('orders').doc(dData.orderId).update({
+                        status: 'success',
+                        approvedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    if (rtdb) {
+                        rtdb.ref('orders/' + dData.orderId).update({ status: 'Completed' }).catch(e => {});
+                    }
+                }
+
+                if (isDirect) {
+                    sendInstantStatusNotification(
+                        "Order Success",
+                        `Your order of ৳${amount} has been approved successfully!`,
+                        email
+                    );
+                } else {
+                    sendInstantStatusNotification(
+                        "ডিপোজিট সফল",
+                        `আপনার অ্যাকাউন্টে ${amount} টাকা এড হয়েছে`,
+                        email
+                    );
+                }
 
                 hideLoading();
                 Swal.fire({
                     icon: 'success',
                     title: 'Approved!',
-                    text: `৳${amount} টাকা সফলভাবে ইউজারের অ্যাকাউন্টে যোগ হয়েছে।${referralAwarded ? ' (রেফার বোনাস প্রেরিত)' : ''}`,
+                    text: isDirect ? 'Direct order approved successfully!' : `৳${amount} টাকা সফলভাবে ইউজারের অ্যাকাউন্টে যোগ হয়েছে।${referralAwarded ? ' (রেফার বোনাস প্রেরিত)' : ''}`,
                     confirmButtonColor: '#F49E0B'
                 });
             } catch (error) {
@@ -3763,11 +3826,27 @@
                 confirmButtonColor: '#d33'
             }).then(r => {
                 if (r.value !== undefined) {
-                    db.collection('deposits').doc(docId).update({ status: 'rejected', rejectReason: r.value || 'Rejected' });
+                    const reason = r.value || 'Rejected by Admin';
+                    db.collection('deposits').doc(docId).update({ status: 'rejected', rejectReason: reason });
                     if (rtdb) {
                         rtdb.ref('deposit_requests/' + docId).update({ status: 'Rejected' }).catch(e => {});
                     }
-                    sendInstantStatusNotification("ট্রানজেকশন বাতিল", "আপনার ট্রানজেকশন আইডিটি ভুল", email);
+
+                    // Check and update linked direct category order
+                    db.collection('deposits').doc(docId).get().then(snap => {
+                        if (snap.exists && snap.data()?.orderId) {
+                            const ordId = snap.data().orderId;
+                            db.collection('orders').doc(ordId).update({
+                                status: 'rejected',
+                                rejectReason: reason
+                            }).catch(e => {});
+                            if (rtdb) {
+                                rtdb.ref('orders/' + ordId).update({ status: 'Rejected' }).catch(e => {});
+                            }
+                        }
+                    }).catch(e => {});
+
+                    sendInstantStatusNotification("ট্রানজেকশন বাতিল", "আপনার ট্রানজেকশন আইডিটি বাতিল করা হয়েছে", email);
                 }
             });
         }

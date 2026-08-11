@@ -906,6 +906,11 @@ class MainActivity : ComponentActivity() {
                     handler?.proceed()
                 }
 
+                override fun onReceivedError(view: WebView?, request: android.webkit.WebResourceRequest?, error: android.webkit.WebResourceError?) {
+                    super.onReceivedError(view, request, error)
+                    Log.w("MainActivity", "WebView resource error: ${error?.description} for ${request?.url}")
+                }
+
                 @Deprecated("Deprecated in Java")
                 override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
                     val urlStr = url ?: ""
