@@ -1,0 +1,9 @@
+const firebaseConfig = {
+  apiKey: "AIzaSyA3B7DZ_JeY-a33zdixKmZ6oQrU2iEVsEk",
+  authDomain: "samim-firebase.firebaseapp.com",
+  projectId: "samim-firebase",
+  storageBucket: "samim-firebase.firebasestorage.app",
+  messagingSenderId: "521003542655",
+  appId: "1:521003542655:web:bbabcf2f24a0eaeeef774a",
+  measurementId: "G-SPBMDSXJVX"
+};
