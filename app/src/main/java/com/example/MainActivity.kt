@@ -432,7 +432,7 @@ class MainActivity : ComponentActivity() {
             setPadding(14, 14, 14, 14)
         }
         val logoView = ImageView(this).apply {
-            setImageResource(R.drawable.official_logo_clean)
+            setImageResource(R.drawable.app_logo)
             scaleType = ImageView.ScaleType.FIT_CENTER
         }
         logoContainer.addView(logoView)
@@ -839,6 +839,8 @@ class MainActivity : ComponentActivity() {
             settings.javaScriptEnabled = true
             settings.domStorageEnabled = true
             settings.databaseEnabled = true
+            settings.loadsImagesAutomatically = true
+            settings.blockNetworkImage = false
             settings.allowFileAccess = true
             settings.allowContentAccess = true
             settings.allowFileAccessFromFileURLs = false

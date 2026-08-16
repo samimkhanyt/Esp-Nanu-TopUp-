@@ -1,5 +1,5 @@
 <!DOCTYPE html>
- <html lang="bn"> 
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -1145,7 +1145,7 @@
 
             <div class="mt-8 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                 <div class="text-center mb-5">
-                    <img id="about-logo-img" src="logo.png" onerror="this.onerror=null;this.src='logo.png'" class="h-10 mx-auto object-contain mb-2">
+                    <img id="about-logo-img" src="https://i.ibb.co.com/JjcZFr8G/Background-Eraser-20260805-021434936.png" onerror="this.onerror=null;this.src='https://i.ibb.co.com/JjcZFr8G/Background-Eraser-20260805-021434936.png'" class="h-10 mx-auto object-contain mb-2">
                     <p class="text-sm text-gray-500 mt-1">Free Fire Diamond TopUp<br>Largest TopUp Site In Bangladesh</p>
                 </div>
 
@@ -4284,8 +4284,11 @@ function loadGamesAndCategories() {
             const categoriesMap = new Map();
 
             let categoriesList = [];
+            const allImagesToPreload = [];
             categoriesSnap.forEach(doc => {
-                categoriesList.push({ id: doc.id, ...doc.data(), games: [] });
+                const data = doc.data();
+                if (data.image) allImagesToPreload.push(data.image);
+                categoriesList.push({ id: doc.id, ...data, games: [] });
             });
 
             // Sort categories deterministically by slot, order, createdAt, or name
@@ -4307,6 +4310,7 @@ function loadGamesAndCategories() {
 
             servicesSnap.forEach(doc => {
                 const game = { id: doc.id, ...doc.data() };
+                if (game.image) allImagesToPreload.push(game.image);
                 gamesData[doc.id] = game;
 
                 if (game.categoryId && categoriesMap.has(game.categoryId)) {
@@ -4315,6 +4319,8 @@ function loadGamesAndCategories() {
                     uncategorizedGames.push(game);
                 }
             });
+
+            fastPreloadImages(allImagesToPreload);
 
             listContainer.innerHTML = "";
 
@@ -4338,7 +4344,7 @@ function loadGamesAndCategories() {
                          <div onclick="openTopUpPage('${item.id}', '${item.name}', '${item.image}')" 
                               class="category-card-box bg-white rounded-xl shadow-[0_3px_10px_rgba(0,0,0,0.12)] overflow-hidden cursor-pointer transform hover:-translate-y-1 transition-all duration-300 border-2 border-slate-900 group flex flex-col h-full">
                             <div class="w-full aspect-square bg-slate-50 overflow-hidden relative">
-                                <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/200'">
+                                <img src="${item.image}" loading="eager" decoding="async" fetchpriority="high" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/200'">
                             </div>
                             <div class="category-card-box-header p-1.5 text-center bg-white border-t-2 border-slate-900 flex-1 flex items-center justify-center min-h-[40px]">
                                 <p class="text-[11px] font-extrabold text-slate-900 line-clamp-2 leading-tight lang-auto">${item.name}</p>
@@ -6465,6 +6471,35 @@ document.addEventListener("DOMContentLoaded", function() {
     changeLanguage('bn');
 });
 
+// Global Image Memory Cache & Ultra-Fast Preloading Engine
+const globalImageMemoryCache = new Set();
+function fastPreloadImages(urls) {
+    if (!urls) return;
+    const list = Array.isArray(urls) ? urls : [urls];
+    list.forEach(url => {
+        if (!url || typeof url !== 'string' || globalImageMemoryCache.has(url) || url.length < 5) return;
+        globalImageMemoryCache.add(url);
+        try {
+            const img = new Image();
+            img.decoding = 'async';
+            img.src = url;
+        } catch(e){}
+    });
+}
+
+function speakNetworkNotice(text) {
+    try {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 1.0;
+            utterance.pitch = 1.0;
+            utterance.lang = 'bn-BD';
+            window.speechSynthesis.speak(utterance);
+        }
+    } catch(e) {}
+}
+
 let isOnline = navigator.onLine;
 let isRealInternetConnected = true;
 let isCheckingNetwork = false;
@@ -6475,7 +6510,7 @@ async function checkRealInternetConnection() {
     }
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 3500);
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
         
         const response = await fetch('https://www.google.com/generate_204?_t=' + Date.now(), {
             method: 'GET',
@@ -6488,7 +6523,7 @@ async function checkRealInternetConnection() {
     } catch (e) {
         try {
             const controller2 = new AbortController();
-            const timeoutId2 = setTimeout(() => controller2.abort(), 3500);
+            const timeoutId2 = setTimeout(() => controller2.abort(), 2000);
             const resp2 = await fetch('https://cloudflare.com/cdn-cgi/trace?_t=' + Date.now(), {
                 method: 'GET',
                 mode: 'no-cors',
@@ -6507,40 +6542,29 @@ async function verifyAndHandleNetworkState(userTriggered = false) {
     if (isCheckingNetwork) return;
     isCheckingNetwork = true;
 
+    const retryBtn = document.getElementById('net-retry-btn');
+    const retryText = document.getElementById('net-retry-text');
+    const retrySpinner = document.getElementById('net-retry-spinner');
+
     if (userTriggered) {
-        const retryText = document.getElementById('net-retry-text');
-        const retrySpinner = document.getElementById('net-retry-spinner');
-        if (retryText) retryText.innerText = "Checking...";
+        if (retryText) retryText.innerText = "প্রসেসিং...";
         if (retrySpinner) retrySpinner.classList.remove('hidden');
+        if (retryBtn) {
+            retryBtn.style.pointerEvents = 'none';
+            retryBtn.style.opacity = '0.75';
+        }
     }
 
     const modal = document.getElementById('net-connection-issue-modal');
 
-    if (!navigator.onLine) {
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.style.setProperty('display', 'flex', 'important');
-            applyNetworkModalCustomizations();
-        }
-        showOfflineLoader();
-        if (userTriggered) {
-            const retryText = document.getElementById('net-retry-text');
-            const retrySpinner = document.getElementById('net-retry-spinner');
-            const configuredRetryText = window.netModalRetryText || localStorage.getItem('cached_net_modal_retry_text') || "Retry";
-            if (retryText) retryText.innerText = configuredRetryText;
-            if (retrySpinner) retrySpinner.classList.add('hidden');
-
-            const offlineMsg = window.netModalOfflineMsg || localStorage.getItem('cached_net_modal_offline_msg') || "আপনার নেটওয়ার্ক কানেক্ট করুন";
-            if (typeof showCustomToast === "function") {
-                showCustomToast(offlineMsg);
-            }
-        }
-        isCheckingNetwork = false;
-        return;
+    let hasInternet = false;
+    if (navigator.onLine) {
+        hasInternet = await checkRealInternetConnection();
     }
 
-    const hasInternet = await checkRealInternetConnection();
     isRealInternetConnected = hasInternet;
+
+    const configuredRetryText = window.netModalRetryText || localStorage.getItem('cached_net_modal_retry_text') || "Retry";
 
     if (!hasInternet) {
         if (modal) {
@@ -6549,33 +6573,46 @@ async function verifyAndHandleNetworkState(userTriggered = false) {
             applyNetworkModalCustomizations();
         }
         showOfflineLoader();
+
+        if (userTriggered) {
+            if (retryText) retryText.innerText = configuredRetryText;
+            if (retrySpinner) retrySpinner.classList.add('hidden');
+            if (retryBtn) {
+                retryBtn.style.pointerEvents = 'auto';
+                retryBtn.style.opacity = '1';
+            }
+
+            const offlineMsg = window.netModalOfflineMsg || localStorage.getItem('cached_net_modal_offline_msg') || "আপনার নেটওয়ার্ক কানেক্ট করুন (No Internet Connection)";
+            if (typeof showCustomToast === "function") {
+                showCustomToast(offlineMsg);
+            }
+            speakNetworkNotice("আপনার নেটওয়ার্ক কানেক্ট করুন, নো ইন্টারনেট");
+        }
     } else {
         if (modal) {
             modal.classList.add('hidden');
             modal.style.setProperty('display', 'none', 'important');
         }
         showOnlineLoader();
-    }
 
-    if (userTriggered) {
-        const retryText = document.getElementById('net-retry-text');
-        const retrySpinner = document.getElementById('net-retry-spinner');
-        const configuredRetryText = window.netModalRetryText || localStorage.getItem('cached_net_modal_retry_text') || "Retry";
-        if (retryText) retryText.innerText = configuredRetryText;
-        if (retrySpinner) retrySpinner.classList.add('hidden');
-
-        if (!hasInternet) {
-            const offlineMsg = window.netModalOfflineMsg || localStorage.getItem('cached_net_modal_offline_msg') || "আপনার নেটওয়ার্ক কানেক্ট করুন";
-            if (typeof showCustomToast === "function") {
-                showCustomToast(offlineMsg);
+        if (userTriggered) {
+            if (retryText) retryText.innerText = configuredRetryText;
+            if (retrySpinner) retrySpinner.classList.add('hidden');
+            if (retryBtn) {
+                retryBtn.style.pointerEvents = 'auto';
+                retryBtn.style.opacity = '1';
             }
-        } else {
-            const onlineMsg = window.netModalOnlineMsg || localStorage.getItem('cached_net_modal_online_msg') || "Network Connected Successfully!";
+
+            const onlineMsg = window.netModalOnlineMsg || localStorage.getItem('cached_net_modal_online_msg') || "ইন্টারনেট কানেক্ট হয়েছে! (Network Connected)";
             if (typeof showCustomToast === "function") {
                 showCustomToast(onlineMsg);
             }
+            speakNetworkNotice("ইন্টারনেট কানেক্ট হয়েছে");
+
+            try { loadGamesAndCategories(); loadBanners(); } catch(e){}
         }
     }
+
     isCheckingNetwork = false;
 }
 
@@ -6660,6 +6697,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (headerLogoImg) headerLogoImg.src = cachedLogo;
             const loginLogoImg = document.getElementById('login-logo-img');
             if (loginLogoImg) loginLogoImg.src = cachedLogo;
+            const aboutLogoImg = document.getElementById('about-logo-img');
+            if (aboutLogoImg) aboutLogoImg.src = cachedLogo;
         }
 
         const cachedHeaderLogo = localStorage.getItem('cached_header_logo');
